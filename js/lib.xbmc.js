@@ -668,6 +668,7 @@ var xbmc = {};
 		},
 		
 		getVcodec: function(vcodec) {
+			vcodec = vcodec.toLowerCase();
 			switch (vcodec) {
 			case 'h264':
 				return 'H264';
@@ -715,6 +716,7 @@ var xbmc = {};
 		
 
 		getAcodec: function (acodec) {
+			acodec = acodec.toLowerCase();
 			switch (acodec) {
 			case 'aac':
 				return 'AAC';
@@ -2599,8 +2601,22 @@ var xbmc = {};
 								}
 
 								//Stream info in footer bar. Uni UI only
-								if ( ui == 'uni' ) {
-									//console.log('using Uni UI!');
+								if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
+									var streamdetails = {
+										aCodec: 'Unknown',
+										channels: 0,
+										aStreams: 0,
+										bitrate: 0
+									};
+	
+									if (typeof(currentPlayer.currentaudiostream) != 'undefined') {
+										streamdetails.channels = currentPlayer.currentaudiostream.channels;
+										//Set audio icon
+										streamdetails.aCodec = xbmc.getAcodec(currentPlayer.currentaudiostream.codec);
+										
+										$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+										$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+									};
 								}
 							},
 
@@ -2612,7 +2628,7 @@ var xbmc = {};
 						var request = '';
 
 						if (activePlayer == 'audio') {
-							request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart"], "playerid": 0 }, "id": 1}';
+							request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
 							//requeststate = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":0,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
 
 						} else if (activePlayer == 'video') {
@@ -2665,9 +2681,10 @@ var xbmc = {};
 											xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
 										}
 									});
-									
+
 									//Footer stream details for video
-									if (ui == 'uni' && showInfoTags) {
+									if (activePlayer == 'video' && ui == 'uni' && showInfoTags) {
+
 										var streamdetails = {
 											vFormat: 'SD',
 											vCodec: 'Unknown',
@@ -2680,7 +2697,7 @@ var xbmc = {};
 											vwidth: 0
 										};
 										
-										if (currentItem.streamdetails) {
+										if (typeof(currentItem.streamdetails) != 'undefined') {
 											if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
 											if (currentItem.streamdetails.audio) {
 												streamdetails.channels = currentItem.streamdetails.audio[0].channels;
@@ -2688,20 +2705,20 @@ var xbmc = {};
 												//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
 												//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
 											};
-										streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
-										//Get video standard
-										streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
-										//Get video codec
-										streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
-										//Set audio icon
-										streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
+											streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
+											//Get video standard
+											streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
+											//Get video codec
+											streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
+											//Set audio icon
+											streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
+																				
+											$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
+											$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+											$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
+											$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+											(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
 										};
-										
-										$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
-										$('#streamdets .channels').addClass('channels' + streamdetails.channels);
-										$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
-										$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
-										(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
 									}
 								};
 							},

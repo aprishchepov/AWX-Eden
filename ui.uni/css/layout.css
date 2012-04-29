@@ -1833,6 +1833,7 @@ br.clear {
 	height: 48px;
 	width: 96px;
 	float: left;
+	position: absolute;
 }
 #simple_controls a.button {
 	background: url("../images/simple_controls.png") no-repeat scroll 0 0 transparent;

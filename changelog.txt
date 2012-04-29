@@ -4,6 +4,7 @@
  - Added Artist info and enqueue all.
  - Added Start Page. Defaults to Recent TV.
  - Added Better playlist identification and labelling.
+ - Added Currently playing stream info in footer (Uni UI only).
  - Fixed Playlists containing streams and not local files.
  - Fixed Youtube trailer link.
  - Changed Logo walls now support lazyload.
