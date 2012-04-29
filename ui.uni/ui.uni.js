@@ -657,7 +657,7 @@ var awxUI = {};
 							'</div>' +
 							'<div id="footer">' +
 							'<div id="simple_controls"></div><div id="infoContainer"></div>' +
-							'<div id="statPlayerContainer"><div id="streamdets"><div class="aspect" /><div class="vCodec" /><div class="aCodec" /><div class="channels" /><div class="vSubtitles" style="display: none" /></div>' +
+							'<div id="statPlayerContainer"><div id="streamdets"><div class="vFormat" /><div class="aspect" /><div class="vCodec" /><div class="aCodec" /><div class="channels" /><div class="vSubtitles" style="display: none" /></div>' +
 							'<div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div>' +
 							'<div id="remainPlayer"><div id="remaining">' + mkf.lang.get('label_remaining') + '<span class="timeRemain">00:00</span></div><div id="plTotal">' + mkf.lang.get('label_total') + '<span class="timeRemainTotal">00:00</span></div></div>' +
 							//'<div id="statPlayerContainer"><div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div><div id="remainPlayer"><div id="remaining">Remaing:</div><div id="plTotal">Playlist Total:</div></div>' +
@@ -904,6 +904,11 @@ var awxUI = {};
 				onSuccess: function(result) {
 					$contentBox.defaultPlaylistViewer(result, 'Audio');
 					$contentBox.removeClass('loading');
+					//if (($contentBox.find('ul').children().length) == 1) {
+						//$contentBox.scrollTop($('.playlistItemCur').position().top)
+						//console.log('on playlist');
+						//console.log($contentBox.find('ul').children());
+					//}
 				}
 			});
 		},

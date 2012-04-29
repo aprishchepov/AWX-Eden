@@ -259,7 +259,6 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 #streamdets div.channels0, #streamdets div.channels1, #streamdets div.channels2, #streamdets div.channels3, #streamdets div.channels4, #streamdets div.channels5, #streamdets div.channels6, #streamdets div.channels7, #streamdets div.channels8, #streamdets div.channels9, #streamdets div.channels10 {
 	float: left;
-	margin-right: 3px;
     background: url("../images/flagging/footer/channels.png") no-repeat scroll 0 0 transparent;
     height: 48px;
     width: 64px;
@@ -299,7 +298,6 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 #streamdets div.aspect133, #streamdets div.aspect166, #streamdets div.aspect178, #streamdets div.aspect185, #streamdets div.aspect220, #streamdets div.aspect235  {
 	float: left;
-	margin-right: 3px;
     background: url("../images/flagging/footer/aspects.png") no-repeat scroll 0 0 transparent;
     height: 48px;
     width: 64px;
@@ -324,7 +322,6 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 #streamdets div.vFormatSD, #streamdets div.vFormatHD720, #streamdets div.vFormatHD1080 {
 	float: left;
-	margin-right: 3px;
     background: url("../images/flagging/footer/vFormat.png") no-repeat scroll 0 0 transparent;
     height: 48px;
     width: 64px;
@@ -340,7 +337,6 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 #streamdets div.vCodecH264, #streamdets div.vCodecXVID, #streamdets div.vCodecDivX3, #streamdets div.vCodecDivX5, #streamdets div.vCodecAVC1, #streamdets div.vCodecVP8, #streamdets div.vCodecMPEG1, #streamdets div.vCodecMPEG2, #streamdets div.vCodecDVD, #streamdets div.vCodecBluRay, #streamdets div.vCodecVC1, #streamdets div.vCodecFLV, #streamdets div.vCodecUnknown {
 	float: left;
-	margin-right: 3px;
     background: url("../images/flagging/footer/vCodecs.png") no-repeat scroll 0 0 transparent;
     height: 48px;
     width: 100px;
@@ -388,7 +384,6 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 #streamdets div.aCodecAAC, #streamdets div.aCodecAC3, #streamdets div.aCodecAIF, #streamdets div.aCodecAIFC, #streamdets div.aCodecAPE, #streamdets div.aCodecAVC, #streamdets div.aCodecCDDA, #streamdets div.aCodecDCA, #streamdets div.aCodecDTS, #streamdets div.aCodecDTSHD, #streamdets div.aCodecDTSMA, #streamdets div.aCodecEAC3, #streamdets div.aCodecFLAC, 
 #streamdets div.aCodecMP1, #streamdets div.aCodecMP2, #streamdets div.aCodecMP3, #streamdets div.aCodecOGG, #streamdets div.aCodecDDTrueHD, #streamdets div.aCodecwav, #streamdets div.aCodecwavpack, #streamdets div.aCodecWMA, #streamdets div.aCodecWMAPro, #streamdets div.aCodecWMA2, #streamdets div.aCodecPCM, #streamdets div.aCodecALAC, #streamdets div.aCodecUnknown {
 	float: left;
-	margin-right: 3px;
     background: url("../images/flagging/footer/aCodecs.png") no-repeat scroll 0 0 transparent;
     height: 48px;
     width: 100px;
@@ -473,7 +468,6 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 #streamdets div.vSubtitles {
 	float: left;
-	margin-right: 3px;
     background: url("../images/flagging/footer/cc.png") no-repeat scroll 0 0 transparent;
     height: 48px;
     width: 64px;

@@ -2508,6 +2508,7 @@ var xbmc = {};
 								$('#content').css('background-image', 'url("")');
 							}
 						};
+						$('#streamdets .vFormat').removeClass().addClass('vFormat');
 						$('#streamdets .aspect').removeClass().addClass('aspect');
 						$('#streamdets .channels').removeClass().addClass('channels');
 						$('#streamdets .vCodec').removeClass().addClass('vCodec');
@@ -2712,7 +2713,8 @@ var xbmc = {};
 											streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
 											//Set audio icon
 											streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
-																				
+												
+											$('#streamdets .vFormat').addClass('vFormat' + streamdetails.vFormat);
 											$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
 											$('#streamdets .channels').addClass('channels' + streamdetails.channels);
 											$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);

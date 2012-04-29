@@ -922,6 +922,8 @@ var uiviews = {};
 				title: e.data.strTvShow,
 				content: $unwatchedEpsContent
 			});
+			
+			//console.log(e.data);
 			var fillPage = function() {
 				$unwatchedEpsContent.addClass('loading');
 				xbmc.getunwatchedEps({
@@ -2031,8 +2033,8 @@ var uiviews = {};
 				var $episode = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper episode' + episode.episodeid +
 				'"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') +
 				'"><span class="miniIcon enqueue" /></a><a href="" class="button info" title="' + mkf.lang.get('btn_information') +
-				'"><span class="miniIcon information" /></a><a href="" class="episode play">' + episode.episode +
-				'. ' + episode.label + '' + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</a></div></li>').appendTo($episodeList);
+				'"><span class="miniIcon information" /></a><a href="" class="episode play">' + //episode.episode + '. ' + 
+				episode.label + '' + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</a></div></li>').appendTo($episodeList);
 
 				$episode.find('.play').bind('click', {idEpisode: episode.episodeid}, uiviews.EpisodePlay);
 				$episode.find('.playlist').bind('click', {idEpisode: episode.episodeid}, uiviews.AddEpisodeToPlaylist);
@@ -2074,7 +2076,7 @@ var uiviews = {};
 					) +
 					'</div>' +
 					'<div class="episodeTitle">' + episode.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
-					'<div class="episodeTVSE">Season: ' + episode.season + ' - Episode: ' +episode.episode + '</div>' +					
+					'<div class="episodeTVSE">' + mkf.lang.get('label_season') + ' ' + episode.season + ' - ' + mkf.lang.get('label_episode') + ' ' +episode.episode + '</div>' +
 					'<div class="episodeRating"><span class="label">' + mkf.lang.get('label_rating') + '</span><span><div class="smallRating' + Math.round(episode.rating) + '"></div></span></div>' +
 					'<div class="episodePlot">' + episode.plot + '</div>' +
 					'</div></li>').appendTo($episodeList);
@@ -2120,7 +2122,8 @@ var uiviews = {};
 					) +
 					'</div>' +
 					'<div class="recentTVshowName">' + episode.showtitle + (watched? '<img src="images/OverlayWatched_Small.png" class="epWatched" />' : '') + 
-					'</div><div class="recentTVSE">Season: ' + episode.season + ' - Episode: ' +episode.episode + 
+					'<div class="episodeTVSE">' + mkf.lang.get('label_season') + ' ' + episode.season + ' - ' + mkf.lang.get('label_episode') + ' ' +episode.episode + '</div>' +
+					//'</div><div class="recentTVSE">Season: ' + episode.season + ' - Episode: ' +episode.episode + 
 					'</div><div class="recentTVtitle">' + episode.label + '</div><div class="recentTVplot">' + episode.plot + '</div></div></li>').appendTo($episodeList);
 					
 					$episode.find('.play').bind('click', {idEpisode: episode.episodeid}, uiviews.EpisodePlay);

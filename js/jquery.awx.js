@@ -1335,6 +1335,11 @@
 		//audio
 		if (playlist == 'Audio') {
 			uiviews.PlaylistAudioViewList(playlistResult).appendTo($(this));
+			//console.log($('#content').find('ul').children().length);
+			//if (($('#content').find('ul').children().length)) {
+			//console.log($('#content').scrollTop($('.playlistItemCur').position().top));
+			//console.log($('#content').find('ul').children().length);
+			//}
 		}
 		
 		//video
