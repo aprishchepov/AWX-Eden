@@ -2699,7 +2699,7 @@ var xbmc = {};
 										};
 										
 										if (typeof(currentItem.streamdetails) != 'undefined') {
-											if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
+											if (typeof(currentItem.streamdetails.subtitle) != 'undefined') { streamdetails.hasSubs = true };
 											if (currentItem.streamdetails.audio) {
 												streamdetails.channels = currentItem.streamdetails.audio[0].channels;
 												streamdetails.aStreams = currentItem.streamdetails.audio.length;
