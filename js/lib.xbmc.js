@@ -306,7 +306,7 @@ var xbmc = {};
 		},
 
 		getLogo: function(filepath, callback) {
-			var path = filepath.substring(0, filepath.lastIndexOf("/"));
+			var path = filepath.replace(/\\/g, "\\\\").substring(0, filepath.lastIndexOf("/"));
 			path += '/logo.png';
 			
 			var logo = xbmc.getPrepDownload({
@@ -2699,27 +2699,30 @@ var xbmc = {};
 										};
 										
 										if (typeof(currentItem.streamdetails) != 'undefined') {
-											if (typeof(currentItem.streamdetails.subtitle) != 'undefined') { streamdetails.hasSubs = true };
-											if (currentItem.streamdetails.audio) {
-												streamdetails.channels = currentItem.streamdetails.audio[0].channels;
-												streamdetails.aStreams = currentItem.streamdetails.audio.length;
-												//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
-												//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
+											if (currentItem.streamdetails != null) {
+
+												if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
+												if (currentItem.streamdetails.audio) {
+													streamdetails.channels = currentItem.streamdetails.audio[0].channels;
+													streamdetails.aStreams = currentItem.streamdetails.audio.length;
+													//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
+													//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
+												};
+												streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
+												//Get video standard
+												streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
+												//Get video codec
+												streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
+												//Set audio icon
+												streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
+													
+												$('#streamdets .vFormat').addClass('vFormat' + streamdetails.vFormat);
+												$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
+												$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+												$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
+												$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+												(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
 											};
-											streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
-											//Get video standard
-											streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
-											//Get video codec
-											streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
-											//Set audio icon
-											streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
-												
-											$('#streamdets .vFormat').addClass('vFormat' + streamdetails.vFormat);
-											$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
-											$('#streamdets .channels').addClass('channels' + streamdetails.channels);
-											$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
-											$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
-											(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
 										};
 									}
 								};

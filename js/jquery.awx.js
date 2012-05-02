@@ -2437,7 +2437,7 @@
 						if (files) {
 							$.each(files, function(i, file)  {
 								if (!file.file.startsWith('addons://') && file.filetype == "file") {
-									var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><div class="folderLinkWrapper file' + i + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a> <a href="" class="file play">' + file.label + '</a></div></li>').appendTo($filelist);
+									var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><div class="folderLinkWrapper file' + i + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a> <a href="" class="file play">' + file.file.replace(/\\/g, "\\\\").substring(file.file.lastIndexOf("/")+1) + '</a></div></li>').appendTo($filelist);
 									$file.find('.play').bind('click', {file: file.file}, onFilePlayClick);
 									$file.find('.playlist').bind('click', {file: file.file}, onAddFileToPlaylistClick);
 									++globalI;
@@ -2450,7 +2450,7 @@
 						mkf.messageLog.show(mkf.lang.get('message_failed_directory'), mkf.messageLog.status.error, 5000);
 					},
 
-					async: false
+					async: true
 				});
 
 			} else {
