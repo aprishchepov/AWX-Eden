@@ -2747,6 +2747,9 @@ var xbmc = {};
 				wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
 				var ws = new WebSocket(wsConn);
 				console.log(ws.readyState);
+				if (ws.readyState == 1) {
+					//Register for notifications
+				};
 				ws.onopen = function () {
 					console.log('socket open');
 				};
