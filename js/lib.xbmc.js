@@ -2738,6 +2738,28 @@ var xbmc = {};
 			}
 		} // END xbmc.periodicUpdater
 	}); // END xbmc
-
+	
+	//Web socket
+	$.extend(xbmc, {
+		wsListener: function() {
+			if ("WebSocket" in window) {
+				//console.log('websockets' + location.hostname + ':9090/jsonrpc');
+				wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
+				var ws = new WebSocket(wsConn);
+				console.log(ws.readyState);
+				ws.onopen = function () {
+					console.log('socket open');
+				};
+				ws.onerror = function (err) {
+					console.log(err);
+				};
+				ws.onmessage = function (e) {
+					console.log(e.data);
+				};
+			};
+		}
+		//wsListener();
+	});
+	
 })(jQuery);
 
