@@ -2302,7 +2302,6 @@ var xbmc = {};
 	}); // END xbmc
 
 
-
 	$.extend(xbmc, {
 		periodicUpdater: {
 			volumeChangedListener: [],
@@ -2738,6 +2737,6 @@ var xbmc = {};
 			}
 		} // END xbmc.periodicUpdater
 	}); // END xbmc
-
+	
 })(jQuery);
 
