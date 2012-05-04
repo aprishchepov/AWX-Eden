@@ -79,7 +79,7 @@ var xbmc = {};
 		},
 
 		init: function(initContainer, callback) {
-			xbmc.periodicUpdater.start();
+			//xbmc.periodicUpdater.start();
 			var timeout = parseInt(mkf.cookieSettings.get('timeout'));
 			this.timeout = (isNaN(timeout) || timeout < 5 || timeout > 120)? 10000: timeout*1000;
 			this.detectThumbTypes(initContainer, callback);
@@ -2743,21 +2743,26 @@ var xbmc = {};
 	$.extend(xbmc, {
 		wsListener: function() {
 			if ("WebSocket" in window) {
-				//console.log('websockets' + location.hostname + ':9090/jsonrpc');
-				wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
+				
+				var wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
+				console.log(wsConn);
 				var ws = new WebSocket(wsConn);
-				console.log(ws.readyState);
-				if (ws.readyState == 1) {
+				console.log(ws);
+				/*if (ws.readyState == 1) {
 					//Register for notifications
-				};
-				ws.onopen = function () {
+				};*/
+				ws.onopen = function (e) {
 					console.log('socket open');
+					ws.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties" : ["thumbnail"]}, "id": 1}');
 				};
 				ws.onerror = function (err) {
 					console.log(err);
 				};
 				ws.onmessage = function (e) {
 					console.log(e.data);
+				};
+				ws.onclose = function (e) {
+					console.log('socket close');
 				};
 			};
 		}
