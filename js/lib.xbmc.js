@@ -695,6 +695,9 @@ var xbmc = {};
 			case 'mpeg2':
 				return 'MPEG2';
 				break;
+			case 'mpeg2video':
+				return 'MPEG2';
+				break;
 			case 'dvd':
 				return 'DVD';
 				break;
@@ -1864,7 +1867,7 @@ var xbmc = {};
 			settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["rating", "thumbnail", "playcount"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
 				//'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["genre", "director", "plot", "title", "originaltitle", "runtime", "year", "rating", "thumbnail", "playcount", "file", "tagline", "set"], "sort": { "order": "ascending", "method": "label" } }, "id": 1}',
 				function(response) {
 					if (settings.order == 'descending' && settings.sortby == 'none') {

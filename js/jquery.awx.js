@@ -524,6 +524,7 @@
 				'</option><option value="listover" ' + (filmView=='listover'? 'selected' : '') + '>' + mkf.lang.get('label_view_film_list_overlay') +
 				'</option><option value="listin" ' + (filmView=='listin'? 'selected' : '') + '>' + mkf.lang.get('label_view_film_list_inline') +'</option><option value="accordion"' + (filmView=='accordion'? 'selected' : '') + '>' + mkf.lang.get('label_view_film_accordion') + '</option>' +
 				'<option value="singlePoster" ' + (filmView=='singlePoster'? 'selected' : '') + '>' + mkf.lang.get('label_single_poster') +'</option>' +
+				'<option value="logo" ' + (filmView=='logo'? 'selected' : '') + '>' + mkf.lang.get('label_view_logo') +'</option>' +
 				//'<option value="videorating" ' + (filmView=='videorating'? 'selected' : '') + '>' + mkf.lang.get('label_film_sort_videorating') +
 				//'</option><option value="studio">' + mkf.lang.get('label_film_sort_studio') +'</option>
 				'</select>' +
@@ -546,6 +547,7 @@
 				'</option><option value="listin" ' + (filmViewRec=='listin'? 'selected' : '') + '>' + mkf.lang.get('label_view_film_list_inline') +
 				'</option><option value="accordion"' + (filmViewRec=='accordion'? 'selected' : '') + '>' + mkf.lang.get('label_view_film_accordion') + '</option>' +
 				'<option value="singlePoster" ' + (filmViewRec=='singlePoster'? 'selected' : '') + '>' + mkf.lang.get('label_single_poster') +'</option>' +
+				'<option value="logo" ' + (filmViewRec=='logo'? 'selected' : '') + '>' + mkf.lang.get('label_view_logo') +'</option>' +
 				'</select>' +
 				'</fieldset>' +
 				
@@ -915,7 +917,7 @@
 	\* ########################### */
 	$.fn.defaultArtistsViewer = function(artistResult, parentPage) {
 
-		if (!artistResult.limits.total > 0) { return };
+		if (!artistResult || !artistResult.limits.total > 0) { return };
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 		var view = mkf.cookieSettings.get('artistsView', 'list');
@@ -1384,6 +1386,9 @@
 			case 'singlePoster':
 				uiviews.MovieViewSingle(movieResult, options).appendTo($movieContainer);
 				break;
+			case 'logo':
+				uiviews.MovieViewLogos(movieResult, options).appendTo($movieContainer);
+				break;
 		};
 		
 		if (useLazyLoad) {
@@ -1486,6 +1491,9 @@
 				break;
 			case 'singlePoster':
 				uiviews.MovieViewSingle(movieResult, options).appendTo($movieContainer);
+				break;
+			case 'logo':
+				uiviews.MovieViewLogos(movieResult, options).appendTo($movieContainer);
 				break;
 		};
 		

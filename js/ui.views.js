@@ -1634,6 +1634,55 @@ var uiviews = {};
 			return $movieList;
 		},
 		
+		/*----Movie logo view----*/
+		MovieViewLogos: function(movies, options) {
+		
+		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+		var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+		var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+		var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+		var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
+		
+		if (options) { filterWatched = options.filterWatched };
+
+		var $moviesList = $('<div></div>');
+			$.each(movies.movies, function(i, movie) {
+				var watched = false;
+				// if movie has no id (e.g. movie sets), ignore it
+				if (typeof movie.movieid === 'undefined') { return; }
+				if (movie.playcount > 0) { watched = true; }
+				if (filterWatched && watched) { return; }
+				
+				var thumb = 'images/missing_logo.png';
+				xbmc.getLogo(movie.file, function(logo) {
+					var $movie = $(
+						'<div class="movie'+movie.movieid+' logoWrapper thumbLogoWrapper">' +
+							'<div class="linkTVLogoWrapper">' + 
+								'<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
+							'</div>' +
+							(useLazyLoad?
+								'<img src="images/loading_thumb.gif" alt="' + movie.label + '" class="thumb thumbLogo" data-original="' + (logo? logo : thumb) + '" />':
+								'<img src="' + (logo? logo : thumb) + '" alt="' + movie.label + '" class="thumbLogo" />'
+							) +
+							'<div class="movieName">' + movie.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
+							'<div class="findKeywords">' + movie.label.toLowerCase() + '</div>' +
+						'</div>').appendTo($moviesList);
+					$movie.find('.play').bind('click', {idMovie: movie.movieid, strMovie: movie.label}, uiviews.MoviePlay);
+					$movie.find('.playlist').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
+					$movie.find('.info').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
+					
+					$moviesList.find('.thumbLogoWrapper').on(hoverOrClick, function() { $(this).children('.linkTVLogoWrapper').show() });					
+					$moviesList.find('.thumbLogoWrapper').on('mouseleave', function() { $(this).children('.linkTVLogoWrapper').hide() });
+			
+				});
+				
+			});
+			
+
+			
+			return $moviesList;
+		},
+			
 		/*----Movie thumbnail view----*/
 		MovieViewThumbnails: function(movies, options) {
 		
