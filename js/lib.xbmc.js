@@ -1262,13 +1262,23 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : 0, "position": ' + settings.item + ' } }, "id": 1}',
-				settings.onSuccess,
-				function(response) {
-					settings.onError(mkf.lang.get('message_failed_play' + 'settings.item'));
-				}
-			);
+			if (activePlayerid == 0) {
+				xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.GoTo", "params" : { "playerid" : 0, "position": ' + settings.item + ' }, "id": 1}',
+					settings.onSuccess,
+					function(response) {
+						settings.onError(mkf.lang.get('message_failed_play'));
+					}
+				);
+			} else {
+				xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : 0, "position": ' + settings.item + ' } }, "id": 1}',
+					settings.onSuccess,
+					function(response) {
+						settings.onError(mkf.lang.get('message_failed_play' + 'settings.item'));
+					}
+				);
+			}
 		},
 
 		removeAudioPlaylistItem: function(options) {
@@ -1642,13 +1652,23 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : 1, "position": ' + settings.item + ' } }, "id": 1}',
-				settings.onSuccess,
-				function(response) {
-					settings.onError(mkf.lang.get('message_failed_play'));
-				}
-			);
+			if (activePlayerid == 1) {
+				xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.GoTo", "params" : { "playerid" : 1, "position": ' + settings.item + ' }, "id": 1}',
+					settings.onSuccess,
+					function(response) {
+						settings.onError(mkf.lang.get('message_failed_play'));
+					}
+				);
+			} else {
+				xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : 1, "position": ' + settings.item + ' } }, "id": 1}',
+					settings.onSuccess,
+					function(response) {
+						settings.onError(mkf.lang.get('message_failed_play'));
+					}
+				);
+			}
 		},
 
 
