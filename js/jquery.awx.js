@@ -2533,7 +2533,8 @@
 			var seasonElement = '';
 			var episodeElement = '';
 			
-			var thumbElement = $('#content #displayoverlay #artwork img');
+			var thumbElement = $('#content #displayoverlay #artwork .artThumb');
+			var thumbDiscElement = $('#content #displayoverlay #artwork .discThumb');
 			
 			var nowLabelElement = $footerNowBox.find('span.label');
 			var nowElement = $footerNowBox.find('span.nowTitle');
@@ -2552,6 +2553,15 @@
 
 			xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
 				// ALL: AUDIO, VIDEO, PICTURE
+				
+				//console.log(currentFile);
+				xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
+					//console.log((cdart == ''? 'images/blank_cdart.png' : cdart)); 
+					(cdart == ''? 'images/blank_cdart.png' : cdart)
+					//console.log(typeof(cdart));
+					thumbDiscElement.attr('src', cdart);
+				});
+				
 				if (currentFile.title) { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
 
 				if (currentFile.xbmcMediaType == 'audio') {

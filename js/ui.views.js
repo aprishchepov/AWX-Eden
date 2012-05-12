@@ -1177,7 +1177,7 @@ var uiviews = {};
 				$.each(artists.artists, function(i, artist)  {
 					//var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/missing_logo.png');
 					artist.file = artistsPath + artist.label + '/';
-					xbmc.getLogo(artist.file, function(logo) {
+					xbmc.getLogo({path: artist.file, type: 'logo'}, function(logo) {
 					$artist = $('<div class="artist'+artist.artistid+' logoWrapper thumbLogoWrapper">' +
 						'<div class="linkTVLogoWrapper">' + 
 								'<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('btn_all') + '</a>' +
@@ -1236,7 +1236,7 @@ var uiviews = {};
 				$artistList.find('.infoenqueue').on('click', {idArtist: artist.artistid}, uiviews.AddArtistToPlaylist);
 				$artistList.find('.infoinfo').on('click', {idArtist: artist.artistid}, uiviews.ArtistInfoOverlay);
 				
-				xbmc.getLogo(artist.file, function(logo) {
+				xbmc.getLogo({path: artist.file, type: 'logo'}, function(logo) {
 						$('.artist'+artist.artistid).children('img').attr('src', (logo? logo : 'images/missing_logo.png')); 
 					});
 				
@@ -1245,7 +1245,7 @@ var uiviews = {};
 					if (currentArtist < artists.limits.end -1) {currentArtist++ } else { currentArtist = artists.limits.start };
 					$('div.logoWrapper').addClass('artist' + artists.artists[currentArtist].artistid);
 					artist.file = artistsPath + artists.artists[currentArtist].label + '/';
-					xbmc.getLogo(artist.file, function(logo) {
+					xbmc.getLogo({path: artist.file, type: 'logo'}, function(logo) {
 						$('img.artist').attr('src', (logo? logo : 'images/missing_logo.png'));
 					});
 					$('div.albumArtist').text(artists.artists[currentArtist].label);
@@ -1265,7 +1265,7 @@ var uiviews = {};
 					if (currentArtist > artists.limits.start) {currentArtist-- } else { currentArtist = artists.limits.end -1 };
 					$('div.logoWrapper').addClass('artist' + artists.artists[currentArtist].artistid);
 					artist.file = artistsPath + artists.artists[currentArtist].label + '/';
-					xbmc.getLogo(artist.file, function(logo) {
+					xbmc.getLogo({path: artist.file, type: 'logo'}, function(logo) {
 						$('img.artist').attr('src', (logo? logo : 'images/missing_logo.png'));
 					});
 					$('div.albumArtist').text(artists.artists[currentArtist].label);
@@ -1654,7 +1654,7 @@ var uiviews = {};
 				if (filterWatched && watched) { return; }
 				
 				var thumb = 'images/missing_logo.png';
-				xbmc.getLogo(movie.file, function(logo) {
+				xbmc.getLogo({path: movie.file, type: 'logo'}, function(logo) {
 					var $movie = $(
 						'<div class="movie'+movie.movieid+' logoWrapper thumbLogoWrapper">' +
 							'<div class="linkTVLogoWrapper">' + 
@@ -2007,7 +2007,7 @@ var uiviews = {};
 					if (tvshow.playcount > 0 && !filterShowWatched) { watched = true; }
 					if (filterWatched && watched) { return; }
 					var thumb = (tvshow.thumbnail? xbmc.getThumbUrl(tvshow.thumbnail) : 'images/missing_logo.png');
-					xbmc.getLogo(tvshow.file, function(logo) {
+					xbmc.getLogo({path: tvshow.file, type: 'logo'}, function(logo) {
 					var $tvshow = $('<div class="tvshow'+tvshow.tvshowid+' logoWrapper thumbLogoWrapper">' +
 							'<div class="linkTVLogoWrapper">' + 
 								'<a href="" class="season">' + mkf.lang.get('btn_seasons') + '</a>' +

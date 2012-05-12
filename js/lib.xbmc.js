@@ -305,11 +305,19 @@ var xbmc = {};
 			return location.protocol + '//' + location.host + '/' + url;
 		},
 
-		getLogo: function(filepath, callback) {
-			var path = filepath.replace(/\\/g, "\\\\").substring(0, filepath.lastIndexOf("/"));
-			path += '/logo.png';
+		getLogo: function(options, callback) {
+			var settings = {
+				path: '',
+				type: '', //logo, cdart, clearart, characterart, seasonTV, banner, poster
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 			
-			var logo = xbmc.getPrepDownload({
+			var path = settings.path.replace(/\\/g, "\\\\").substring(0, settings.path.lastIndexOf("/"));
+			path += '/' + settings.type + '.png';
+			
+			var image = xbmc.getPrepDownload({
 					path: path,
 					async: true,
 					onSuccess: function(result) {

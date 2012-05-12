@@ -1,3 +1,6 @@
+0.5.3
+ - Fixed Playlist video item changing show GUI.
+
 0.5.2
  - Added Uni UI. Consider the others depreciated.
  - Added Play and enqueue music genre.
