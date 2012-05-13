@@ -2554,14 +2554,6 @@
 			xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
 				// ALL: AUDIO, VIDEO, PICTURE
 				
-				//console.log(currentFile);
-				xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
-					//console.log((cdart == ''? 'images/blank_cdart.png' : cdart)); 
-					(cdart == ''? 'images/blank_cdart.png' : cdart)
-					//console.log(typeof(cdart));
-					thumbDiscElement.attr('src', cdart);
-				});
-				
 				if (currentFile.title) { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
 
 				if (currentFile.xbmcMediaType == 'audio') {
@@ -2601,6 +2593,22 @@
 						thumbElement.css('margin-top', '85px');
 						thumbElement.css('height', '195px');
 						thumbElement.css('width', '195px');
+							//console.log(currentFile);
+							xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
+								//console.log((cdart == ''? 'images/blank_cdart.png' : cdart)); 
+								if (cdart == '') { cdart = 'images/blank_cdart.png' };
+								console.log(cdart);
+								//thumbElement.css('margin-right','100px');
+								//#displayoverlay width: 600px;
+								//.discThumb width: 270px; height: 270px; margin-left: 20px;
+								thumbDiscElement.attr('src', cdart);
+								 var angle = 0;
+								 setInterval(function(){
+								 angle+=3;
+									 thumbDiscElement.rotate(angle);
+								 },75);
+
+							});
 					} else { //movie
 						thumbElement.css('margin-top', '0px');
 						thumbElement.css('height', '280px');
@@ -2628,6 +2636,7 @@
 						nextFile.episode &&
 						nextFile.showtitle) {
 
+						thumbDiscElement.attr('src', '');
 						tvshowElement = nextFile.showtitle;
 						seasonElement = nextFile.season;
 						episodeElement = nextFile.episode;
@@ -2645,13 +2654,19 @@
 				if (status == 'stopped') {
 					nowLabelElement.text('');
 					nowElement.text('');
+					nextElement.text('');
 					timeCurRemain.text('00:00');
 					timeCurRemainTotal.text('00:00');
 					thumbElement.css('height', '280px');
 					thumbElement.css('width', '195px');
 					thumbElement.attr('src', 'images/thumbPoster.png');
 					thumbElement.css('margin-top', '0px');
+					thumbDiscElement.attr('src', '');
 					//$footerStatusBox.find('#statusPlayer').hide();
+					$footerStatusBox.find('#statusPlayer #statusPlayerRow #paused').hide();
+					$footerStatusBox.find('#statusPlayer #statusPlayerRow #shuffled').hide();
+					$footerStatusBox.find('#statusPlayer #statusPlayerRow #repeating').hide();
+					sliderElement.slider("option", "value", "0");
 				
 				} else if (status == 'playing') {
 					$footerStatusBox.find('#statusPlayer #statusPlayerRow #paused').hide();
