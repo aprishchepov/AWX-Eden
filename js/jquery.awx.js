@@ -2615,6 +2615,7 @@
 							
 						xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
 							if (cdart == '') { cdart = 'images/blank_cdart.png' };
+							thumbDiscElement.css('margin-left','0px');
 							thumbDiscElement.attr('src', cdart);
 							thumbDiscElement.show();
 							
