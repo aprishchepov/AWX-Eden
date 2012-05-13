@@ -428,6 +428,7 @@
 			var adesc = mkf.cookieSettings.get('adesc', 'no');
 			var startPage = mkf.cookieSettings.get('startPage', 'recentTV');
 			var showTags = mkf.cookieSettings.get('showTags', 'yes');
+			var rotateCDart = mkf.cookieSettings.get('rotateCDart', 'no');
 
 			var languages = '';
 			$.each(mkf.lang.getLanguages(), function(key, val) {
@@ -475,7 +476,8 @@
 				'<legend>' + mkf.lang.get('group_expert') + '</legend>' +
 				'<a href="" class="formButton expertHelp" title="' + mkf.lang.get('btn_title_help') + '">' + mkf.lang.get('btn_text_help') + '</a>' + 
 				'<input type="checkbox" id="lazyload" name="lazyload" ' + (lazyload=='yes'? 'checked="checked"' : '') + '><label for="lazyload">' + mkf.lang.get('label_use_lazyload') + '</label>' +
-				'<input type="checkbox" id="showTags" name="showTags" ' + (showTags=='yes'? 'checked="checked"' : '') + '><label for="showTags">' + mkf.lang.get('label_showTags') + '</label><br />' +
+				'<input type="checkbox" id="showTags" name="showTags" ' + (showTags=='yes'? 'checked="checked"' : '') + '><label for="showTags">' + mkf.lang.get('label_showTags') + '</label>' +
+				'<input type="checkbox" id="rotateCDart" name="rotateCDart" ' + (rotateCDart=='yes'? 'checked="checked"' : '') + '><label for="rotateCDart">' + mkf.lang.get('label_rotateCDart') + '</label><br />' +
 				'<label for="timeout">' + mkf.lang.get('label_timeout') + '</label><input type="text" id="timeout" name="timeout" value="' + timeout + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_seconds') +
 				'</fieldset>' +
 				'</form>' +
@@ -800,7 +802,12 @@
 					'showTags',
 					document.settingsForm.showTags.checked? 'yes' : 'no'
 				);
-								
+				
+				mkf.cookieSettings.add(
+					'rotateCDart',
+					document.settingsForm.rotateCDart.checked? 'yes' : 'no'
+				);
+				
 				mkf.cookieSettings.add(
 					'usefanart',
 					document.settingsViews.usefanart.checked? 'yes' : 'no'
@@ -2516,6 +2523,8 @@
 		this.each (function() {
 			var $footerNowBox = $(this);
 			var $footerStatusBox = $('#footer #statPlayerContainer');
+			
+			var rotateCDart = mkf.cookieSettings.get('rotateCDart', 'no')=='yes'? true : false;
 
 			var content = '<div id="now_next"><div id="now">' + mkf.lang.get('label_now') + '<span class="label" /><span class="nowTitle" /></div><div id="next">' + mkf.lang.get('label_next') + '<span class="nextTitle" /></div></div>';
 			//content += '<div id="statPlayerContainer"><div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div><div id="remainPlayer"><div id="remaining">' + mkf.lang.get('label_remaining') + '<span class="timeRemain">00:00</span></div><div id="plTotal">' + mkf.lang.get('label_total') + '<span class="timeRemainTotal">00:00</span></div></div>';
@@ -2586,33 +2595,65 @@
 				if (currentFile.thumbnail) {
 					thumbElement.attr('src', xbmc.getThumbUrl(currentFile.thumbnail));
 					if (currentFile.showtitle) {
+						if ($('#displayoverlay').css('width') != '510px') { $('#displayoverlay').css('width','510px') };
 						thumbElement.css('margin-top', '165px');
 						thumbElement.css('width', '200px');
-						thumbElement.css('height', '115px');					
+						thumbElement.css('height', '115px');
+						/*xbmc.getLogo({path: currentFile.file, type: 'logo'}, function(logo) {
+							console.log(currentFile);
+							thumbDiscElement.attr('src', logo);
+							if (thumbDiscElement.css('width') != '200px') { thumbDiscElement.css('width','200px'); thumbDiscElement.css('height','78px'); };
+							thumbDiscElement.show();
+							
+						});*/
 					} else if (currentFile.xbmcMediaType == 'audio') {
+						if ($('#displayoverlay').css('width') != '510px') { $('#displayoverlay').css('width','510px') };
 						thumbElement.css('margin-top', '85px');
 						thumbElement.css('height', '195px');
 						thumbElement.css('width', '195px');
-							//console.log(currentFile);
-							xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
-								//console.log((cdart == ''? 'images/blank_cdart.png' : cdart)); 
-								if (cdart == '') { cdart = 'images/blank_cdart.png' };
-								console.log(cdart);
-								//thumbElement.css('margin-right','100px');
-								//#displayoverlay width: 600px;
-								//.discThumb width: 270px; height: 270px; margin-left: 20px;
-								thumbDiscElement.attr('src', cdart);
-								 var angle = 0;
-								 setInterval(function(){
-								 angle+=3;
-									 thumbDiscElement.rotate(angle);
-								 },75);
+						if (thumbDiscElement.css('width') != '194px') { thumbDiscElement.css('width','194px'); thumbDiscElement.css('height','194px'); };
+							
+						xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
+							if (cdart == '') { cdart = 'images/blank_cdart.png' };
+							thumbDiscElement.attr('src', cdart);
+							thumbDiscElement.show();
+							
+							if (rotateCDart) {
+								var angle = 0;
+								spingCDArt = setInterval(function(){
+								angle+=3;
+									thumbDiscElement.rotate(angle);
+								},75);
+							}
 
-							});
+						});
+							
 					} else { //movie
 						thumbElement.css('margin-top', '0px');
 						thumbElement.css('height', '280px');
-						thumbElement.css('width', '195px');						
+						thumbElement.css('width', '195px');
+						xbmc.getLogo({path: currentFile.file, type: 'disc'}, function(cdart) {
+							if (cdart != '') {
+								$('#displayoverlay').css('width','610px');
+								thumbElement.css('margin-right','100px');
+								//#displayoverlay width: 600px;
+								//.discThumb width: 270px; height: 270px; margin-left: 20px;
+								thumbDiscElement.css('width','270px');
+								thumbDiscElement.css('height','270px');
+								thumbDiscElement.css('margin-left','20px');
+								thumbDiscElement.attr('src', cdart);
+								thumbDiscElement.show();
+								
+								if (rotateCDart) {
+									var angle = 0;
+									spingCDArt = setInterval(function(){
+									angle+=3;
+										thumbDiscElement.rotate(angle);
+									},75);
+								}
+							}
+						});
+						
 					}
 
 				}

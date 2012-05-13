@@ -2544,6 +2544,12 @@ var xbmc = {};
 						$('#streamdets .vCodec').removeClass().addClass('vCodec');
 						$('#streamdets .aCodec').removeClass().addClass('aCodec');
 						$('#streamdets .vSubtitles').css('display', 'none');
+						$('#content #displayoverlay #artwork .artThumb').css('margin-right','0px');
+						$('#displayoverlay').css('width','510px');
+						$('#content #displayoverlay #artwork .discThumb').hide();
+						
+						if (typeof(spingCDArt != 'undefined')) { clearInterval(spingCDArt) };
+						
 						
 						xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
 					}
