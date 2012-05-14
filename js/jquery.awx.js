@@ -2621,7 +2621,7 @@
 							
 							if (rotateCDart) {
 								var angle = 0;
-								spingCDArt = setInterval(function(){
+								spinCDArt = setInterval(function(){
 								angle+=3;
 									thumbDiscElement.rotate(angle);
 								},75);
@@ -2647,7 +2647,7 @@
 								
 								if (rotateCDart) {
 									var angle = 0;
-									spingCDArt = setInterval(function(){
+									spinCDArt = setInterval(function(){
 									angle+=3;
 										thumbDiscElement.rotate(angle);
 									},75);
@@ -2835,7 +2835,7 @@
 			xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
 				if (status == 'stopped') {
 					hideBox($currentlyPlayingBox);
-
+					
 				} else if (status == 'playing') {
 					showBox($currentlyPlayingBox);
 					$currentlyPlayingBox.find('.statusPaused').remove();

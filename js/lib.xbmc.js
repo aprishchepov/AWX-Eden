@@ -2477,6 +2477,7 @@ var xbmc = {};
 							//need to cover slideshow
 							if (playerActive == '') {
 								activePlayer = 'none';
+								activePlayerid = -1;
 							} else {
 								activePlayer = playerActive[0].type;
 								activePlayerid = playerActive[0].playerid;
@@ -2548,7 +2549,7 @@ var xbmc = {};
 						$('#displayoverlay').css('width','510px');
 						$('#content #displayoverlay #artwork .discThumb').hide();
 						
-						if (typeof(spingCDArt != 'undefined')) { clearInterval(spingCDArt) };
+						if (typeof(spinCDArt) != 'undefined') { clearInterval(spinCDArt) };
 						
 						
 						xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
