@@ -315,7 +315,7 @@ var xbmc = {};
 			$.extend(settings, options);
 			
 			if (settings.path.startsWith('stack://')) {
-				settings.path = settings.path.replace(/\\/g, "\\\\").substring(8, settings.path.lastIndexOf(","));
+				settings.path = settings.path.replace(/\\/g, "\\\\").substring(8, settings.path.indexOf(","));
 			}
 			var path = settings.path.replace(/\\/g, "\\\\").substring(0, settings.path.lastIndexOf("/"));
 			
