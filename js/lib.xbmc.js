@@ -2947,29 +2947,6 @@ var xbmc = {};
 							} else {
 								activePlayer = playerActive[0].type;
 								activePlayerid = playerActive[0].playerid;
-								
-								// playing state					
-								/*if ( xbmc.periodicUpdater.playerStatus != 'stopped' && activePlayer == 'none') {
-									xbmc.periodicUpdater.playerStatus = 'stopped';
-									if ( $backgroundFanart != '' && useFanart ) {
-										$backgroundFanart = '';
-										if ( ui == 'default') {
-											$('#main').css('background-image', 'url("")');
-										} else if ( ui == 'uni' ) {
-											$('#background').css('background-image', 'url("")');
-										} else {
-											$('#content').css('background-image', 'url("")');
-										}
-									};
-									$('#streamdets .vFormat').removeClass().addClass('vFormat');
-									$('#streamdets .aspect').removeClass().addClass('aspect');
-									$('#streamdets .channels').removeClass().addClass('channels');
-									$('#streamdets .vCodec').removeClass().addClass('vCodec');
-									$('#streamdets .aCodec').removeClass().addClass('aCodec');
-									$('#streamdets .vSubtitles').css('display', 'none');
-									
-									xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
-								}*/
 
 								if (activePlayer != 'none') {
 									xbmc.sendCommand(
@@ -3068,7 +3045,8 @@ var xbmc = {};
 										null, null, true // IS async // not async
 									);
 								}
-									// Get current item
+								
+								// Get current item
 								if (activePlayer != 'none') {
 									var request = '';
 
