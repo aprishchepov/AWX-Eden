@@ -3428,13 +3428,6 @@ var xbmc = {};
 						console.log('paused');
 						xbmc.periodicUpdater.playerStatus = 'paused';
 						xbmc.periodicUpdater.firePlayerStatusChanged('paused');
-						/*activePlayerid = JSONRPCnotification.params.data.player.playerid;
-						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
-							activePlayer = 'video';
-						} else if (JSONRPCnotification.params.data.item.type == 'song') {
-							activePlayer = 'audio';
-						}
-						console.log(activePlayerid);*/
 					break;
 					case 'Player.OnSeek':
 						/*console.log('playing');
