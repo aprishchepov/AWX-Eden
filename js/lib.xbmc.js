@@ -3455,6 +3455,23 @@ var xbmc = {};
 							activePlayer = 'audio';
 						}
 						console.log(activePlayerid);*/
+					break;					
+					case 'Application.OnVolumeChanged':
+						console.log('vol changed');
+						if (JSONRPCnotification.params.data.volume != xbmc.periodicUpdater.lastVolume) {
+									xbmc.periodicUpdater.lastVolume = JSONRPCnotification.params.data.volume;
+										$.each(xbmc.periodicUpdater.volumeChangedListener, function(i, listener)  {
+									listener(JSONRPCnotification.params.data.volume);
+									});
+						};
+						if (JSONRPCnotification.params.data.muted != xbmc.periodicUpdater.muteStatus) {
+							xbmc.periodicUpdater.muteStatus = JSONRPCnotification.params.data.muted;
+							if (JSONRPCnotification.params.data.muted) {
+								xbmc.periodicUpdater.firePlayerStatusChanged('muteOn');
+							} else {
+								xbmc.periodicUpdater.firePlayerStatusChanged('muteOff');
+							};
+						};
 					break;
 					case 'AudioLibrary.OnUpdate':
 						/*console.log('playing');
