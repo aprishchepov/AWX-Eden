@@ -298,7 +298,7 @@ var xbmc = {};
 		},
 
 		getThumbUrl: function(url) {
-			return '/vfs/' + encodeURI(url);
+			return '/image/' + encodeURI(url);
 		},
 		
 		getUrl: function(url) {
@@ -2931,13 +2931,6 @@ var xbmc = {};
 								}*/
 
 								if (activePlayer != 'none') {
-									/*var request = '';
-
-									if (activePlayer == 'audio' || activePlayer == 'video' ) {
-										request = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }'
-
-									}*/
-
 									xbmc.sendCommand(
 										'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
 
@@ -3201,11 +3194,287 @@ var xbmc = {};
 							activePlayer = 'audio';
 						}
 						console.log(activePlayerid);
+						//Also activated on item change
+						if (activePlayer != 'none') {
+									xbmc.sendCommand(
+										'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
+
+										function (response) {
+											var currentPlayer = response.result;
+											var curtime;
+											var curruntime;
+											var curPlayItemNum = currentPlayer.position;
+											
+											//Get the number of the currently playing item in the playlist
+											if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
+												//Change highlights rather than reload playlist
+												if (activePlayer == 'audio') {
+													$("div.folderLinkWrapper a.playlistItemCur").removeClass("playlistItemCur");
+													$(".apli"+curPlayItemNum).addClass("playlistItemCur");
+													xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+													//awxUI.onMusicPlaylistShow();
+												} else if (activePlayer == 'video') {
+													$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
+													$("#vpli"+curPlayItemNum).attr("class","playlistItemCur");
+													xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+													//awxUI.onVideoPlaylistShow();
+												}
+													
+											}
+											
+											curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
+											curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
+											var curtimeFormat = xbmc.formatTime(curtime);
+											var curruntimeFormat = xbmc.formatTime(curruntime);
+											time = curtimeFormat;
+											if (xbmc.periodicUpdater.progress != time) {
+												xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
+												xbmc.periodicUpdater.progress = time;
+											}								
+											/*if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
+												// not playing
+												if (xbmc.periodicUpdater.playerStatus != 'stopped') {
+													xbmc.periodicUpdater.playerStatus = 'stopped';
+													xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
+												}
+
+											} else if (currentPlayer.speed == 0 && xbmc.periodicUpdater.playerStatus != 'paused') {
+												xbmc.periodicUpdater.playerStatus = 'paused';
+												xbmc.periodicUpdater.firePlayerStatusChanged('paused');
+
+											} else if (currentPlayer.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
+												xbmc.periodicUpdater.playerStatus = 'playing';
+												xbmc.periodicUpdater.firePlayerStatusChanged('playing');
+											}*/
+											if (JSONRPCnotification.params.data.player.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
+												xbmc.periodicUpdater.playerStatus = 'playing';
+												xbmc.periodicUpdater.firePlayerStatusChanged('playing');
+											}
+											/*//shuffle status changed?
+											shuffle = currentPlayer.shuffled;
+											if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
+												xbmc.periodicUpdater.shuffleStatus = shuffle;
+												xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
+											}
+											
+											//repeat off, one, all
+											repeat = currentPlayer.repeat;
+											if (xbmc.periodicUpdater.repeatStatus != repeat) {
+												xbmc.periodicUpdater.repeatStatus = repeat;
+												xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
+											}
+											
+											//subs enabled
+											subs = currentPlayer.subtitleenabled;
+											if (xbmc.periodicUpdater.subsenabled != subs) {
+												xbmc.periodicUpdater.subsenabled = subs;
+											}*/
+
+											//Stream info in footer bar. Uni UI only
+											if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
+												var streamdetails = {
+													aCodec: 'Unknown',
+													channels: 0,
+													aStreams: 0,
+													bitrate: 0
+												};
+				
+												if (typeof(currentPlayer.currentaudiostream) != 'undefined') {
+													streamdetails.channels = currentPlayer.currentaudiostream.channels;
+													//Set audio icon
+													streamdetails.aCodec = xbmc.getAcodec(currentPlayer.currentaudiostream.codec);
+													
+													$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+													$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+												};
+											}
+										},
+
+										null, null, true // IS async // not async
+									);
+								}
+						if (activePlayer != 'none') {
+									var request = '';
+
+									if (activePlayer == 'audio') {
+										request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
+										//requeststate = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":0,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
+
+									} else if (activePlayer == 'video') {
+										request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": 1}';
+										//requeststate = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
+									}
+								
+									// Current file changed?
+									xbmc.sendCommand(
+										request,
+
+										function (response) {
+											var currentItem = response.result.item;
+											// $('#content').css('background-image', 'url("' +  + '")')
+											if ( $backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
+												$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
+												if ( ui == 'default') {
+													$('#main').css('background-image', 'url("' + $backgroundFanart + '")');
+												} else if ( ui == 'uni' ) {
+													$('#background').css('background-image', 'url("' + $backgroundFanart + '")');
+												} else {
+													$('#content').css('background-image', 'url("' + $backgroundFanart + '")');
+												}
+											};
+											if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
+												xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
+												$.extend(currentItem, {
+													xbmcMediaType: activePlayer
+												});
+												xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
+											//};
+											//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
+												xbmc.getNextPlaylistItem({
+													'playlistid': activePlayerid,
+													'plCurPos': xbmc.periodicUpdater.curPlaylistNum,
+													onSuccess: function(nextItem) {
+														if (typeof nextItem === 'undefined') {
+															xbmc.periodicUpdater.nextPlayingFile = '';
+															xbmc.periodicUpdater.fireNextPlayingChanged('');												
+														} else {
+															
+															$.extend(nextItem, {
+																xbmcMediaType: activePlayer
+															});
+															xbmc.periodicUpdater.nextPlayingFile = nextItem.file;
+															xbmc.periodicUpdater.fireNextPlayingChanged(nextItem);
+														}
+													},
+													onError: function() {
+														xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
+													}
+												});
+
+												//Footer stream details for video
+												if (activePlayer == 'video' && ui == 'uni' && showInfoTags) {
+
+													var streamdetails = {
+														vFormat: 'SD',
+														vCodec: 'Unknown',
+														aCodec: 'Unknown',
+														channels: 0,
+														aStreams: 0,
+														hasSubs: false,
+														aLang: '',
+														aspect: 0,
+														vwidth: 0
+													};
+													
+													if (typeof(currentItem.streamdetails) != 'undefined') {
+														if (currentItem.streamdetails != null) {
+
+															if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
+															if (currentItem.streamdetails.audio) {
+																streamdetails.channels = currentItem.streamdetails.audio[0].channels;
+																streamdetails.aStreams = currentItem.streamdetails.audio.length;
+																//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
+																//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
+															};
+															streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
+															//Get video standard
+															streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
+															//Get video codec
+															streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
+															//Set audio icon
+															streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
+																
+															$('#streamdets .vFormat').addClass('vFormat' + streamdetails.vFormat);
+															$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
+															$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+															$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
+															$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+															(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
+														};
+													};
+												}
+											};
+										},
+
+										null, null, true // IS async // not async
+									);
+								}
 					break;
 					case 'Player.OnStop':
 						console.log('stop');
 						activePlayerid = -1
-						console.log(activePlayerid);
+						activePlayer = 'none';
+						
+						if ( $backgroundFanart != '' && useFanart ) {
+							$backgroundFanart = '';
+							if ( ui == 'default') {
+								$('#main').css('background-image', 'url("")');
+							} else if ( ui == 'uni' ) {
+								$('#background').css('background-image', 'url("")');
+							} else {
+								$('#content').css('background-image', 'url("")');
+							}
+						};
+						$('#streamdets .vFormat').removeClass().addClass('vFormat');
+						$('#streamdets .aspect').removeClass().addClass('aspect');
+						$('#streamdets .channels').removeClass().addClass('channels');
+						$('#streamdets .vCodec').removeClass().addClass('vCodec');
+						$('#streamdets .aCodec').removeClass().addClass('aCodec');
+						$('#streamdets .vSubtitles').css('display', 'none');
+						
+						xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
+					break;
+					case 'Player.OnPause':
+						console.log('paused');
+						xbmc.periodicUpdater.playerStatus = 'paused';
+						xbmc.periodicUpdater.firePlayerStatusChanged('paused');
+						/*activePlayerid = JSONRPCnotification.params.data.player.playerid;
+						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
+							activePlayer = 'video';
+						} else if (JSONRPCnotification.params.data.item.type == 'song') {
+							activePlayer = 'audio';
+						}
+						console.log(activePlayerid);*/
+					break;
+					case 'Player.OnSeek':
+						/*console.log('playing');
+						activePlayerid = JSONRPCnotification.params.data.player.playerid;
+						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
+							activePlayer = 'video';
+						} else if (JSONRPCnotification.params.data.item.type == 'song') {
+							activePlayer = 'audio';
+						}
+						console.log(activePlayerid);*/
+					break;
+					case 'Player.OnSpeedChanged':
+						/*console.log('playing');
+						activePlayerid = JSONRPCnotification.params.data.player.playerid;
+						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
+							activePlayer = 'video';
+						} else if (JSONRPCnotification.params.data.item.type == 'song') {
+							activePlayer = 'audio';
+						}
+						console.log(activePlayerid);*/
+					break;
+					case 'AudioLibrary.OnUpdate':
+						/*console.log('playing');
+						activePlayerid = JSONRPCnotification.params.data.player.playerid;
+						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
+							activePlayer = 'video';
+						} else if (JSONRPCnotification.params.data.item.type == 'song') {
+							activePlayer = 'audio';
+						}
+						console.log(activePlayerid);*/
+					break;
+					case 'VideoLibrary.OnUpdate':
+						/*console.log('playing');
+						activePlayerid = JSONRPCnotification.params.data.player.playerid;
+						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
+							activePlayer = 'video';
+						} else if (JSONRPCnotification.params.data.item.type == 'song') {
+							activePlayer = 'audio';
+						}
+						console.log(activePlayerid);*/
 					break;
 					}
 				};
