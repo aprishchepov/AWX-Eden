@@ -308,13 +308,17 @@ var xbmc = {};
 		getLogo: function(options, callback) {
 			var settings = {
 				path: '',
-				type: '', //logo, cdart, clearart, characterart, seasonTV, banner, poster
+				type: '', //logo, cdart, disc, clearart, characterart, seasonTV, banner, poster
 				onSuccess: null,
 				onError: null
 			};
 			$.extend(settings, options);
 			
+			if (settings.path.startsWith('stack://')) {
+				settings.path = settings.path.replace(/\\/g, "\\\\").substring(8, settings.path.indexOf(","));
+			}
 			var path = settings.path.replace(/\\/g, "\\\\").substring(0, settings.path.lastIndexOf("/"));
+
 			path += '/' + settings.type + '.png';
 			
 			var image = xbmc.getPrepDownload({
