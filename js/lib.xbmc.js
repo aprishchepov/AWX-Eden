@@ -318,6 +318,7 @@ var xbmc = {};
 				settings.path = settings.path.replace(/\\/g, "\\\\").substring(8, settings.path.indexOf(","));
 			}
 			var path = settings.path.replace(/\\/g, "\\\\").substring(0, settings.path.lastIndexOf("/"));
+
 			path += '/' + settings.type + '.png';
 			
 			var image = xbmc.getPrepDownload({
