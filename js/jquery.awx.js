@@ -2491,16 +2491,16 @@
 					async: false
 				});
 
-
+				var manualMediaDir = '/mnt/media/music/'
 				// TODO support Windows/OSX-Folders
 				// /media - Folder may exist (access to usb-sticks etc.)
 				xbmc.getDirectory({
-					directory: '/media',
-					//directory: '/mnt/media/music/',
+					//directory: '/media',
+					directory: manualMediaDir,
 
 					onSuccess: function(result) {
-						var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><a href="" class="fileMedia"> /media</a></li>').appendTo($filelist);
-						$file.bind('click', {folder: {name:'media', path:'/media/'}}, onFolderClick);
+						var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><a href="" class="fileMedia">' + manualMediaDir + '</a></li>').appendTo($filelist);
+						$file.bind('click', {folder: {name:manualMediaDir, path:manualMediaDir}}, onFolderClick);
 					},
 
 					async: false
