@@ -1968,7 +1968,7 @@ var xbmc = {};
 			//settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovieSetDetails", "params": {"setid": ' + settings.setid + ', "properties": [ "fanart", "playcount", "thumbnail"], "movies": { "properties": [ "rating", "thumbnail", "playcount" ], "sort": { "order": "ascending", "method": "sorttitle" }} },"id": 1 } },"id": 1 }',
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovieSetDetails", "params": {"setid": ' + settings.setid + ', "properties": [ "fanart", "playcount", "thumbnail" ], "movies": { "properties": [ "rating", "thumbnail", "playcount", "file" ], "sort": { "order": "ascending", "method": "sorttitle" }} },"id": 1 } },"id": 1 }',
 				function(response) {
 						settings.onSuccess(response.result);
 				},
