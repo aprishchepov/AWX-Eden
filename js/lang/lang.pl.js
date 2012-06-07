@@ -125,6 +125,8 @@ mkf.lang.add({language: 'Polski', short: 'pl', author: 'cienislaw', values: {
 	'message_failed_add_files_to_playlist':	'Nie udało się dodać niektórych plików do kolejki!',
 	'message_failed_add_episode_to_playlist':	'Nie udało się dodać odcinka do kolejki!',
 	'message_music_scan':				'Rozpoczęto aktualizację biblioteki muzyki',
+	'message_music_scan_fin':			'Finished Music Library Scan',
+	'message_video_scan_fin':			'Finished Video Library Scan',
 	'message_music_clean':				'Rozpoczęto czyszczenie biblioteki muzyki',
 	'message_music_export':				'Rozpoczęto eksport biblioteki muzyki',
 	'message_video_scan':				'Rozpoczęto aktualizację biblioteki wideo',

@@ -125,6 +125,8 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'message_failed_add_files_to_playlist':	'Fehler beim Hinzuf%FCgen von Dateien zur Playlist!',
 	'message_failed_add_episode_to_playlist':	'Fehler beim Hinzuf%FCgen der Episode zur Playlist!',
 	'message_music_scan':				'Started Music Library Scan',
+	'message_music_scan_fin':			'Finished Music Library Scan',
+	'message_video_scan_fin':			'Finished Video Library Scan',
 	'message_music_clean':				'Started Music Library Clean',
 	'message_music_export':				'Started Music Library Export',
 	'message_video_scan':				'Started Video Library Scan',

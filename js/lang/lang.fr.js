@@ -125,6 +125,8 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'message_failed_add_files_to_playlist':	'Impossible d\'ajouter certains fichiers à la Liste de Lecture !',
 	'message_failed_add_episode_to_playlist':	'Impossible d\'ajouter l\'Episode à la Liste de Lecture !',
 	'message_music_scan':				'Started Music Library Scan',
+	'message_music_scan_fin':			'Finished Music Library Scan',
+	'message_video_scan_fin':			'Finished Video Library Scan',
 	'message_music_clean':				'Started Music Library Clean',
 	'message_music_export':				'Started Music Library Export',
 	'message_video_scan':				'Started Video Library Scan',

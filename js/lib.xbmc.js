@@ -2926,10 +2926,11 @@ var xbmc = {};
 				
 				var wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
 				//console.log(wsConn);
-				var ws = new WebSocket(wsConn);
+				ws = new WebSocket(wsConn);
 				//console.log(ws);
 				ws.onopen = function (e) {
 					console.log('socket open');
+					
 					if (typeof activePlayer === 'undefined') { activePlayer = 'none'; }
 					if (typeof activePlayerid === 'undefined') { activePlayerid = -1; }
 					if (typeof inErrorState === 'undefined') { inErrorState = 0; }
@@ -3200,7 +3201,7 @@ var xbmc = {};
 					console.log(err);
 				};
 				ws.onmessage = function (e) {
-					console.log(e.data);
+					//console.log(e.data);
 					var JSONRPCnotification = jQuery.parseJSON(e.data);
 					console.log(JSONRPCnotification);
 					switch (JSONRPCnotification.method) {
@@ -3485,7 +3486,8 @@ var xbmc = {};
 							};
 						};
 					break;
-					case 'AudioLibrary.OnUpdate':
+					case 'AudioLibrary.OnScanFinished':
+						mkf.messageLog.show(mkf.lang.get('message_music_scan_fin'), mkf.messageLog.status.success, 3000);
 						/*console.log('playing');
 						activePlayerid = JSONRPCnotification.params.data.player.playerid;
 						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
@@ -3495,7 +3497,8 @@ var xbmc = {};
 						}
 						console.log(activePlayerid);*/
 					break;
-					case 'VideoLibrary.OnUpdate':
+					case 'VideoLibrary.OnScanFinished':
+						mkf.messageLog.show(mkf.lang.get('message_video_scan_fin'), mkf.messageLog.status.success, 3000);
 						/*console.log('playing');
 						activePlayerid = JSONRPCnotification.params.data.player.playerid;
 						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {

@@ -1594,7 +1594,7 @@
 				},
 
 				onSuccess: function() {
-					mkf.messageLog.show(mkf.lang.get('message_video_scan'), mkf.messageLog.status.success, 5000);
+					mkf.messageLog.show(mkf.lang.get('message_video_scan'), mkf.messageLog.status.success, 3000);
 				}
 			});
 		};
@@ -1606,7 +1606,7 @@
 				},
 
 				onSuccess: function() {
-					mkf.messageLog.show(mkf.lang.get('message_video_clean'), mkf.messageLog.status.success, 5000);
+					mkf.messageLog.show(mkf.lang.get('message_video_clean'), mkf.messageLog.status.success, 3000);
 				}
 			});
 		};
@@ -1618,7 +1618,7 @@
 				},
 
 				onSuccess: function() {
-					mkf.messageLog.show(mkf.lang.get('message_video_export'), mkf.messageLog.status.success, 5000);
+					mkf.messageLog.show(mkf.lang.get('message_video_export'), mkf.messageLog.status.success, 3000);
 				}
 			});
 		};
@@ -1645,7 +1645,7 @@
 				},
 
 				onSuccess: function() {
-					mkf.messageLog.show(mkf.lang.get('message_music_scan'), mkf.messageLog.status.success, 5000);
+					mkf.messageLog.show(mkf.lang.get('message_music_scan'), mkf.messageLog.status.success, 3000);
 				}
 			});
 		};
@@ -1657,7 +1657,7 @@
 				},
 
 				onSuccess: function() {
-					mkf.messageLog.show(mkf.lang.get('message_music_clean'), mkf.messageLog.status.success, 5000);
+					mkf.messageLog.show(mkf.lang.get('message_music_clean'), mkf.messageLog.status.success, 3000);
 				}
 			});
 		};
@@ -1669,7 +1669,7 @@
 				},
 
 				onSuccess: function() {
-					mkf.messageLog.show(mkf.lang.get('message_music_export'), mkf.messageLog.status.success, 5000);
+					mkf.messageLog.show(mkf.lang.get('message_music_export'), mkf.messageLog.status.success, 3000);
 				}
 			});
 		};

@@ -125,6 +125,8 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'message_failed_add_files_to_playlist':	'一些文件加入播放列表失败！',
 	'message_failed_add_episode_to_playlist':	'分集加入播放列表失败！',
 	'message_music_scan':				'开始音乐资料库扫描',
+	'message_music_scan_fin':			'Finished Music Library Scan',
+	'message_video_scan_fin':			'Finished Video Library Scan',
 	'message_music_clean':				'开始音乐资料库清理',
 	'message_music_export':				'开始音乐资料库导出',
 	'message_video_scan':				'开始视频资料库扫描',

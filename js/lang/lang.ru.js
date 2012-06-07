@@ -125,6 +125,8 @@ mkf.lang.add({language: 'Russian', short: 'ru', author: 'Scaramush', values: {
 	'message_failed_add_files_to_playlist':		'Не удалось добавить несколько файлов в плейлист!',
 	'message_failed_add_episode_to_playlist':	'Не удалось добавить серию в плелист!',
 	'message_music_scan':				'Начато сканирование музыкальной библиотеки',
+	'message_music_scan_fin':			'Finished Music Library Scan',
+	'message_video_scan_fin':			'Finished Video Library Scan',
 	'message_music_clean':				'Начата очистка музыкальной библиотеки',
 	'message_music_export':				'Начат экспорт музыкальнй библиотеки',
 	'message_video_scan':				'Начато сканирование видеотеки',
