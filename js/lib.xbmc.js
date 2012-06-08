@@ -217,6 +217,8 @@ var xbmc = {};
 					return '.thumbWrapper';
 				} else if (mkf.cookieSettings.get('filmView') == 'listover') {
 					return '.folderLinkWrapper';
+				} else if (mkf.cookieSettings.get('filmView') == 'logo') {
+					return '.logoWrapper';
 				} else {
 					return 'a';
 				}
