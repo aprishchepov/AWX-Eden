@@ -2754,7 +2754,7 @@
 				//durationElement.text(progress.total);
 				sliderElement.slider("option", "value", 100 * xbmc.getSeconds(progress.time) / xbmc.getSeconds(progress.total));
 			});
-
+		
 		});
 	}; // END uniFooterStatus
 	

@@ -2862,6 +2862,121 @@ var xbmc = {};
 		} // END xbmc.periodicUpdater
 	}); // END xbmc
 	
+	//Not sure on what to do about keeping time yet
+	//Because of broken notifications poll for those too.
+	$.extend(xbmc, {
+		pollTime: function() {
+						/*var request = '';
+
+						if (activePlayer == 'audio' || activePlayer == 'video' ) {
+							request = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }'
+
+						}/* else if (activePlayer == 'video') {
+							request = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["speed", "shuffled", "repeat"] } }'
+						}*/
+						xbmc.sendCommand(
+							//request,
+							'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
+
+							function (response) {
+								var currentPlayer = response.result;
+								//var currentTimes = response.result;
+								var curtime;
+								var curruntime;
+								var curPlayItemNum = currentPlayer.position;
+								
+								//Get the number of the currently playing item in the playlist
+								if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
+									//Change highlights rather than reload playlist
+									if (activePlayer == 'audio') {
+										$("div.folderLinkWrapper a.playlistItemCur").removeClass("playlistItemCur");
+										$(".apli"+curPlayItemNum).addClass("playlistItemCur");
+										xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+										//awxUI.onMusicPlaylistShow();
+									} else if (activePlayer == 'video') {
+										$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
+										$("#vpli"+curPlayItemNum).attr("class","playlistItemCur");
+										xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+										//awxUI.onVideoPlaylistShow();
+									}
+										
+								}
+								
+								curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
+								curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
+								var curtimeFormat = xbmc.formatTime(curtime);
+								var curruntimeFormat = xbmc.formatTime(curruntime);
+								time = curtimeFormat;
+								
+								if (xbmc.periodicUpdater.progress != time) {
+									xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
+									xbmc.periodicUpdater.progress = time;
+								}								
+								if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
+									// not playing
+									if (xbmc.periodicUpdater.playerStatus != 'stopped') {
+										xbmc.periodicUpdater.playerStatus = 'stopped';
+										xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
+									}
+
+								} else if (currentPlayer.speed == 0 && xbmc.periodicUpdater.playerStatus != 'paused') {
+									xbmc.periodicUpdater.playerStatus = 'paused';
+									xbmc.periodicUpdater.firePlayerStatusChanged('paused');
+
+								} else if (currentPlayer.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
+									xbmc.periodicUpdater.playerStatus = 'playing';
+									xbmc.periodicUpdater.firePlayerStatusChanged('playing');
+								}
+								
+								//shuffle status changed?
+								shuffle = currentPlayer.shuffled;
+								if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
+									xbmc.periodicUpdater.shuffleStatus = shuffle;
+									xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
+								}
+								
+								//repeat off, one, all
+								repeat = currentPlayer.repeat;
+								if (xbmc.periodicUpdater.repeatStatus != repeat) {
+									xbmc.periodicUpdater.repeatStatus = repeat;
+									xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
+								}
+								
+								//subs enabled
+								subs = currentPlayer.subtitleenabled;
+								if (xbmc.periodicUpdater.subsenabled != subs) {
+									xbmc.periodicUpdater.subsenabled = subs;
+								}
+
+								//Stream info in footer bar. Uni UI only
+								/*if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
+									var streamdetails = {
+										aCodec: 'Unknown',
+										channels: 0,
+										aStreams: 0,
+										bitrate: 0
+									};
+	
+									if (typeof(currentPlayer.currentaudiostream) != 'undefined') {
+										streamdetails.channels = currentPlayer.currentaudiostream.channels;
+										//Set audio icon
+										streamdetails.aCodec = xbmc.getAcodec(currentPlayer.currentaudiostream.codec);
+										
+										$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+										$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+									};
+								}*/
+							},
+
+							null, null, true // IS async // not async
+						);
+			},//, 1000)
+			
+		pollTimeStart: function() {
+			pollTimeRunning = setInterval('xbmc.pollTime()', 2000);
+		}
+		
+	});
 	//Web socket
 	$.extend(xbmc, {		
 		//Use websocket for listening
@@ -2919,6 +3034,9 @@ var xbmc = {};
 				if (typeof xbmc.periodicUpdater.subsenabled === 'undefined') {
 					xbmc.periodicUpdater.subsenabled = false;
 				}
+				if (typeof pollTimeRunning === 'undefined') {
+					pollTimeRunning = false;
+				}
 				
 				var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
 				var showInfoTags = mkf.cookieSettings.get('showTags', 'no')=='yes'? true : false;
@@ -2948,6 +3066,8 @@ var xbmc = {};
 							} else {
 								activePlayer = playerActive[0].type;
 								activePlayerid = playerActive[0].playerid;
+								//Start pollTime
+								xbmc.pollTimeStart();
 
 								if (activePlayer != 'none') {
 									xbmc.sendCommand(
@@ -3213,6 +3333,8 @@ var xbmc = {};
 						} else if (JSONRPCnotification.params.data.item.type == 'song') {
 							activePlayer = 'audio';
 						}
+						if (pollTimeRunning === false) { xbmc.pollTimeStart() };
+						
 						console.log(activePlayerid);
 						//Also activated on item change
 						if (activePlayer != 'none') {
@@ -3422,6 +3544,8 @@ var xbmc = {};
 					break;
 					case 'Player.OnStop':
 						console.log('stop');
+						clearInterval(pollTimeRunning);
+						pollTimeRunning = false;
 						activePlayerid = -1
 						activePlayer = 'none';
 						
