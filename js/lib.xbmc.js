@@ -2390,90 +2390,23 @@ var xbmc = {};
 			},
 
 			start: function() {
-				if ("WebSocket" in window) {
-					xbmc.wsListener();
-					console.log('Using websocket');
-				} else {
-					console.log('Defaulting to polling');
-					setTimeout($.proxy(this, "periodicStep"), 20);
-				};
-			},
-			
-			/*wsListener: function() {
-								
-					var wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
-					//console.log(wsConn);
-					var ws = new WebSocket(wsConn);
-					//console.log(ws);
-					ws.onopen = function (e) {
-						console.log('socket open');
-						if (typeof activePlayer === 'undefined') { activePlayer = 'none'; }
-						if (typeof activePlayerid === 'undefined') { activePlayerid = -1; }
-						if (typeof inErrorState === 'undefined') { inErrorState = 0; }
+				console.log(this);
+					xbmc.sendCommand(
+						'{"jsonrpc": "2.0", "method": "JSONRPC.Version",  "id": 1}',
 
-						xbmc.sendCommand(
-							//'{"jsonrpc": "2.0", "method": "XBMC.GetInfoLabels", "params" : {"labels": ["MusicPlayer.Title", "MusicPlayer.Album", "MusicPlayer.Artist", "Player.Time", "Player.Duration", "Player.Volume", "Playlist.Random", "VideoPlayer.Title", "VideoPlayer.TVShowTitle", "Player.Filenameandpath"]}, "id": 1}',
-							'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
-
-							function (response) {
-								var playerActive = response.result;
-								if (inErrorState != 0) { inErrorState = 0; };
-								//need to cover slideshow
-								if (playerActive == '') {
-									activePlayer = 'none';
-								} else {
-									activePlayer = playerActive[0].type;
-									activePlayerid = playerActive[0].playerid;
+						function (response) {
+							if (response.result.version >= 5) {
+								if ("WebSocket" in window) {
+									xbmc.wsListener();
+									console.log('Using websocket');
 								}
-							},
-							
-							function(response) {
-								activePlayer = 'none'; // ERROR
-								inErrorState ++;
-								if (inErrorState == 5) {
-									$('body').empty();
-									mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
-									xbmc.setHasQuit();
-								};
-							},
-
-							null, true // IS async // not async
-						);
-						//ws.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": {"properties" : ["thumbnail"]}, "id": 1}');
-					};
-					ws.onerror = function (err) {
-						console.log(err);
-					};
-					ws.onmessage = function (e) {
-						//console.log(e.data);
-						var JSONRPCnotification = jQuery.parseJSON(e.data);
-						console.log(JSONRPCnotification);
-						switch (JSONRPCnotification.method) {
-						case 'Player.OnPlay':
-							console.log('playing');
-							activePlayerid = JSONRPCnotification.params.data.player.playerid;
-							if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
-								activePlayer = 'video';
-							} else if (JSONRPCnotification.params.data.item.type == 'song') {
-								activePlayer = 'audio';
+							} else {
+								setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
+								console.log('No websocket support');
 							}
-							console.log(activePlayerid);
-						break;
-						case 'Player.OnStop':
-							console.log('stop');
-							activePlayerid = -1
-							console.log(activePlayerid);
-						break;
 						}
-					};
-					ws.onclose = function (e) {
-						console.log('socket closed - assume crash/quit');
-						$('body').empty();
-						mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
-						xbmc.setHasQuit();
-					};
-
-			},*/
+					);
+			},
 		
 			periodicStep: function() {
 				
