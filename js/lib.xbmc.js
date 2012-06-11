@@ -1890,6 +1890,8 @@ var xbmc = {};
 			var settings = {
 				sortby: 'label',
 				order: 'ascending',
+				start: 0,
+				end: 999999,
 				onSuccess: null,
 				onError: null
 			};
@@ -2390,7 +2392,6 @@ var xbmc = {};
 			},
 
 			start: function() {
-				console.log(this);
 					xbmc.sendCommand(
 						'{"jsonrpc": "2.0", "method": "JSONRPC.Version",  "id": 1}',
 
@@ -2398,7 +2399,7 @@ var xbmc = {};
 							if (response.result.version >= 5) {
 								if ("WebSocket" in window) {
 									xbmc.wsListener();
-									console.log('Using websocket');
+									console.log('Trying websocket');
 								}
 							} else {
 								setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
@@ -2880,25 +2881,6 @@ var xbmc = {};
 								if (xbmc.periodicUpdater.subsenabled != subs) {
 									xbmc.periodicUpdater.subsenabled = subs;
 								}
-
-								//Stream info in footer bar. Uni UI only
-								/*if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
-									var streamdetails = {
-										aCodec: 'Unknown',
-										channels: 0,
-										aStreams: 0,
-										bitrate: 0
-									};
-	
-									if (typeof(currentPlayer.currentaudiostream) != 'undefined') {
-										streamdetails.channels = currentPlayer.currentaudiostream.channels;
-										//Set audio icon
-										streamdetails.aCodec = xbmc.getAcodec(currentPlayer.currentaudiostream.codec);
-										
-										$('#streamdets .channels').addClass('channels' + streamdetails.channels);
-										$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
-									};
-								}*/
 							},
 
 							null, null, true // IS async // not async
@@ -2975,7 +2957,7 @@ var xbmc = {};
 				var showInfoTags = mkf.cookieSettings.get('showTags', 'no')=='yes'? true : false;
 				var ui = mkf.cookieSettings.get('ui');
 				
-				var wsConn = 'ws://' + location.hostname + ':9090/jsonrpc';
+				var wsConn = 'ws://' + location.hostname + ':9090/jsonrpc?awxi';
 				//console.log(wsConn);
 				ws = new WebSocket(wsConn);
 				//console.log(ws);
@@ -2986,269 +2968,272 @@ var xbmc = {};
 					if (typeof activePlayerid === 'undefined') { activePlayerid = -1; }
 					if (typeof inErrorState === 'undefined') { inErrorState = 0; }
 
-					//Initial status readings, after rely on notifications.
-					xbmc.sendCommand(
-						//'{"jsonrpc": "2.0", "method": "XBMC.GetInfoLabels", "params" : {"labels": ["MusicPlayer.Title", "MusicPlayer.Album", "MusicPlayer.Artist", "Player.Time", "Player.Duration", "Player.Volume", "Playlist.Random", "VideoPlayer.Title", "VideoPlayer.TVShowTitle", "Player.Filenameandpath"]}, "id": 1}',
-						'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
+					//Wait for window to draw - FF mostly.
+					setTimeout(function() {
+							//Initial status readings, after rely on notifications.
+							xbmc.sendCommand(
+								//'{"jsonrpc": "2.0", "method": "XBMC.GetInfoLabels", "params" : {"labels": ["MusicPlayer.Title", "MusicPlayer.Album", "MusicPlayer.Artist", "Player.Time", "Player.Duration", "Player.Volume", "Playlist.Random", "VideoPlayer.Title", "VideoPlayer.TVShowTitle", "Player.Filenameandpath"]}, "id": 1}',
+								'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
 
-						function (response) {
-							var playerActive = response.result;
-							//need to cover slideshow
-							if (playerActive == '') {
-								activePlayer = 'none';
-							} else {
-								activePlayer = playerActive[0].type;
-								activePlayerid = playerActive[0].playerid;
-								//Start pollTime
-								xbmc.pollTimeStart();
+								function (response) {
+									var playerActive = response.result;
+									//need to cover slideshow
+									if (playerActive == '') {
+										activePlayer = 'none';
+									} else {
+										activePlayer = playerActive[0].type;
+										activePlayerid = playerActive[0].playerid;
+										//Start pollTime
+										xbmc.pollTimeStart();
 
-								if (activePlayer != 'none') {
-									xbmc.sendCommand(
-										'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
+										if (activePlayer != 'none') {
+											xbmc.sendCommand(
+												'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
 
-										function (response) {
-											var currentPlayer = response.result;
-											//var currentTimes = response.result;
-											var curtime;
-											var curruntime;
-											var curPlayItemNum = currentPlayer.position;
-											
-											//Get the number of the currently playing item in the playlist
-											if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
-												//Change highlights rather than reload playlist
-												if (activePlayer == 'audio') {
-													$("div.folderLinkWrapper a.playlistItemCur").removeClass("playlistItemCur");
-													$(".apli"+curPlayItemNum).addClass("playlistItemCur");
-													xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-													//awxUI.onMusicPlaylistShow();
-												} else if (activePlayer == 'video') {
-													$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
-													$("#vpli"+curPlayItemNum).attr("class","playlistItemCur");
-													xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-													//awxUI.onVideoPlaylistShow();
-												}
+												function (response) {
+													var currentPlayer = response.result;
+													//console.log(currentPlayer);
+													//var currentTimes = response.result;
+													var curtime;
+													var curruntime;
+													var curPlayItemNum = currentPlayer.position;
 													
-											}
-											
-											curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
-											curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
-											var curtimeFormat = xbmc.formatTime(curtime);
-											var curruntimeFormat = xbmc.formatTime(curruntime);
-											time = curtimeFormat;
-											
-											if (xbmc.periodicUpdater.progress != time) {
-												xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
-												xbmc.periodicUpdater.progress = time;
-											}								
-											if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
-												// not playing
-												if (xbmc.periodicUpdater.playerStatus != 'stopped') {
-													xbmc.periodicUpdater.playerStatus = 'stopped';
-													xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
-												}
-
-											} else if (currentPlayer.speed == 0 && xbmc.periodicUpdater.playerStatus != 'paused') {
-												xbmc.periodicUpdater.playerStatus = 'paused';
-												xbmc.periodicUpdater.firePlayerStatusChanged('paused');
-
-											} else if (currentPlayer.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
-												xbmc.periodicUpdater.playerStatus = 'playing';
-												xbmc.periodicUpdater.firePlayerStatusChanged('playing');
-											}
-											
-											//shuffle status changed?
-											shuffle = currentPlayer.shuffled;
-											if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
-												xbmc.periodicUpdater.shuffleStatus = shuffle;
-												xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
-											}
-											
-											//repeat off, one, all
-											repeat = currentPlayer.repeat;
-											if (xbmc.periodicUpdater.repeatStatus != repeat) {
-												xbmc.periodicUpdater.repeatStatus = repeat;
-												xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
-											}
-											
-											//subs enabled
-											subs = currentPlayer.subtitleenabled;
-											if (xbmc.periodicUpdater.subsenabled != subs) {
-												xbmc.periodicUpdater.subsenabled = subs;
-											}
-
-											//Stream info in footer bar. Uni UI only
-											if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
-												var streamdetails = {
-													aCodec: 'Unknown',
-													channels: 0,
-													aStreams: 0,
-													bitrate: 0
-												};
-				
-												if (typeof(currentPlayer.currentaudiostream) != 'undefined') {
-													streamdetails.channels = currentPlayer.currentaudiostream.channels;
-													//Set audio icon
-													streamdetails.aCodec = xbmc.getAcodec(currentPlayer.currentaudiostream.codec);
-													
-													$('#streamdets .channels').addClass('channels' + streamdetails.channels);
-													$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
-												};
-											}
-										},
-
-										null, null, true // IS async // not async
-									);
-								}
-								
-								// Get current item
-								if (activePlayer != 'none') {
-									var request = '';
-
-									if (activePlayer == 'audio') {
-										request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
-										//requeststate = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":0,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
-
-									} else if (activePlayer == 'video') {
-										request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": 1}';
-										//requeststate = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
-									}
-								
-									// Current file changed?
-									xbmc.sendCommand(
-										request,
-
-										function (response) {
-											var currentItem = response.result.item;
-											// $('#content').css('background-image', 'url("' +  + '")')
-											if ( $backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
-												$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-												if ( ui == 'default') {
-													$('#main').css('background-image', 'url("' + $backgroundFanart + '")');
-												} else if ( ui == 'uni' ) {
-													$('#background').css('background-image', 'url("' + $backgroundFanart + '")');
-												} else {
-													$('#content').css('background-image', 'url("' + $backgroundFanart + '")');
-												}
-											};
-											if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
-												xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
-												$.extend(currentItem, {
-													xbmcMediaType: activePlayer
-												});
-												xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
-											//};
-											//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
-												xbmc.getNextPlaylistItem({
-													'playlistid': activePlayerid,
-													'plCurPos': xbmc.periodicUpdater.curPlaylistNum,
-													onSuccess: function(nextItem) {
-														if (typeof nextItem === 'undefined') {
-															xbmc.periodicUpdater.nextPlayingFile = '';
-															xbmc.periodicUpdater.fireNextPlayingChanged('');												
-														} else {
-															
-															$.extend(nextItem, {
-																xbmcMediaType: activePlayer
-															});
-															xbmc.periodicUpdater.nextPlayingFile = nextItem.file;
-															xbmc.periodicUpdater.fireNextPlayingChanged(nextItem);
+													//Get the number of the currently playing item in the playlist
+													if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
+														//Change highlights rather than reload playlist
+														if (activePlayer == 'audio') {
+															$("div.folderLinkWrapper a.playlistItemCur").removeClass("playlistItemCur");
+															$(".apli"+curPlayItemNum).addClass("playlistItemCur");
+															xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+															//awxUI.onMusicPlaylistShow();
+														} else if (activePlayer == 'video') {
+															$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
+															$("#vpli"+curPlayItemNum).attr("class","playlistItemCur");
+															xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+															//awxUI.onVideoPlaylistShow();
 														}
-													},
-													onError: function() {
-														xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
+															
 													}
-												});
-
-												//Footer stream details for video
-												if (activePlayer == 'video' && ui == 'uni' && showInfoTags) {
-
-													var streamdetails = {
-														vFormat: 'SD',
-														vCodec: 'Unknown',
-														aCodec: 'Unknown',
-														channels: 0,
-														aStreams: 0,
-														hasSubs: false,
-														aLang: '',
-														aspect: 0,
-														vwidth: 0
-													};
 													
-													if (typeof(currentItem.streamdetails) != 'undefined') {
-														if (currentItem.streamdetails != null) {
+													curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
+													curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
+													var curtimeFormat = xbmc.formatTime(curtime);
+													var curruntimeFormat = xbmc.formatTime(curruntime);
+													time = curtimeFormat;
+													
+													if (xbmc.periodicUpdater.progress != time) {
+														xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
+														xbmc.periodicUpdater.progress = time;
+													}								
+													if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
+														// not playing
+														if (xbmc.periodicUpdater.playerStatus != 'stopped') {
+															xbmc.periodicUpdater.playerStatus = 'stopped';
+															xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
+														}
 
-															if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
-															if (currentItem.streamdetails.audio) {
-																streamdetails.channels = currentItem.streamdetails.audio[0].channels;
-																streamdetails.aStreams = currentItem.streamdetails.audio.length;
-																//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
-																//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
-															};
-															streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
-															//Get video standard
-															streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
-															//Get video codec
-															streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
-															//Set audio icon
-															streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
-																
-															$('#streamdets .vFormat').addClass('vFormat' + streamdetails.vFormat);
-															$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
-															$('#streamdets .channels').addClass('channels' + streamdetails.channels);
-															$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
-															$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
-															(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
+													} else if (currentPlayer.speed == 0 && xbmc.periodicUpdater.playerStatus != 'paused') {
+														xbmc.periodicUpdater.playerStatus = 'paused';
+														xbmc.periodicUpdater.firePlayerStatusChanged('paused');
+
+													} else if (currentPlayer.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
+														xbmc.periodicUpdater.playerStatus = 'playing';
+														xbmc.periodicUpdater.firePlayerStatusChanged('playing');
+													}
+													
+													//shuffle status changed?
+													shuffle = currentPlayer.shuffled;
+													if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
+														xbmc.periodicUpdater.shuffleStatus = shuffle;
+														xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
+													}
+													
+													//repeat off, one, all
+													repeat = currentPlayer.repeat;
+													if (xbmc.periodicUpdater.repeatStatus != repeat) {
+														xbmc.periodicUpdater.repeatStatus = repeat;
+														xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
+													}
+													
+													//subs enabled
+													subs = currentPlayer.subtitleenabled;
+													if (xbmc.periodicUpdater.subsenabled != subs) {
+														xbmc.periodicUpdater.subsenabled = subs;
+													}
+
+													//Stream info in footer bar. Uni UI only
+													if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
+														var streamdetails = {
+															aCodec: 'Unknown',
+															channels: 0,
+															aStreams: 0,
+															bitrate: 0
 														};
-													};
-												}
-											};
-										},
-
-										null, null, true // IS async // not async
-									);
-								}
-
-							}
-						},
 						
-						function(response) {
-							activePlayer = 'none'; // ERROR
-							inErrorState ++;
-							if (inErrorState == 5) {
-								$('body').empty();
-								mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
-								xbmc.setHasQuit();
-							};
-						},
+														if (typeof(currentPlayer.currentaudiostream) != 'undefined') {
+															streamdetails.channels = currentPlayer.currentaudiostream.channels;
+															//Set audio icon
+															streamdetails.aCodec = xbmc.getAcodec(currentPlayer.currentaudiostream.codec);
+															
+															$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+															$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+														};
+													}
+												},
 
-						null, true // IS async // not async
-					);
-					
-					xbmc.sendCommand(
-						'{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume", "muted" ] }, "id": 1}',
+												null, null, true // IS async // not async
+											);
+										}
+										
+										// Get current item
+										if (activePlayer != 'none') {
+											var request = '';
 
-						function (response) {
-							var volume = response.result.volume;
-							var muted = response.result.muted;
-							if (volume != xbmc.periodicUpdater.lastVolume) {
-								xbmc.periodicUpdater.lastVolume = volume;
-									$.each(xbmc.periodicUpdater.volumeChangedListener, function(i, listener)  {
-										listener(volume);
-								});
-							};
-							if (muted != xbmc.periodicUpdater.muteStatus) {
-								xbmc.periodicUpdater.muteStatus = muted;
-								if (muted) {
-									xbmc.periodicUpdater.firePlayerStatusChanged('muteOn');
-								} else {
-									xbmc.periodicUpdater.firePlayerStatusChanged('muteOff');
-								};
-							};
-						},
+											if (activePlayer == 'audio') {
+												request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
+												//requeststate = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":0,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
 
-						null, true // IS async // not async
-					);
-					
+											} else if (activePlayer == 'video') {
+												request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": 1}';
+												//requeststate = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
+											}
+										
+											// Current file changed?
+											xbmc.sendCommand(
+												request,
+
+												function (response) {
+													var currentItem = response.result.item;
+													if ( $backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
+														$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
+														if ( ui == 'default') {
+															$('#main').css('background-image', 'url("' + $backgroundFanart + '")');
+														} else if ( ui == 'uni' ) {
+															$('#background').css('background-image', 'url("' + $backgroundFanart + '")');
+														} else {
+															$('#content').css('background-image', 'url("' + $backgroundFanart + '")');
+														}
+													};
+													if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
+														xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
+														$.extend(currentItem, {
+															xbmcMediaType: activePlayer
+														});
+														xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
+													//};
+													//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
+														xbmc.getNextPlaylistItem({
+															'playlistid': activePlayerid,
+															'plCurPos': xbmc.periodicUpdater.curPlaylistNum,
+															onSuccess: function(nextItem) {
+																if (typeof nextItem === 'undefined') {
+																	xbmc.periodicUpdater.nextPlayingFile = '';
+																	xbmc.periodicUpdater.fireNextPlayingChanged('');												
+																} else {
+																	
+																	$.extend(nextItem, {
+																		xbmcMediaType: activePlayer
+																	});
+																	xbmc.periodicUpdater.nextPlayingFile = nextItem.file;
+																	xbmc.periodicUpdater.fireNextPlayingChanged(nextItem);
+																}
+															},
+															onError: function() {
+																xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
+															}
+														});
+
+														//Footer stream details for video
+														if (activePlayer == 'video' && ui == 'uni' && showInfoTags) {
+
+															var streamdetails = {
+																vFormat: 'SD',
+																vCodec: 'Unknown',
+																aCodec: 'Unknown',
+																channels: 0,
+																aStreams: 0,
+																hasSubs: false,
+																aLang: '',
+																aspect: 0,
+																vwidth: 0
+															};
+															
+															if (typeof(currentItem.streamdetails) != 'undefined') {
+																if (currentItem.streamdetails != null) {
+
+																	if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
+																	if (currentItem.streamdetails.audio) {
+																		streamdetails.channels = currentItem.streamdetails.audio[0].channels;
+																		streamdetails.aStreams = currentItem.streamdetails.audio.length;
+																		//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
+																		//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
+																	};
+																	streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
+																	//Get video standard
+																	streamdetails.vFormat = xbmc.getvFormat(currentItem.streamdetails.video[0].width);
+																	//Get video codec
+																	streamdetails.vCodec = xbmc.getVcodec(currentItem.streamdetails.video[0].codec);
+																	//Set audio icon
+																	streamdetails.aCodec = xbmc.getAcodec(currentItem.streamdetails.audio[0].codec);
+																		
+																	$('#streamdets .vFormat').addClass('vFormat' + streamdetails.vFormat);
+																	$('#streamdets .aspect').addClass('aspect' + streamdetails.aspect);
+																	$('#streamdets .channels').addClass('channels' + streamdetails.channels);
+																	$('#streamdets .vCodec').addClass('vCodec' + streamdetails.vCodec);
+																	$('#streamdets .aCodec').addClass('aCodec' + streamdetails.aCodec);
+																	(streamdetails.hasSubs? $('#streamdets .vSubtitles').css('display', 'block') : $('#streamdets .vSubtitles').css('display', 'none'));
+																};
+															};
+														}
+													};
+												},
+
+												null, null, true // IS async // not async
+											);
+										}
+
+									}
+								},
+								
+								function(response) {
+									activePlayer = 'none'; // ERROR
+									inErrorState ++;
+									if (inErrorState == 5) {
+										$('body').empty();
+										mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+										xbmc.setHasQuit();
+									};
+								},
+
+								null, true // IS async // not async
+							);
+							
+							xbmc.sendCommand(
+								'{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume", "muted" ] }, "id": 1}',
+
+								function (response) {
+									var volume = response.result.volume;
+									var muted = response.result.muted;
+									if (volume != xbmc.periodicUpdater.lastVolume) {
+										xbmc.periodicUpdater.lastVolume = volume;
+											$.each(xbmc.periodicUpdater.volumeChangedListener, function(i, listener)  {
+												listener(volume);
+										});
+									};
+									if (muted != xbmc.periodicUpdater.muteStatus) {
+										xbmc.periodicUpdater.muteStatus = muted;
+										if (muted) {
+											xbmc.periodicUpdater.firePlayerStatusChanged('muteOn');
+										} else {
+											xbmc.periodicUpdater.firePlayerStatusChanged('muteOff');
+										};
+									};
+								},
+
+								null, true // IS async // not async
+							);
+					}, 3000);
+					//};
 				};
 				ws.onerror = function (err) {
 					console.log(err);
@@ -3505,6 +3490,8 @@ var xbmc = {};
 						console.log('paused');
 						xbmc.periodicUpdater.playerStatus = 'paused';
 						xbmc.periodicUpdater.firePlayerStatusChanged('paused');
+						clearInterval(pollTimeRunning);
+						pollTimeRunning = false;
 					break;
 					case 'Player.OnSeek':
 						/*console.log('playing');
@@ -3545,33 +3532,36 @@ var xbmc = {};
 					break;
 					case 'AudioLibrary.OnScanFinished':
 						mkf.messageLog.show(mkf.lang.get('message_music_scan_fin'), mkf.messageLog.status.success, 3000);
-						/*console.log('playing');
-						activePlayerid = JSONRPCnotification.params.data.player.playerid;
-						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
-							activePlayer = 'video';
-						} else if (JSONRPCnotification.params.data.item.type == 'song') {
-							activePlayer = 'audio';
-						}
-						console.log(activePlayerid);*/
 					break;
 					case 'VideoLibrary.OnScanFinished':
 						mkf.messageLog.show(mkf.lang.get('message_video_scan_fin'), mkf.messageLog.status.success, 3000);
-						/*console.log('playing');
-						activePlayerid = JSONRPCnotification.params.data.player.playerid;
-						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
-							activePlayer = 'video';
-						} else if (JSONRPCnotification.params.data.item.type == 'song') {
-							activePlayer = 'audio';
-						}
-						console.log(activePlayerid);*/
+					break;
+					case 'System.OnQuit':
+						$('body').empty();
+						mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+						xbmc.setHasQuit();
 					break;
 					}
 				};
 				ws.onclose = function (e) {
 					console.log('socket closed - assume crash/quit');
-					$('body').empty();
-					mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
-					xbmc.setHasQuit();
+					//Check to see if XBMC /is/ running
+					xbmc.sendCommand(
+						'{"jsonrpc": "2.0", "method": "JSONRPC.Ping",  "id": 1}',
+
+						function (response) {
+							if (response.result == 'pong') {
+									//XBMC is running! Change to polling.
+									console.log('XBMC is alive');
+									//setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
+							} else {
+								$('body').empty();
+								mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+								xbmc.setHasQuit();
+							}
+						}
+					);
+
 				};
 
 		}
