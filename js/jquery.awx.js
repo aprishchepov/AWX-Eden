@@ -2570,6 +2570,10 @@
 					if (currentFile.artist) { artistElement = currentFile.artist; } else { artistElement = mkf.lang.get('label_not_available'); }
 					if (currentFile.album) { albumElement = currentFile.album; } else { albumElement = mkf.lang.get('label_not_available'); }
 					
+					//hack for partymode playlist refresh
+					if (currentFile.partymode) {
+						awxUI.onMusicPlaylistsShow();
+					};
 					nowLabelElement.text(titleElement);
 					nowElement.text(' - ' + artistElement + ' - ' + albumElement);
 				} else {

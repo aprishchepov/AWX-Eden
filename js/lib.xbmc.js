@@ -2472,6 +2472,7 @@ var xbmc = {};
 					if (typeof activePlayer === 'undefined') { activePlayer = 'none'; }
 					if (typeof activePlayerid === 'undefined') { activePlayerid = -1; }
 					if (typeof inErrorState === 'undefined') { inErrorState = 0; }
+					if (typeof playerPartyMode === 'undefined') { playerPartyMode = false; }
 
 					xbmc.sendCommand(
 						//'{"jsonrpc": "2.0", "method": "XBMC.GetInfoLabels", "params" : {"labels": ["MusicPlayer.Title", "MusicPlayer.Album", "MusicPlayer.Artist", "Player.Time", "Player.Duration", "Player.Volume", "Playlist.Random", "VideoPlayer.Title", "VideoPlayer.TVShowTitle", "Player.Filenameandpath"]}, "id": 1}',
@@ -2565,7 +2566,7 @@ var xbmc = {};
 						var request = '';
 
 						if (activePlayer == 'audio' || activePlayer == 'video' ) {
-							request = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }'
+							request = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream", "partymode" ] } }'
 
 						}/* else if (activePlayer == 'video') {
 							request = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["speed", "shuffled", "repeat"] } }'
@@ -2580,6 +2581,7 @@ var xbmc = {};
 								var curtime;
 								var curruntime;
 								var curPlayItemNum = currentPlayer.position;
+								playerPartyMode = currentPlayer.partymode;
 								
 								//Get the number of the currently playing item in the playlist
 								if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
@@ -2702,6 +2704,12 @@ var xbmc = {};
 									$.extend(currentItem, {
 										xbmcMediaType: activePlayer
 									});
+									//hack for party mode
+									if (playerPartyMode) {
+										$.extend(currentItem, {
+											partymode: playerPartyMode
+										});
+									};
 									xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
 								//};
 								//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
