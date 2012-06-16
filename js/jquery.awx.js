@@ -2572,7 +2572,7 @@
 					
 					//hack for partymode playlist refresh
 					if (currentFile.partymode) {
-						awxUI.onMusicPlaylistsShow();
+						awxUI.onMusicPlaylistShow();
 					};
 					nowLabelElement.text(titleElement);
 					nowElement.text(' - ' + artistElement + ' - ' + albumElement);
