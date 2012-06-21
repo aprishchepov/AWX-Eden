@@ -434,6 +434,14 @@ div.mkfOverlay div.dialog span.label {
     text-align: right;
     width: 100px;
 }
+div.mkfOverlay div.dialog span.resume {
+	float: left;
+	font-size: 30px;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+    width: 580px;
+}
 div.mkfOverlay div.dialog span.labelinfo {
     float: left;
     font-weight: bold;

@@ -2047,7 +2047,20 @@ var xbmc = {};
 			});
 		},
 
+		resumeEpisode: function(options) {
+			var settings = {
+				episodeid: 0,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "episodeid" : ' + settings.episodeid + '}, "options": { "resume": true } }, "id": 1}',
+					settings.onSuccess,
+					settings.onError
+			);
+		},
 
 		getTvShows: function(options) {
 			var settings = {
