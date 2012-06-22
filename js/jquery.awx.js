@@ -400,7 +400,8 @@
 			var lazyload = mkf.cookieSettings.get('lazyload', 'no');
 			var timeout = mkf.cookieSettings.get('timeout', 20);
 			var limitVideo = mkf.cookieSettings.get('limitVideo', 25);
-			var limitMusic = mkf.cookieSettings.get('limitMusic', 25);
+			var limitArtists = mkf.cookieSettings.get('limitArtists', 25);
+			var limitAlbums = mkf.cookieSettings.get('limitAlbums', 25);
 			var ui = mkf.cookieSettings.get('ui', 'uni');
 			var oldui = mkf.cookieSettings.get('ui');
 			var lang = mkf.cookieSettings.get('lang', 'en');
@@ -610,7 +611,8 @@
 				
 				'<fieldset style="clear: left">' +
 				'<legend>' + mkf.lang.get('group_view') + '</legend>' +
-				'<label for="limitMusic">' + mkf.lang.get('label_limit') + '</label><input type="text" id="limitMusic" name="limitMusic" value="' + limitMusic + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_limit_gfx') +
+				'<label for="limitArtists">' + mkf.lang.get('label_limit') + '</label><input type="text" id="limitArtists" name="limitMusic" value="' + limitArtists + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_limit_artists') +
+				'<br /><label for="limitAlbums">' + mkf.lang.get('label_limit') + '</label><input type="text" id="limitAlbums" name="limitAlbums" value="' + limitAlbums + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_limit_albums') +
 				//'<input type="checkbox" id="listview" name="listview" ' + (listview=='yes'? 'checked="checked"' : '') + '><label for="listview">' + mkf.lang.get('label_filter_listview') + '</label>' +
 				//'<input type="checkbox" id="usefanart" name="usefanart" ' + (usefanart=='yes'? 'checked="checked"' : '') + '><label for="usefanart">' + mkf.lang.get('label_use_fanart') + '</label>' +
 				//'<input type="checkbox" id="hoverOrClick" name="hoverOrClick" ' + (hoverOrClick=='yes'? 'checked="checked"' : '') + '><label for="hoverOrClick">' + mkf.lang.get('label_hoverOrClick') + '</label>' +
@@ -708,9 +710,15 @@
 					//return false;
 				}
 				
-				var limitMusic = parseInt(document.settingsViewsMusic.limitMusic.value);
-				if (isNaN(limitMusic) || limitMusic < 1 ) {
-					limitMusic = 25;
+				var limitArtists = parseInt(document.settingsViewsMusic.limitArtists.value);
+				if (isNaN(limitArtists) || limitArtists < 1 ) {
+					limitArtists = 25;
+					//return false;
+				}
+				
+				var limitAlbums = parseInt(document.settingsViewsMusic.limitAlbums.value);
+				if (isNaN(limitAlbums) || limitAlbums < 1 ) {
+					limitAlbums = 25;
 					//return false;
 				}
 				
@@ -874,7 +882,8 @@
 				);
 
 				mkf.cookieSettings.add('timeout', timeout);
-				mkf.cookieSettings.add('limitMusic', limitMusic);
+				mkf.cookieSettings.add('limitArtists', limitArtists);
+				mkf.cookieSettings.add('limitAlbums', limitAlbums);
 				mkf.cookieSettings.add('limitVideo', limitVideo);
 
 				if (oldui != ui) alert(mkf.lang.get('settings_need_to_reload_awx'));
@@ -962,6 +971,12 @@
 	$.fn.defaultArtistsViewer = function(artistResult, parentPage) {
 
 		if (!artistResult || !artistResult.limits.total > 0) { return };
+		if (lastArtistCountStart > artistResult.limits.total) {
+			console.log('start > than asked');
+			lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+			lastArtistCountStart = 0;		
+			awxUI.onMoviesShow();
+		};
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 		var view = mkf.cookieSettings.get('artistsView', 'list');
@@ -1405,6 +1420,12 @@
 	$.fn.defaultMovieViewer = function(movieResult) {
 
 		if (!movieResult.limits.total > 0) { return };
+		if (lastMovieCountStart > movieResult.limits.total) {
+			console.log('start > than asked');
+			lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
+			lastMovieCountStart = 0;		
+			awxUI.onMoviesShow();
+		};
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
 		//var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;

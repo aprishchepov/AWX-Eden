@@ -760,13 +760,36 @@ var awxUI = {};
 		/**************************************
 		 * Called when Artists-Page is shown. *
 		 **************************************/
-		onArtistsShow: function() {
-			if (this.$artistsContent.html() == '') {
-				var artistsPage = this.artistsPage;
-				var $contentBox = this.$artistsContent;
+		onArtistsShow: function(e) {
+			var artistsPage = awxUI.artistsPage;
+			awxUI.$artistsContent.empty();
+				if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
+				if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
+				if (typeof e != 'undefined') {
+					if (e.data.Page == 'next') {
+					lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
+					lastArtistCountStart += parseInt(mkf.cookieSettings.get('limitArtists', 25));
+					};
+					if (e.data.Page == 'prev') {
+					lastArtistCount = parseInt(lastArtistCount) - parseInt(mkf.cookieSettings.get('limitArtists', 25));
+					lastArtistCountStart -= parseInt(mkf.cookieSettings.get('limitArtists', 25));
+					if (lastArtistCount < 1 || lastArtistCountStart < 0) {
+						lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+						lastArtistCountStart = 0;
+					}
+					};
+					console.log(lastArtistCount);
+				};
+				var $contentBox = awxUI.$artistsContent;
+				
+			//if (this.$artistsContent.html() == '') {
+				//var artistsPage = this.artistsPage;
+				//var $contentBox = this.$artistsContent;
 				$contentBox.addClass('loading');
 
 				xbmc.getArtists({
+					start: lastArtistCountStart,
+					end: lastArtistCount,
 					onError: function() {
 						mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
 						$contentBox.removeClass('loading');
@@ -777,7 +800,8 @@ var awxUI = {};
 						$contentBox.removeClass('loading');
 					}
 				});
-			}
+			//}
+			return false
 		},
 
 
@@ -918,12 +942,32 @@ var awxUI = {};
 		/*********************************************
 		 * Called when Movie-Page is shown.          *
 		 *********************************************/
-		onMoviesShow: function() {
-			if (this.$moviesContent.html() == '') {
-				var $contentBox = this.$moviesContent;
+		onMoviesShow: function(e) {
+			//Always refresh, mainly for limited item views
+				awxUI.$moviesContent.empty();
+				if (typeof lastMovieCount === 'undefined') { lastMovieCount = mkf.cookieSettings.get('limitVideo', 25) };
+				if (typeof lastMovieCountStart === 'undefined') { lastMovieCountStart = 0 };
+				if (typeof e != 'undefined') {
+					if (e.data.Page == 'next') {
+					lastMovieCount = parseInt(lastMovieCount) + parseInt(mkf.cookieSettings.get('limitVideo', 25));
+					lastMovieCountStart += parseInt(mkf.cookieSettings.get('limitVideo', 25));
+					};
+					if (e.data.Page == 'prev') {
+					lastMovieCount = parseInt(lastMovieCount) - parseInt(mkf.cookieSettings.get('limitVideo', 25));
+					lastMovieCountStart -= parseInt(mkf.cookieSettings.get('limitVideo', 25));
+					if (lastMovieCount < 1 || lastMovieCountStart < 0) {
+						lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
+						lastMovieCountStart = 0;
+					}
+					};
+					console.log(lastMovieCount);
+				}
+				var $contentBox = awxUI.$moviesContent;
 				$contentBox.addClass('loading');
 
 				xbmc.getMovies({
+					start: lastMovieCountStart,
+					end: lastMovieCount,
 					onError: function() {
 						mkf.messageLog.show(mkf.lang.get('message_failed_movie_list'), mkf.messageLog.status.error, 5000);
 						$contentBox.removeClass('loading');
@@ -934,7 +978,8 @@ var awxUI = {};
 						$contentBox.removeClass('loading');
 					}
 				});
-			}
+			//}
+			return false
 		},
 	
 		/*********************************************

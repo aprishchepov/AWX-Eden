@@ -826,8 +826,6 @@ var uiviews = {};
 						'</div>');
 						
 
-					/*$(dialogContent).find('.infoplay').on('click', {idEpisode: ep.episodeid, strMovie: ep.label}, uiviews.EpisodePlay);
-					$(dialogContent).find('.infoqueue').on('click', {idEpisode: ep.episodeid, strMovie: ep.label}, uiviews.AddEpisodeToPlaylist);*/
 					$(dialogContent).find('a.beginning').on('click', playStart);
 					$(dialogContent).find('a.resume').on('click', playResume);
 					
@@ -842,21 +840,7 @@ var uiviews = {};
 					mkf.dialog.close(dialogHandle);
 				}
 			});
-			return false;
-						
-			/*var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_episode'));
-
-			xbmc.playEpisode({
-				episodeid: e.data.idEpisode,
-				onSuccess: function() {
-					mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-				},
-				onError: function(errorText) {
-					mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-				}
-			});*/
-
-			return false;
+			return false;						
 		},
 
 		/*-----------------*/
@@ -1292,7 +1276,7 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			
-			var $artistList = $('<div></div>');
+			var $artistList = $('<div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div>');
 
 				$.each(artists.artists, function(i, artist)  {
 					var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/thumb.png');
@@ -1319,6 +1303,8 @@ var uiviews = {};
 				
 			$artistList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkArtistWrapper').show() });
 			$artistList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkArtistWrapper').hide() });
+			$artistList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
+			$artistList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
 			
 			return $artistList;
 		},
@@ -1329,7 +1315,7 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			
-			var $artistList = $('<div></div>');
+			var $artistList = $('<div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div>');
 
 				$.each(artists.artists, function(i, artist)  {
 					//var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/missing_logo.png');
@@ -1360,6 +1346,8 @@ var uiviews = {};
 					});
 				});
 
+			$artistList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
+			$artistList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
 			return $artistList;
 		},
 
@@ -1801,7 +1789,7 @@ var uiviews = {};
 		
 		if (options) { filterWatched = options.filterWatched };
 
-		var $moviesList = $('<div></div>');
+		var $moviesList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
 			$.each(movies.movies, function(i, movie) {
 				var watched = false;
 				// if movie has no id (e.g. movie sets), ignore it
@@ -1829,12 +1817,13 @@ var uiviews = {};
 					
 					$moviesList.find('.thumbLogoWrapper').on(hoverOrClick, function() { $(this).children('.linkTVLogoWrapper').show() });					
 					$moviesList.find('.thumbLogoWrapper').on('mouseleave', function() { $(this).children('.linkTVLogoWrapper').hide() });
-			
+								
 				});
 				
 			});
 			
-
+			$moviesList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
+			$moviesList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onMoviesShow);
 			
 			return $moviesList;
 		},
@@ -1895,38 +1884,40 @@ var uiviews = {};
 		
 		if (options) { filterWatched = options.filterWatched };
 
-		var $moviesList = $('<div></div>');
-			$.each(movies.movies, function(i, movie) {
-				var watched = false;
-				// if movie has no id (e.g. movie sets), ignore it
-				if (typeof movie.movieid === 'undefined') { return; }
-				if (movie.playcount > 0) { watched = true; }
-				if (filterWatched && watched) { return; }
+		var $moviesList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
+			//var pageGenerator = function(movies) {
+				$.each(movies.movies, function(i, movie) {
+					var watched = false;
+					// if movie has no id (e.g. movie sets), ignore it
+					if (typeof movie.movieid === 'undefined') { return; }
+					if (movie.playcount > 0) { watched = true; }
+					if (filterWatched && watched) { return; }
+					
+					var thumb = (movie.thumbnail? xbmc.getThumbUrl(movie.thumbnail) : 'images/thumb' + xbmc.getMovieThumbType() + '.png');
+					var $movie = $(
+						'<div class="movie'+movie.movieid+' thumbWrapper thumb' + xbmc.getMovieThumbType() + 'Wrapper">' +
+							'<div class="linkWrapper">' + 
+								'<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
+								'<div class="movieRating' + Math.round(movie.rating) + '"></div>' +
+							'</div>' +
+							(useLazyLoad?
+								'<img src="images/loading_thumb' + xbmc.getMovieThumbType() + '.gif" alt="' + movie.label + '" class="thumb thumb' + xbmc.getMovieThumbType() + '" data-original="' + thumb + '" />':
+								'<img src="' + thumb + '" alt="' + movie.label + '" class="thumb thumb' + xbmc.getMovieThumbType() + '" />'
+							) +
+							'<div class="movieName">' + movie.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
+							'<div class="findKeywords">' + movie.label.toLowerCase() + '</div>' +
+						'</div>').appendTo($moviesList);
+					$movie.find('.play').bind('click', {idMovie: movie.movieid, strMovie: movie.label}, uiviews.MoviePlay);
+					$movie.find('.playlist').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
+					$movie.find('.info').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
+					
+				});
 				
-				var thumb = (movie.thumbnail? xbmc.getThumbUrl(movie.thumbnail) : 'images/thumb' + xbmc.getMovieThumbType() + '.png');
-				var $movie = $(
-					'<div class="prev" style="float: left; margin-left: 10px; display: table-cell"><a href="#" /></div>' +
-					'<div class="movie'+movie.movieid+' thumbWrapper thumb' + xbmc.getMovieThumbType() + 'Wrapper">' +
-						'<div class="linkWrapper">' + 
-							'<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
-							'<div class="movieRating' + Math.round(movie.rating) + '"></div>' +
-						'</div>' +
-						(useLazyLoad?
-							'<img src="images/loading_thumb' + xbmc.getMovieThumbType() + '.gif" alt="' + movie.label + '" class="thumb thumb' + xbmc.getMovieThumbType() + '" data-original="' + thumb + '" />':
-							'<img src="' + thumb + '" alt="' + movie.label + '" class="thumb thumb' + xbmc.getMovieThumbType() + '" />'
-						) +
-						'<div class="movieName">' + movie.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
-						'<div class="findKeywords">' + movie.label.toLowerCase() + '</div>' +
-					'</div>').appendTo($moviesList);
-				$movie.find('.play').bind('click', {idMovie: movie.movieid, strMovie: movie.label}, uiviews.MoviePlay);
-				$movie.find('.playlist').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
-				$movie.find('.info').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
-				
-			});
-			
-			$moviesList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkWrapper').show() });					
-			$moviesList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkWrapper').hide() });
-			
+				$moviesList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkWrapper').show() });					
+				$moviesList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkWrapper').hide() });
+				$moviesList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
+				$moviesList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onMoviesShow);
+			//}
 			return $moviesList;
 		},
 		

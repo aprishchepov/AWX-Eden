@@ -835,14 +835,15 @@ var xbmc = {};
 		
 		getArtists: function(options) {
 			var settings = {
-				genreid: -1,
+				start: 0,
+				end: 999999,
 				onSuccess: null,
 				onError: null
 			};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
 				//'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
 
 				function(response) {
@@ -1914,7 +1915,6 @@ var xbmc = {};
 
 			settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
 			settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
-			var limitVideo = mkf.cookieSettings.get('limitVideo', 25);
 
 			xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
