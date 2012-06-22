@@ -1419,12 +1419,17 @@
 	\* ########################### */
 	$.fn.defaultMovieViewer = function(movieResult) {
 
-		if (!movieResult.limits.total > 0) { return };
-		if (lastMovieCountStart > movieResult.limits.total) {
-			console.log('start > than asked');
-			lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
-			lastMovieCountStart = 0;		
-			awxUI.onMoviesShow();
+		console.log(movieResult)
+		//may be passed from set page
+		if (!movieResult.isSet) {
+			//Out of bound checking
+			if (!movieResult.limits.total > 0) { return };
+			if (lastMovieCountStart > movieResult.limits.total) {
+				console.log('start > than asked');
+				lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
+				lastMovieCountStart = 0;		
+				awxUI.onMoviesShow();
+			};
 		};
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;

@@ -745,6 +745,7 @@ var uiviews = {};
 				},
 
 				onSuccess: function(result) {
+					result.setdetails.items.isSet = true;
 					$setContent.defaultMovieViewer(result.setdetails.items, e.data.idSet, setPage);
 					$setContent.removeClass('loading');
 				}
