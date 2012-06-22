@@ -765,6 +765,7 @@ var awxUI = {};
 			awxUI.$artistsContent.empty();
 				if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
 				if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
+				//if (typeof totalArtistCount === 'undefined') { totalArtistCount = 0 };
 				if (typeof e != 'undefined') {
 					if (e.data.Page == 'next') {
 					lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
@@ -773,10 +774,13 @@ var awxUI = {};
 					if (e.data.Page == 'prev') {
 					lastArtistCount = parseInt(lastArtistCount) - parseInt(mkf.cookieSettings.get('limitArtists', 25));
 					lastArtistCountStart -= parseInt(mkf.cookieSettings.get('limitArtists', 25));
-					if (lastArtistCount < 1 || lastArtistCountStart < 0) {
+					if (lastArtistCount == 0) {
+						lastArtistCount = totalArtistCount;
+						lastArtistCountStart = totalArtistCount - mkf.cookieSettings.get('limitArtists', 25);
+					} else if (lastArtistCount < 1 || lastArtistCountStart < 0){
 						lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
 						lastArtistCountStart = 0;
-					}
+					};
 					};
 				};
 				var $contentBox = awxUI.$artistsContent;
@@ -868,16 +872,16 @@ var awxUI = {};
 					if (e.data.Page == 'prev') {
 					lastAlbumCount = parseInt(lastAlbumCount) - parseInt(mkf.cookieSettings.get('limitAlbums', 25));
 					lastAlbumCountStart -= parseInt(mkf.cookieSettings.get('limitAlbums', 25));
-					if (lastAlbumCount < 1 || lastAlbumCountStart < 0) {
+					if (lastAlbumCount == 0) {
+						lastAlbumCount = totalAlbumCount;
+						lastAlbumCountStart = totalAlbumCount - mkf.cookieSettings.get('limitAlbums', 25);
+					} else if (lastAlbumCount < 1 || lastAlbumCountStart < 0){
 						lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
 						lastAlbumCountStart = 0;
-					}
+					};
 					};
 				};
 				var $contentBox = awxUI.$albumsContent;
-			/*if (this.$albumsContent.html() == '') {
-				var albumsPage = this.albumsPage;
-				var $contentBox = this.$albumsContent;*/
 				$contentBox.addClass('loading');
 
 				xbmc.getAlbums({
@@ -976,11 +980,13 @@ var awxUI = {};
 					if (e.data.Page == 'prev') {
 					lastMovieCount = parseInt(lastMovieCount) - parseInt(mkf.cookieSettings.get('limitVideo', 25));
 					lastMovieCountStart -= parseInt(mkf.cookieSettings.get('limitVideo', 25));
-					if (lastMovieCount < 1 || lastMovieCountStart < 0) {
+					if (lastMovieCount == 0) {
+						lastMovieCount = totalMovieCount;
+						lastMovieCountStart = totalMovieCount - mkf.cookieSettings.get('limitVideo', 25);
+					} else if (lastMovieCount < 1 || lastMovieCountStart < 0){
 						lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
 						lastMovieCountStart = 0;
-					}
-					};
+					};					};
 				}
 				var $contentBox = awxUI.$moviesContent;
 				$contentBox.addClass('loading');

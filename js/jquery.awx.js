@@ -971,9 +971,12 @@
 	$.fn.defaultArtistsViewer = function(artistResult, parentPage) {
 
 		if (!artistResult || !artistResult.limits.total > 0) { return };
+		totalArtistCount = artistResult.limits.total;
 		if (lastArtistCountStart > artistResult.limits.total -1) {
 			lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
-			lastArtistCountStart = 0;	
+			lastArtistCountStart = 0;
+			/*lastArtistCount = artistResult.limits.total;
+			lastArtistCountStart = artistResult.limits.total - mkf.cookieSettings.get('limitArtists', 25);*/
 			awxUI.onArtistsShow();
 			return
 		};
@@ -1286,12 +1289,13 @@
 	$.fn.defaultAlbumViewer = function(albumResult, parentPage) {
 
 		if (!albumResult.limits.total > 0) { return };
+		totalAlbumCount = albumResult.limits.total;
 		//No limit for albums for artist page
 		if (!albumResult.isArtist) {
 			//Out of bound checking.
 			if (lastAlbumCountStart > albumResult.limits.total -1) {
 				lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
-				lastAlbumCountStart = 0;	
+				lastAlbumCountStart = 0;
 				awxUI.onAlbumsShow();
 				return
 			};
@@ -1429,6 +1433,7 @@
 	$.fn.defaultMovieViewer = function(movieResult) {
 
 		if (!movieResult.limits.total > 0) { return };
+		totalMovieCount = movieResult.limits.total;
 		//may be passed from set page. No limiting with movie sets.
 		if (!movieResult.isSet) {
 			//Out of bound checking. Reset to start, really should cycle backwards.

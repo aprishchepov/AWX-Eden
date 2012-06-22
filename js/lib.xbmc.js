@@ -845,7 +845,7 @@ var xbmc = {};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist", "ignorearticle": true } }, "id": 1}',
 				//'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
 
 				function(response) {
