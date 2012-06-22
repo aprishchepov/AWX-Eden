@@ -2,6 +2,9 @@
  - Initial build for Frodo.
  - Websockets - near instant responce to notifications.
 
+0.5.4
+ - Fixed Season order 10+.
+
 0.5.3
  - Added Movie logo view. Get adding at fanart.tv
  - Added CD/DVD art. Expects cdart.png in album dir and disc.png in movie dir.
