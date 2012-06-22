@@ -778,8 +778,6 @@ var awxUI = {};
 						lastArtistCountStart = 0;
 					}
 					};
-					console.log(lastArtistCountStart);
-					console.log(lastArtistCount);
 				};
 				var $contentBox = awxUI.$artistsContent;
 				
@@ -875,8 +873,6 @@ var awxUI = {};
 						lastAlbumCountStart = 0;
 					}
 					};
-					console.log(lastAlbumCountStart);
-					console.log(lastAlbumCount);
 				};
 				var $contentBox = awxUI.$albumsContent;
 			/*if (this.$albumsContent.html() == '') {
@@ -985,7 +981,6 @@ var awxUI = {};
 						lastMovieCountStart = 0;
 					}
 					};
-					console.log(lastMovieCount);
 				}
 				var $contentBox = awxUI.$moviesContent;
 				$contentBox.addClass('loading');

@@ -1285,7 +1285,6 @@
 	\* ########################### */
 	$.fn.defaultAlbumViewer = function(albumResult, parentPage) {
 
-	console.log(albumResult);
 		if (!albumResult.limits.total > 0) { return };
 		//No limit for albums for artist page
 		if (!albumResult.isArtist) {
