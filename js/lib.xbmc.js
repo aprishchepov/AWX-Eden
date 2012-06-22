@@ -949,6 +949,8 @@ var xbmc = {};
 			var settings = {
 				sortby: 'album',
 				order: 'ascending',
+				start: 0,
+				end: 99999,
 				onSuccess: null,
 				onError: null
 			};
@@ -959,7 +961,7 @@ var xbmc = {};
 			settings.order = mkf.cookieSettings.get('adesc', 'ascending');
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": {"properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
 
 				function(response) {
 					if (settings.order == 'descending' && settings.sortby == 'none') {

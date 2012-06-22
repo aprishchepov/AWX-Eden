@@ -778,6 +778,7 @@ var awxUI = {};
 						lastArtistCountStart = 0;
 					}
 					};
+					console.log(lastArtistCountStart);
 					console.log(lastArtistCount);
 				};
 				var $contentBox = awxUI.$artistsContent;
@@ -856,13 +857,36 @@ var awxUI = {};
 		/**************************************
 		 * Called when Albums-Page is shown. *
 		 **************************************/
-		onAlbumsShow: function() {
-			if (this.$albumsContent.html() == '') {
+		onAlbumsShow: function(e) {
+			var albumsPage = awxUI.albumsPage;
+			awxUI.$albumsContent.empty();
+				if (typeof lastAlbumCount === 'undefined') { lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25); };
+				if (typeof lastAlbumCountStart === 'undefined') { lastAlbumCountStart = 0 };
+				if (typeof e != 'undefined') {
+					if (e.data.Page == 'next') {
+					lastAlbumCount = parseInt(lastAlbumCount) + parseInt(mkf.cookieSettings.get('limitAlbums', 25));
+					lastAlbumCountStart += parseInt(mkf.cookieSettings.get('limitAlbums', 25));
+					};
+					if (e.data.Page == 'prev') {
+					lastAlbumCount = parseInt(lastAlbumCount) - parseInt(mkf.cookieSettings.get('limitAlbums', 25));
+					lastAlbumCountStart -= parseInt(mkf.cookieSettings.get('limitAlbums', 25));
+					if (lastAlbumCount < 1 || lastAlbumCountStart < 0) {
+						lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
+						lastAlbumCountStart = 0;
+					}
+					};
+					console.log(lastAlbumCountStart);
+					console.log(lastAlbumCount);
+				};
+				var $contentBox = awxUI.$albumsContent;
+			/*if (this.$albumsContent.html() == '') {
 				var albumsPage = this.albumsPage;
-				var $contentBox = this.$albumsContent;
+				var $contentBox = this.$albumsContent;*/
 				$contentBox.addClass('loading');
 
 				xbmc.getAlbums({
+					start: lastAlbumCountStart,
+					end: lastAlbumCount,
 					onError: function() {
 						mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
 						$contentBox.removeClass('loading');
@@ -873,7 +897,8 @@ var awxUI = {};
 						$contentBox.removeClass('loading');
 					}
 				});
-			}
+			//}
+			return false
 		},
 
 		/**************************************

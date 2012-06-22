@@ -971,11 +971,11 @@
 	$.fn.defaultArtistsViewer = function(artistResult, parentPage) {
 
 		if (!artistResult || !artistResult.limits.total > 0) { return };
-		if (lastArtistCountStart > artistResult.limits.total) {
-			console.log('start > than asked');
+		if (lastArtistCountStart > artistResult.limits.total -1) {
 			lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
-			lastArtistCountStart = 0;		
-			awxUI.onMoviesShow();
+			lastArtistCountStart = 0;	
+			awxUI.onArtistsShow();
+			return
 		};
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
@@ -1285,8 +1285,18 @@
 	\* ########################### */
 	$.fn.defaultAlbumViewer = function(albumResult, parentPage) {
 
+	console.log(albumResult);
 		if (!albumResult.limits.total > 0) { return };
-		
+		//No limit for albums for artist page
+		if (!albumResult.isArtist) {
+			//Out of bound checking.
+			if (lastAlbumCountStart > albumResult.limits.total -1) {
+				lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
+				lastAlbumCountStart = 0;	
+				awxUI.onAlbumsShow();
+				return
+			};
+		};
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
 		var view = mkf.cookieSettings.get('albumsView', 'cover');
 		
@@ -1419,23 +1429,19 @@
 	\* ########################### */
 	$.fn.defaultMovieViewer = function(movieResult) {
 
-		console.log(movieResult)
-		//may be passed from set page
+		if (!movieResult.limits.total > 0) { return };
+		//may be passed from set page. No limiting with movie sets.
 		if (!movieResult.isSet) {
-			//Out of bound checking
-			if (!movieResult.limits.total > 0) { return };
-			if (lastMovieCountStart > movieResult.limits.total) {
-				console.log('start > than asked');
+			//Out of bound checking. Reset to start, really should cycle backwards.
+			if (lastMovieCountStart > movieResult.limits.total -1) {
 				lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
 				lastMovieCountStart = 0;		
 				awxUI.onMoviesShow();
+				return
 			};
 		};
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-		//var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
-		//var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
-		//var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
 		var view = mkf.cookieSettings.get('filmView', 'poster');
 		var options;
 		var $movieContainer = $(this);

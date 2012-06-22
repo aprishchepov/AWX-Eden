@@ -86,6 +86,8 @@ var uiviews = {};
 				},
 
 				onSuccess: function(result) {
+					//Stop limiting by passing this flag.
+					result.isArtist = true;
 					$artistContent.defaultAlbumViewer(result, artistPage);
 					$artistContent.removeClass('loading');
 				}
@@ -166,6 +168,8 @@ var uiviews = {};
 				},
 
 				onSuccess: function(result) {
+					//Stop limiting.
+					result.isArtist = true;
 					$artistsGenresContent.defaultAlbumViewer(result, artistPage);
 					$artistsGenresContent.removeClass('loading');
 				}
@@ -1277,7 +1281,7 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			
-			var $artistList = $('<div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div>');
+			var $artistList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
 
 				$.each(artists.artists, function(i, artist)  {
 					var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/thumb.png');
@@ -1316,7 +1320,7 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			
-			var $artistList = $('<div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div>');
+			var $artistList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
 
 				$.each(artists.artists, function(i, artist)  {
 					//var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/missing_logo.png');
@@ -1503,7 +1507,7 @@ var uiviews = {};
 		AlbumsViewThumbnails: function(albums, parentPage) {
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-			var $albumsList = $('<div></div>');
+			var $albumsList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
 			
 			$.each(albums.albums, function(i, album) {
 				var thumb = (album.thumbnail? xbmc.getThumbUrl(album.thumbnail) : 'images/thumb.png');
@@ -1529,6 +1533,8 @@ var uiviews = {};
 			
 			$albumsList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkWrapper').show() });					
 			$albumsList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkWrapper').hide() });
+			$albumsList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onAlbumsShow);
+			$albumsList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onAlbumsShow);
 			
 			return $albumsList;
 		},
