@@ -2231,7 +2231,7 @@ var xbmc = {};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "properties": [ "runtime", "showtitle", "season", "title", "album", "artist", "duration" ], "playlistid": ' + settings.playlistid + '}, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "properties": [ "runtime", "showtitle", "season", "title", "album", "artist", "duration", "file" ], "playlistid": ' + settings.playlistid + '}, "id": 1}',
 
 				function(response) {
 					var nextItem = ''
@@ -2783,6 +2783,7 @@ var xbmc = {};
 									xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
 								//};
 								//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
+								var getNext = function() {
 									xbmc.getNextPlaylistItem({
 										'playlistid': activePlayerid,
 										'plCurPos': xbmc.periodicUpdater.curPlaylistNum,
@@ -2791,7 +2792,7 @@ var xbmc = {};
 												xbmc.periodicUpdater.nextPlayingFile = '';
 												xbmc.periodicUpdater.fireNextPlayingChanged('');												
 											} else {
-												
+												if (nextItem.file == xbmc.periodicUpdater.currentlyPlayingFile) { getNext(); return };
 												$.extend(nextItem, {
 													xbmcMediaType: activePlayer
 												});
@@ -2803,6 +2804,8 @@ var xbmc = {};
 											xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
 										}
 									});
+								};
+								getNext();
 
 									//Footer stream details for video
 									if (activePlayer == 'video' && ui == 'uni' && showInfoTags) {
@@ -3317,7 +3320,7 @@ var xbmc = {};
 						}
 						if (pollTimeRunning === false) { xbmc.pollTimeStart() };
 						
-						console.log(activePlayerid);
+						//console.log(activePlayerid);
 						//Also activated on item change
 						if (activePlayer != 'none') {
 									xbmc.sendCommand(
@@ -3468,6 +3471,8 @@ var xbmc = {};
 															});
 															xbmc.periodicUpdater.nextPlayingFile = nextItem.file;
 															xbmc.periodicUpdater.fireNextPlayingChanged(nextItem);
+															console.log(nextItem);
+															console.log(xbmc.periodicUpdater.currentlyPlayingFile);
 														}
 													},
 													onError: function() {
@@ -3547,6 +3552,13 @@ var xbmc = {};
 						$('#streamdets .vCodec').removeClass().addClass('vCodec');
 						$('#streamdets .aCodec').removeClass().addClass('aCodec');
 						$('#streamdets .vSubtitles').css('display', 'none');
+						
+						//reset display overlay
+						$('#displayoverlay').css('width','625px');
+						/*$('#displayoverlay img.discThumb').hide();
+						$('#displayoverlay img.discThumb').css('margin-left','0px');
+						$('#displayoverlay img.discThumb').css('width','194px');
+						$('#displayoverlay img.discThumb').css('width','194px');*/
 						
 						xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
 					break;

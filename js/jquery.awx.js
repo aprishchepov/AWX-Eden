@@ -2806,10 +2806,13 @@
 					nextElement.text('');
 					timeCurRemain.text('00:00');
 					timeCurRemainTotal.text('00:00');
+					thumbDiscElement.hide();
 					thumbElement.css('height', '280px');
 					thumbElement.css('width', '195px');
 					thumbElement.attr('src', 'images/thumbPoster.png');
 					thumbElement.css('margin-top', '0px');
+					thumbElement.css('margin-right','0px');
+					
 					thumbDiscElement.attr('src', '');
 					//$footerStatusBox.find('#statusPlayer').hide();
 					$footerStatusBox.find('#statusPlayer #statusPlayerRow #paused').hide();
