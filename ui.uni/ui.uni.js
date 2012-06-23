@@ -974,19 +974,20 @@ var awxUI = {};
 				if (typeof lastMovieCountStart === 'undefined') { lastMovieCountStart = 0 };
 				if (typeof e != 'undefined') {
 					if (e.data.Page == 'next') {
-					lastMovieCount = parseInt(lastMovieCount) + parseInt(mkf.cookieSettings.get('limitVideo', 25));
-					lastMovieCountStart += parseInt(mkf.cookieSettings.get('limitVideo', 25));
+						lastMovieCount = parseInt(lastMovieCount) + parseInt(mkf.cookieSettings.get('limitVideo', 25));
+						lastMovieCountStart += parseInt(mkf.cookieSettings.get('limitVideo', 25));
+						};
+						if (e.data.Page == 'prev') {
+						lastMovieCount = parseInt(lastMovieCount) - parseInt(mkf.cookieSettings.get('limitVideo', 25));
+						lastMovieCountStart -= parseInt(mkf.cookieSettings.get('limitVideo', 25));
+						if (lastMovieCount == 0) {
+							lastMovieCount = totalMovieCount;
+							lastMovieCountStart = totalMovieCount - mkf.cookieSettings.get('limitVideo', 25);
+						} else if (lastMovieCount < 1 || lastMovieCountStart < 0) {
+							lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
+							lastMovieCountStart = 0;
+						};
 					};
-					if (e.data.Page == 'prev') {
-					lastMovieCount = parseInt(lastMovieCount) - parseInt(mkf.cookieSettings.get('limitVideo', 25));
-					lastMovieCountStart -= parseInt(mkf.cookieSettings.get('limitVideo', 25));
-					if (lastMovieCount == 0) {
-						lastMovieCount = totalMovieCount;
-						lastMovieCountStart = totalMovieCount - mkf.cookieSettings.get('limitVideo', 25);
-					} else if (lastMovieCount < 1 || lastMovieCountStart < 0){
-						lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
-						lastMovieCountStart = 0;
-					};					};
 				}
 				var $contentBox = awxUI.$moviesContent;
 				$contentBox.addClass('loading');
@@ -1082,13 +1083,41 @@ var awxUI = {};
 		/***************************************
 		 * Called when Tv-Shows-Page is shown. *
 		 ***************************************/
-		onTvShowsShow: function() {
-			if (this.$tvShowsContent.html() == '') {
+		onTvShowsShow: function(e) {
+			var tvShowsPage = awxUI.tvShowsPage;
+			//Always refresh, mainly for limited item views
+				awxUI.$tvShowsContent.empty();
+				var limitTV = mkf.cookieSettings.get('limitTV', 25);
+				if (typeof lastTVCount === 'undefined') { lastTVCount = limitTV };
+				if (typeof lastTVCountStart === 'undefined') { lastTVCountStart = 0 };
+				if (typeof e != 'undefined') {
+					if (e.data.Page == 'next') {
+						lastTVCount = parseInt(lastTVCount) + parseInt(limitTV);
+						lastTVCountStart += parseInt(limitTV);
+						};
+					if (e.data.Page == 'prev') {
+						lastTVCount = parseInt(lastTVCount) - parseInt(limitTV);
+						lastTVCountStart -= parseInt(limitTV);
+							if (lastTVCount == 0) {
+								lastTVCount = totalTVCount;
+								lastTVCountStart = totalTVCount - limitTV;
+							} else if (lastTVCount < 1 || lastTVCountStart < 0) {
+								lastTVCount = limitTV;
+								lastTVCountStart = 0;
+							};
+					};
+					
+				}
+				var $contentBox = awxUI.$tvShowsContent;
+				
+			/*if (this.$tvShowsContent.html() == '') {
 				var tvShowsPage = this.tvShowsPage;
-				var $contentBox = this.$tvShowsContent;
+				var $contentBox = this.$tvShowsContent;*/
 				$contentBox.addClass('loading');
 
 				xbmc.getTvShows({
+					start: lastTVCountStart,
+					end: lastTVCount,
 					onError: function() {
 						mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
 						$contentBox.removeClass('loading');
@@ -1099,7 +1128,8 @@ var awxUI = {};
 						$contentBox.removeClass('loading');
 					}
 				});
-			}
+			//}
+			return false
 		},
 
 		

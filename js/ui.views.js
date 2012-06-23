@@ -1281,7 +1281,7 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			
-			var $artistList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
+			var $artistList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px" class="nextPage" href="">Next</a></div></div>');
 
 				$.each(artists.artists, function(i, artist)  {
 					var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/thumb.png');
@@ -1320,7 +1320,7 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			
-			var $artistList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
+			var $artistList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px" class="nextPage" href="">Next</a></div></div>');
 
 				$.each(artists.artists, function(i, artist)  {
 					//var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/missing_logo.png');
@@ -1507,7 +1507,7 @@ var uiviews = {};
 		AlbumsViewThumbnails: function(albums, parentPage) {
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-			var $albumsList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
+			var $albumsList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px" class="nextPage" href="">Next</a></div></div>');
 			
 			$.each(albums.albums, function(i, album) {
 				var thumb = (album.thumbnail? xbmc.getThumbUrl(album.thumbnail) : 'images/thumb.png');
@@ -1796,7 +1796,7 @@ var uiviews = {};
 		
 		if (options) { filterWatched = options.filterWatched };
 
-		var $moviesList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
+		var $moviesList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px" class="nextPage" href="">Next</a></div></div>');
 			$.each(movies.movies, function(i, movie) {
 				var watched = false;
 				// if movie has no id (e.g. movie sets), ignore it
@@ -1891,7 +1891,7 @@ var uiviews = {};
 		
 		if (options) { filterWatched = options.filterWatched };
 
-		var $moviesList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right 10px;" class="nextPage" href="">Next</a></div></div>');
+		var $moviesList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px" class="nextPage" href="">Next</a></div></div>');
 			//var pageGenerator = function(movies) {
 				$.each(movies.movies, function(i, movie) {
 					var watched = false;
@@ -2155,7 +2155,7 @@ var uiviews = {};
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
 			
-			var $tvShowList = $('<div></div>');
+			var $tvShowList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px" class="nextPage" href="">Next</a></div></div>');
 			
 			if (shows.limits.total > 0) {
 				$.each(shows.tvshows, function(i, tvshow) {
@@ -2187,7 +2187,8 @@ var uiviews = {};
 			
 			$tvShowList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkTVWrapper').show() });					
 			$tvShowList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkTVWrapper').hide() });
-				
+			$tvShowList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
+			$tvShowList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);	
 			return $tvShowList;
 		},
 		
@@ -2199,7 +2200,7 @@ var uiviews = {};
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
 			
-			var $tvShowList = $('<div></div>');
+			var $tvShowList = $('<div><div><a style="font-size: 26px; margin-left: 10px;" class="prevPage" href="">Previous</a><a style="font-size: 26px; float: right; margin-right: 10px;" class="nextPage" href="">Next</a></div></div>');
 			
 			if (shows.limits.total > 0) {
 				$.each(shows.tvshows, function(i, tvshow) {
@@ -2234,7 +2235,9 @@ var uiviews = {};
 
 					});
 				});
-
+				
+			$tvShowList.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
+			$tvShowList.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
 			}
 	
 			return $tvShowList;

@@ -230,6 +230,8 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'label_limit': 						'Number of items to list: ',
 	'label_limit_artists': 				'for artist based views.',
 	'label_limit_albums': 				'for album based views.',
+	'label_limit_movies':				'for movie based views.',
+	'label_limit_tv':					'for TV based views.',
 	'label_settings_hint': 				'（设置保存到cookies，需要允许本站点的cookies。）',
 	'label_settings_warning': 			'* 不建议用于大量项目。',
 	'label_not_available': 				'（无）',

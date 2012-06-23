@@ -400,6 +400,7 @@
 			var lazyload = mkf.cookieSettings.get('lazyload', 'no');
 			var timeout = mkf.cookieSettings.get('timeout', 20);
 			var limitVideo = mkf.cookieSettings.get('limitVideo', 25);
+			var limitTV = mkf.cookieSettings.get('limitTV', 25);
 			var limitArtists = mkf.cookieSettings.get('limitArtists', 25);
 			var limitAlbums = mkf.cookieSettings.get('limitAlbums', 25);
 			var ui = mkf.cookieSettings.get('ui', 'uni');
@@ -564,7 +565,8 @@
 				'<input type="checkbox" id="watched" name="watched" ' + (watched=='yes'? 'checked="checked"' : '') + '><label for="watched">' + mkf.lang.get('label_filter_watched') + '</label>' +
 				'<input type="checkbox" id="hidewatchedmark" name="hidewatchedmark" ' + (hidewatchedmark=='yes'? 'checked="checked"' : '') + '><label for="hidewatchedmark">' + mkf.lang.get('label_filter_showwatched') + '</label>' +
 				'<input type="checkbox" id="cinex" name="cinex" ' + (cinex=='yes'? 'checked="checked"' : '') + '><label for="cinex">' + mkf.lang.get('label_cinex') + '</label>' +
-				'<br /><label for="limitVideo">' + mkf.lang.get('label_limit') + '</label><input type="text" id="limitVideo" name="limitVideo" value="' + limitVideo + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_limit_gfx') +
+				'<br /><label for="limitVideo">' + mkf.lang.get('label_limit') + '</label><input type="text" id="limitVideo" name="limitVideo" value="' + limitVideo + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_limit_movies') +
+				'<br /><label for="limitTV">' + mkf.lang.get('label_limit') + '</label><input type="text" id="limitTV" name="limitTV" value="' + limitTV + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('label_limit_tv') +				
 				'</fieldset>' +
 				'<div class="formHint">' + mkf.lang.get('label_settings_warning') + '</div>' +
 				'</form>' +
@@ -707,6 +709,12 @@
 				var limitVideo = parseInt(document.settingsViewsVideo.limitVideo.value);
 				if (isNaN(limitVideo) || limitVideo < 1 ) {
 					limitVideo = 25;
+					//return false;
+				}
+				
+				var limitTV = parseInt(document.settingsViewsVideo.limitTV.value);
+				if (isNaN(limitTV) || limitTV < 1 ) {
+					limitTV = 25;
 					//return false;
 				}
 				
@@ -885,6 +893,7 @@
 				mkf.cookieSettings.add('limitArtists', limitArtists);
 				mkf.cookieSettings.add('limitAlbums', limitAlbums);
 				mkf.cookieSettings.add('limitVideo', limitVideo);
+				mkf.cookieSettings.add('limitTV', limitTV);
 
 				if (oldui != ui) alert(mkf.lang.get('settings_need_to_reload_awx'));
 				mkf.dialog.close(dialogHandle);
@@ -1602,7 +1611,15 @@
 	$.fn.defaultTvShowViewer = function(tvShowResult, parentPage) {
 		
 		if (!tvShowResult.limits.total > 0) { return };
-		
+		totalTVCount = tvShowResult.limits.total;
+		//Out of bound checking. Reset to start, really should cycle backwards.
+		if (lastTVCountStart > tvShowResult.limits.total -1) {
+			lastTVCount = mkf.cookieSettings.get('limitTV', 25);
+			lastTVCountStart = 0;		
+			awxUI.onTvShowsShow();
+			return
+		};
+
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
 		var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
 		//var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;

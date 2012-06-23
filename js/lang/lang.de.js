@@ -230,6 +230,8 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'label_limit': 						'Number of items to list: ',
 	'label_limit_artists': 				'for artist based views.',
 	'label_limit_albums': 				'for album based views.',
+	'label_limit_movies':				'for movie based views.',
+	'label_limit_tv':					'for TV based views.',
 	'label_settings_hint':				'(Die Einstellungen werden in Cookies gespeichert. Sie m%FCssen Cookies f%FCr diese Seite zulassen.)',
 	'label_settings_warning':			'* Not recommended for a large amount of items.',
 	'label_not_available':				'N/A',

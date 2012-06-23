@@ -230,6 +230,8 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'label_limit': 						'Number of items to list: ',
 	'label_limit_artists': 				'for artist based views.',
 	'label_limit_albums': 				'for album based views.',
+	'label_limit_movies':				'for movie based views.',
+	'label_limit_tv':					'for TV based views.',
 	'label_settings_hint':				'(Les paramètres sont stockés dans les Cookies. Vous devez les activer pour ce site.)',
 	'label_settings_warning':			'* Not recommended for a large amount of items.',
 	'label_not_available':				'N/A',

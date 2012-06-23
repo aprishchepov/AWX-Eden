@@ -2069,6 +2069,8 @@ var xbmc = {};
 			var settings = {
 				sortby: 'label',
 				order: 'ascending',
+				start: 0,
+				end: 99999,
 				onSuccess: null,
 				onError: null
 			};
@@ -2078,7 +2080,7 @@ var xbmc = {};
 			settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
 				function(response) {
 					settings.onSuccess(response.result);
 				},
