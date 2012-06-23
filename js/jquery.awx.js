@@ -85,7 +85,7 @@
 	$.fn.extraControls = function() {
 		$controls = $('<div id="quick"><div id="quick_row1"><a class="button home" href="" title="' + mkf.lang.get('btn_home') + '"></a><a class="button up" href="" title="' + mkf.lang.get('btn_up') + '"></a><a class="button back" href="" title="' + mkf.lang.get('btn_back') + '"></a></div>' +
 		'<div id="quick_row2"><a class="button left" href="" title="' + mkf.lang.get('btn_left') + '"></a><a class="button select" href="" title="' + mkf.lang.get('btn_select') + '"></a><a class="button right" href="" title="' + mkf.lang.get('btn_right') + '"></a></div>' +
-		'<div id="quick_row3"><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a></div></div>' +
+		'<div id="quick_row3"><a class="button info" href="" title="' + mkf.lang.get('btn_info') + '"></a><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a><a class="button contextMenu" href="" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div></div>' +
 		'<div id="quick_con"><a class="button prev" href=""></a><a class="button next" href=""></a><a class="button shuffle" href="" title="' + mkf.lang.get('label_shuffle') + '"></a><a class="button repeat" href="" title="' + mkf.lang.get('label_repeat') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a></div>');
 		//'<a class="button volup" href="" title="' + mkf.lang.get('label_volup') + '"></a><a class="button voldown" href="" title="' + mkf.lang.get('label_voldown') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a>');
 		$controls.find('.left').click(function() {
@@ -109,7 +109,12 @@
 		$controls.find('.select').click(function() {
 			xbmc.input({type: 'Select', onError: 'failed'}); return false;
 		});
-		
+		$controls.find('.contextMenu').click(function() {
+			xbmc.input({type: 'ContextMenu', onError: 'failed'}); return false;
+		});
+		$controls.find('.info').click(function() {
+			xbmc.input({type: 'Info', onError: 'failed'}); return false;
+		});
 		$controls.find('.play').click(function() {
 			xbmc.control({type: 'play'}); return false;
 		});
@@ -311,7 +316,7 @@
 				'<a href="" class="bigSelect" title="' + mkf.lang.get('btn_select') + '"></a>' +
 				'<a href="" class="bigRight" title="' + mkf.lang.get('btn_right') + '"></a></div>' +
 				
-				'<div><a href="" class="bigDown" title="' + mkf.lang.get('btn_down') + '"></a></div>' +
+				'<div><a href="" class="bigInfo" title="' + mkf.lang.get('btn_info') + '"></a><a href="" class="bigDown" title="' + mkf.lang.get('btn_down') + '"></a><a href="" class="bigContextMenu" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div>' +
 				'</div>' +
 				
 				'<div class="input_big_av"><div><a href="" class="bigSubPrev" title="' + mkf.lang.get('btn_subsPrev') + '"></a>' +
@@ -373,6 +378,12 @@
 			});
 			$('.bigSelect').click(function() {
 				xbmc.input({type: 'Select', onError: failed}); return false;
+			});
+			$('.bigContextMenu').click(function() {
+				xbmc.input({type: 'ContextMenu', onError: failed}); return false;
+			});
+			$('.bigInfo').click(function() {
+				xbmc.input({type: 'Info', onError: failed}); return false;
 			});
 			$('.bigSubOnOff').click(function() {
 				xbmc.setSubtitles({command: (xbmc.periodicUpdater.subsenabled? 'off' : 'on'), onError: failed}); return false;

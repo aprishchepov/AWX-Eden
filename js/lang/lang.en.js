@@ -147,6 +147,8 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
 	'btn_back': 						'Back',
 	'btn_home': 						'Home',
 	'btn_select': 						'Select',
+	'btn_info': 						'Info',
+	'btn_contextMenu': 					'Context Menu',
 	'btn_title_help':					'Help',
 	'btn_text_help':					'?',
 	'btn_save': 						'Save',

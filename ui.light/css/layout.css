@@ -1295,7 +1295,7 @@ div.showEpisode {
 	position: relative; 
 	vertical-align:text-top;
 }
-a.bigLeft, a.bigRight, a.bigUp, a.bigDown, a.bigSelect, a.bigBack, a.bigHome, a.bigSubOnOff,  a.bigSubNext, a.bigSubPrev, a.bigAudioNext, a.bigAudioPrev {
+a.bigLeft, a.bigRight, a.bigUp, a.bigDown, a.bigSelect, a.bigBack, a.bigHome, a.bigSubOnOff,  a.bigSubNext, a.bigSubPrev, a.bigAudioNext, a.bigAudioPrev, a.bigContextMenu , a.bigInfo {
     background: url("../images/controls_big.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 70px;
@@ -1328,6 +1328,14 @@ a.bigHome {
 a.bigSelect {
     background-position: -420px 0;
     margin: 25px 15px 0px;
+}
+a.bigInfo {
+    background-position: -735px 0;
+    margin: 25px 0px 0 10px;
+}
+a.bigContextMenu {
+    background-position: -665px 0;
+    margin: 25px 10px 0px 0px;
 }
 a.bigSubOnOff {
     background-position: -630px 0px;

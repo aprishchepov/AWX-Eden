@@ -1708,7 +1708,7 @@ div.showEpisode {
 	position: relative; 
 	vertical-align:text-top;
 }
-a.bigLeft, a.bigRight, a.bigUp, a.bigDown, a.bigSelect, a.bigBack, a.bigHome, a.bigSubOnOff,  a.bigSubNext, a.bigSubPrev, a.bigAudioNext, a.bigAudioPrev {
+a.bigLeft, a.bigRight, a.bigUp, a.bigDown, a.bigSelect, a.bigBack, a.bigHome, a.bigSubOnOff,  a.bigSubNext, a.bigSubPrev, a.bigAudioNext, a.bigAudioPrev, a.bigContextMenu , a.bigInfo {
     background: url("../images/controls_big.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 70px;
@@ -1716,7 +1716,7 @@ a.bigLeft, a.bigRight, a.bigUp, a.bigDown, a.bigSelect, a.bigBack, a.bigHome, a.
 }
 a.bigDown {
     background-position: 0 0;
-    margin: 25px 95px 20px;
+    margin: 25px 15px 0px;
 }
 a.bigRight {
     background-position: -70px 0;
@@ -1741,6 +1741,14 @@ a.bigHome {
 a.bigSelect {
     background-position: -420px 0;
     margin: 25px 15px 0px;
+}
+a.bigInfo {
+    background-position: -735px 0;
+    margin: 25px 0px 0 10px;
+}
+a.bigContextMenu {
+    background-position: -665px 0;
+    margin: 25px 10px 0px 0px;
 }
 a.bigSubOnOff {
     background-position: -630px 0px;
@@ -1931,7 +1939,7 @@ br.clear {
 }
 #controls #quick a.down {
     background-position: -192px 0;
-	margin-left: 100px;
+	/*margin-left: 100px;*/
 }
 #controls #quick a.back {
     background-position: -240px 0;
@@ -1939,6 +1947,13 @@ br.clear {
 }
 #controls #quick a.select {
     background-position: -288px 0;
+}
+#controls #quick a.info {
+    background-position: -336px 0;
+}
+#controls #quick a.contextMenu {
+    background-position: -384px 0;
+	margin-right: 0;	
 }
 #controls  #quick_con {
     /*background: url("../images/volume.png") no-repeat scroll 20px 10px #EAECE6;*/
