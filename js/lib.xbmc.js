@@ -553,7 +553,37 @@ var xbmc = {};
 			return false;
 		},
 
+		controlSpeed: function(options) {
+			var settings = {
+				type: 'increment',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			//var commands = {play: 'PlayPause', stop: 'Stop', prev: 'GoPrevious', next: 'GoNext', shuffle: 'Shuffle', unshuffle: 'Unshuffle'};
+
+			/*if (commands[settings.type]) {
+				xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
+
+					function (response) {*/
+
+						if (activePlayerid == 1 || activePlayerid == 0) {
+							xbmc.sendCommand(
+								'{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + activePlayerid + ', "speed": "' + settings.type + '" }, "id": 1}',
+								settings.onSuccess,
+								settings.onError
+							);
+						}
+					/*},
+					settings.onError
+				);
+				return true;
+			}*/
+			return false;
+		},
+		
 		controlRepeat: function(options) {
 			var settings = {
 				type: options,

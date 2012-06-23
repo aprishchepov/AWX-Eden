@@ -86,7 +86,7 @@
 		$controls = $('<div id="quick"><div id="quick_row1"><a class="button home" href="" title="' + mkf.lang.get('btn_home') + '"></a><a class="button up" href="" title="' + mkf.lang.get('btn_up') + '"></a><a class="button back" href="" title="' + mkf.lang.get('btn_back') + '"></a></div>' +
 		'<div id="quick_row2"><a class="button left" href="" title="' + mkf.lang.get('btn_left') + '"></a><a class="button select" href="" title="' + mkf.lang.get('btn_select') + '"></a><a class="button right" href="" title="' + mkf.lang.get('btn_right') + '"></a></div>' +
 		'<div id="quick_row3"><a class="button info" href="" title="' + mkf.lang.get('btn_info') + '"></a><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a><a class="button contextMenu" href="" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div></div>' +
-		'<div id="quick_con"><a class="button prev" href=""></a><a class="button next" href=""></a><a class="button shuffle" href="" title="' + mkf.lang.get('label_shuffle') + '"></a><a class="button repeat" href="" title="' + mkf.lang.get('label_repeat') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a></div>');
+		'<div id="quick_con"><a class="button prev" href=""></a><a class="button rewind" href=""></a><a class="button fastforward" href=""></a><a class="button next" href=""></a><a class="button shuffle" href="" title="' + mkf.lang.get('label_shuffle') + '"></a><a class="button repeat" href="" title="' + mkf.lang.get('label_repeat') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a></div>');
 		//'<a class="button volup" href="" title="' + mkf.lang.get('label_volup') + '"></a><a class="button voldown" href="" title="' + mkf.lang.get('label_voldown') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a>');
 		$controls.find('.left').click(function() {
 			xbmc.input({type: 'Left', onError: 'failed'}); return false;
@@ -126,6 +126,12 @@
 		});
 		$controls.find('.prev').click(function() {
 			xbmc.control({type: 'prev'}); return false;
+		});
+		$controls.find('.rewind').click(function() {
+			xbmc.controlSpeed({type: 'decrement'}); return false;
+		});
+		$controls.find('.fastforward').click(function() {
+			xbmc.controlSpeed({type: 'increment'}); return false;
 		});
 		$controls.find('.mute').click(function() {
 			xbmc.setMute(); return false;
@@ -2696,7 +2702,7 @@
 				if (currentFile.thumbnail) {
 					thumbElement.attr('src', xbmc.getThumbUrl(currentFile.thumbnail));
 					if (currentFile.showtitle) {
-						if ($('#displayoverlay').css('width') != '510px') { $('#displayoverlay').css('width','510px') };
+						if ($('#displayoverlay').css('width') != '625px') { $('#displayoverlay').css('width','625px') };
 						thumbElement.css('margin-top', '165px');
 						thumbElement.css('width', '200px');
 						thumbElement.css('height', '115px');
@@ -2736,7 +2742,7 @@
 						thumbElement.css('width', '195px');
 						xbmc.getLogo({path: currentFile.file, type: 'disc'}, function(cdart) {
 							if (cdart != '') {
-								$('#displayoverlay').css('width','610px');
+								$('#displayoverlay').css('width','720px');
 								thumbElement.css('margin-right','100px');
 								//#displayoverlay width: 600px;
 								//.discThumb width: 270px; height: 270px; margin-left: 20px;
