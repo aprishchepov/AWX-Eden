@@ -1038,10 +1038,12 @@
 			};
 			setTimeout(loadThumbs, 100);
 		}
-		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</div></div>').prependTo($artistsViewerElement);
-		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCount + '/' + artistResult.limits.total + '</div></div>').appendTo($artistsViewerElement);
-		$artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
-		$artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
+		if (view != 'logosingle') {
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</div></div>').prependTo($artistsViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCount + '/' + artistResult.limits.total + '</div></div>').appendTo($artistsViewerElement);
+			$artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
+			$artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
+		};
 			
 	}; // END defaultArtistsViewer
 
@@ -1521,8 +1523,11 @@
 			};
 			setTimeout(loadThumbs, 100);
 		}
-
-		if (!movieResult.isSet) {
+		
+		//NFC why the || doesn't work below but it doesn't?!
+		if (view == 'singlePoster') { movieResult.isSet = true };
+		if (!movieResult.isSet || view != 'singlePoster' ) {
+			console.log(' NOT Single!')
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</div></div>').prependTo($movieContainer);
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCount + '/' + movieResult.limits.total + '</div></div>').appendTo($movieContainer);
 			$movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
