@@ -546,6 +546,20 @@ div.goNextPrev {
 	display: block;
 	clear: both;
 }
+div.goNextPrev a.prevPage{
+	font-size: 26px;
+	float: left;
+	margin-left: 10px;
+}
+div.goNextPrev a.nextPage{
+	font-size: 26px;
+	float: right;
+	margin-left: 10px;
+}
+div.goNextPrev div.lastCount{
+	font-size: 26px;
+	text-align: center;
+}
 img.thumb {
     /*border: 1px solid #575757;*/
     height: 125px;

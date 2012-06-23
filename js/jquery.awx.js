@@ -1038,7 +1038,11 @@
 			};
 			setTimeout(loadThumbs, 100);
 		}
-		
+		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</div></div>').prependTo($artistsViewerElement);
+		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCount + '/' + artistResult.limits.total + '</div></div>').appendTo($artistsViewerElement);
+		$artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
+		$artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
+			
 	}; // END defaultArtistsViewer
 
 
@@ -1355,7 +1359,14 @@
 			};
 			setTimeout(loadThumbs, 100);
 		}
-
+		
+		if (!albumResult.isArtist) {
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastAlbumCountStart + '/' + albumResult.limits.total + '</div></div>').prependTo($albumViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastAlbumCount + '/' + albumResult.limits.total + '</div></div>').appendTo($albumViewerElement);
+			$albumViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onAlbumsShow);
+			$albumViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onAlbumsShow);
+		}
+		
 	}; // END defaultAlbumViewer
 
 
@@ -1478,7 +1489,7 @@
 
 		switch (view) {
 			case 'poster':
-				uiviews.MovieViewThumbnailsLimited(movieResult, options).appendTo($movieContainer);				
+				uiviews.MovieViewThumbnails(movieResult, options).appendTo($movieContainer);				
 				break;
 			case 'listover':
 				uiviews.MovieViewList(movieResult, options).appendTo($movieContainer);
@@ -1511,6 +1522,13 @@
 			setTimeout(loadThumbs, 100);
 		}
 
+		if (!movieResult.isSet) {
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</div></div>').prependTo($movieContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCount + '/' + movieResult.limits.total + '</div></div>').appendTo($movieContainer);
+			$movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
+			$movieContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onMoviesShow);
+		}
+		
 	}; // END defaultMovieViewer
 
 	
@@ -1670,6 +1688,12 @@
 			setTimeout(loadThumbs, 100);
 		}
 
+		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCountStart + '/' + totalTVCount + '</div></div>').prependTo($tvshowContainer);
+		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCount + '/' + totalTVCount + '</div></div>').appendTo($tvshowContainer);
+		$tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
+		$tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
+		
+		
 	}; // END defaultTvShowViewer
 
 
