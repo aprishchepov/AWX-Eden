@@ -542,6 +542,10 @@ ul.mkfPageContextMenu li {
 .loading {
     background: url("../images/loading.gif") no-repeat scroll left top transparent;
 }
+div.goNextPrev {
+	display: block;
+	clear: both;
+}
 img.thumb {
     /*border: 1px solid #575757;*/
     height: 125px;
