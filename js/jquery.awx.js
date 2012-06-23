@@ -1526,8 +1526,7 @@
 		
 		//NFC why the || doesn't work below but it doesn't?!
 		if (view == 'singlePoster') { movieResult.isSet = true };
-		if (!movieResult.isSet || view != 'singlePoster' ) {
-			console.log(' NOT Single!')
+		if (!movieResult.isSet) {
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</div></div>').prependTo($movieContainer);
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCount + '/' + movieResult.limits.total + '</div></div>').appendTo($movieContainer);
 			$movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
