@@ -480,6 +480,21 @@ var xbmc = {};
 			);
 		},
 
+		setVolumeInc: function(options) {
+			var settings = {
+				volume: 'decrement',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
+
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": "' + settings.volume + '" }, "id": 1}',
+				settings.onSuccess,
+				settings.onError
+			);
+		},
+		
 		setMute: function() {
 			var settings = {
 				onSuccess: null,
@@ -3628,8 +3643,8 @@ var xbmc = {};
 						function (response) {
 							if (response.result == 'pong') {
 									//XBMC is running! Change to polling.
-									console.log('XBMC is alive');
-									//setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
+									console.log('XBMC is alive. Switching to polling.');
+									setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
 							} else {
 								$('body').empty();
 								mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});

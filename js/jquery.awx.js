@@ -325,12 +325,25 @@
 				'<div><a href="" class="bigInfo" title="' + mkf.lang.get('btn_info') + '"></a><a href="" class="bigDown" title="' + mkf.lang.get('btn_down') + '"></a><a href="" class="bigContextMenu" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div>' +
 				'</div>' +
 				
+				'<div class="controlsPlayer">' +
+				'<a href="" class="bigPlayPause" title="' + mkf.lang.get('btn_playpause') + '"></a><a href="" class="bigPrev" title="' + mkf.lang.get('btn_prev') + '"></a><a href="" class="bigNext" title="' + mkf.lang.get('btn_next') + '"></a>' +
+				'<a href="" class="bigStop" title="' + mkf.lang.get('btn_stop') + '"></a><a href="" class="bigRW" title="' + mkf.lang.get('btn_rewind') + '"></a><a href="" class="bigFF" title="' + mkf.lang.get('btn_fastforward') + '"></a>' +
+				'<a href="" class="bigMute" title="' + mkf.lang.get('btn_mute') + '"></a><a href="" class="bigVolDown" title="' + mkf.lang.get('btn_voldown') + '"></a><a href="" class="bigVolUp" title="' + mkf.lang.get('btn_volup') + '"></a>' +
+				'</div>' +
+				
+				'</div>' +
+				
 				'<div class="input_big_av"><div><a href="" class="bigSubPrev" title="' + mkf.lang.get('btn_subsPrev') + '"></a>' +
 				'<a href="" class="bigSubOnOff" title="' + mkf.lang.get('btn_subsCycleOnOff') + '"></a>' +
 				'<a href="" class="bigSubNext" title="' + mkf.lang.get('btn_subsNext') + '"></a></div>' +
 				
 				'<div><a href="" class="bigAudioPrev" title="' + mkf.lang.get('btn_audioStreamPrev') + '"></a>' +
 				'<a href="" class="bigAudioNext" title="' + mkf.lang.get('btn_audioStreamNext') + '"></a></div>' +
+				'</div>' +
+
+				'<div class="controlsPlayerEx">' +
+				'<a href="" class="bigShuffle" title="' + mkf.lang.get('label_shuffle') + '"></a>' +
+				'<a href="" class="bigRepeat" title="' + mkf.lang.get('label_repeat') + '"></a>' +
 				'</div>' +
 				
 				'<div class="systemControls">' +
@@ -406,6 +419,95 @@
 			$('.bigAudioPrev').click(function() {
 				xbmc.setAudioStream({command: 'previous', onError: failed}); return false;
 			});
+			$('.bigPlayPause').click(function() {
+				xbmc.control({type: 'play'}); return false;
+			});
+			$('.bigStop').click(function() {
+				xbmc.control({type: 'stop'}); return false;
+			});
+			$('.bigNext').click(function() {
+				xbmc.control({type: 'next'}); return false;
+			});
+			$('.bigPrev').click(function() {
+				xbmc.control({type: 'prev'}); return false;
+			});
+			$('.bigRW').click(function() {
+				xbmc.controlSpeed({type: 'decrement'}); return false;
+			});
+			$('.bigFF').click(function() {
+				xbmc.controlSpeed({type: 'increment'}); return false;
+			});
+			$('.bigMute').click(function() {
+				xbmc.setMute(); return false;
+			});
+			$('.bigVolDown').click(function() {
+				xbmc.setVolumeInc({volume: 'decrement'}); return false;
+			});
+			$('.bigVolUp').click(function() {
+				xbmc.setVolumeInc({volume: 'increment'}); return false;
+			});
+						
+			var bigShuffle = function(event) {
+				xbmc.control({type: (event.data.shuffle? 'shuffle': 'unshuffle')}); return false;
+			};
+		
+			$('a.bigShuffle').bind('click', {"shuffle": true}, bigShuffle);
+
+			var bigRepeat = function(event) {
+				if (event.data.repeat == 'all' && xbmc.periodicUpdater.repeatStatus == 'off') {
+					type = 'all';
+				} else if (event.data.repeat == 'one' && xbmc.periodicUpdater.repeatStatus == 'all') {
+					type = 'one';
+				} else if (event.data.repeat == 'off' && xbmc.periodicUpdater.repeatStatus == 'one') {
+					type = 'off'; 
+				};
+				xbmc.controlRepeat(type);
+				return false;
+			};
+	
+			$('a.bigRepeat').bind('click', {"repeat": 'all' }, bigRepeat);
+			
+			xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
+				var $bigShuffleBtn = $('.bigShuffle');
+				if (status == 'shuffleOn') {
+					$bigShuffleBtn.unbind('click');
+					$bigShuffleBtn.bind('click', {"shuffle": false}, bigShuffle);
+					$bigShuffleBtn.addClass('bigUnshuffle');
+					$bigShuffleBtn.attr('title', mkf.lang.get('label_unshuffle'));
+
+				} else if (status == 'shuffleOff') {
+					$bigShuffleBtn.unbind('click');
+					$bigShuffleBtn.bind('click', {"shuffle": true}, bigShuffle);
+					$bigShuffleBtn.removeClass('bigUnshuffle');
+					$bigShuffleBtn.attr('title', mkf.lang.get('label_shuffle'));
+				}
+				//No idea if we're in Audio or Video playlist; refresh both..
+				awxUI.onMusicPlaylistShow();
+				awxUI.onVideoPlaylistShow();
+			});
+
+			xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
+				var $bigRepeatBtn = $('.bigRepeat');
+				if (status == 'off') {
+					$bigRepeatBtn.unbind('click');
+					$bigRepeatBtn.bind('click', {"repeat": 'all'}, bigRepeat);
+					$bigRepeatBtn.removeClass('bigRepeatOff');
+					$bigRepeatBtn.addClass('bigRepeat');
+					$bigRepeatBtn.attr('title', mkf.lang.get('label_repeat'));
+				} else if (status == 'all') {
+					$bigRepeatBtn.unbind('click');
+					$bigRepeatBtn.bind('click', {"repeat": 'one'}, bigRepeat);
+					$bigRepeatBtn.addClass('bigRepeat1');
+					$bigRepeatBtn.attr('title', mkf.lang.get('label_repeat1'));
+				} else if (status == 'one') {
+					$bigRepeatBtn.unbind('click');
+					$bigRepeatBtn.removeClass('bigRepeat1');
+					$bigRepeatBtn.bind('click', {"repeat": 'off'}, bigRepeat);			
+					$bigRepeatBtn.addClass('bigRepeatOff');
+					$bigRepeatBtn.attr('title', mkf.lang.get('label_repeatoff'));
+				}
+			});
+		
 			return false;
 		});
 
