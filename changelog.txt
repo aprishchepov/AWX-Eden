@@ -1,6 +1,7 @@
 0.5.4
+ - Added Music Videos page.
  - Fixed Season order 10+.
- 
+ - Fixed Artist logos on Windows.
 
 0.5.3
  - Added Movie logo view. Get adding at fanart.tv

@@ -975,7 +975,54 @@ var xbmc = {};
 			);
 		},
 
+		getMusicVideos: function(options) {
+			var settings = {
+				sortby: 'none',
+				order: 'ascending',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			//var order = mkf.cookieSettings.get('albumOrder')=='album'? 'label' : 'artist';
+			settings.sortby = mkf.cookieSettings.get('musicVideoSort', 'label');
+			settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
+
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+
+				function(response) {
+					if (settings.order == 'descending' && settings.sortby == 'none') {
+					var aresult = $.makeArray(response.result.albums).reverse();
+					delete response.result.musicvideos;
+					response.result.musicvideos = aresult;
+					settings.onSuccess(response.result);
+					} else {
+					settings.onSuccess(response.result);
+					}
+				},
+
+				settings.onError
+			);		
+		},
+
+		getMusicVideoInfo: function(options) {
+			var settings = {
+				musicvideoid: 0,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
+
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideoDetails", "params": { "musicvideoid": ' + settings.musicvideoid + ', "properties": ["genre", "director", "plot", "title", "runtime", "year", "thumbnail", "playcount", "file", "lastplayed", "streamdetails", "fanart"] },  "id": 2}',
+				function(response) {
+					settings.onSuccess(response.result.musicvideodetails);
+				},
+				settings.onError
+			);
+		},
+		
 		getMusicPlaylists: function(options) {
 			var settings = {
 				onSuccess: null,
@@ -1779,7 +1826,22 @@ var xbmc = {};
 			);
 		},
 
+		addMusicVideoToPlaylist: function(options) {
+			var settings = {
+				musicvideoid: 0,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "Playlist.Add", "params": {"item": {"musicvideoid": ' + settings.musicvideoid + '}, "playlistid": 1}, "id": 1}',
+				settings.onSuccess,
+				settings.onError,
+				null,
+				settings.async
+			);
+		},
 
 		playMovie: function(options) {
 			var settings = {
@@ -1815,7 +1877,39 @@ var xbmc = {};
 			});
 		},
 
+		playMusicVideo: function(options) {
+			var settings = {
+				musicvideoid: 0,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			this.clearVideoPlaylist({
+				onSuccess: function() {
+					xbmc.addMusicVideoToPlaylist({
+						musicvideoid: settings.musicvideoid,
+
+						onSuccess: function() {
+							xbmc.playVideo({
+								onSuccess: settings.onSuccess,
+								onError: function(errorText) {
+									settings.onError(errorText);
+								}
+							});
+						},
+
+						onError: function() {
+							settings.onError(mkf.lang.get('message_failed_add_movie_to_playlist'));
+						}
+					});
+				},
+
+				onError: function() {
+					settings.onError(mkf.lang.get('message_failed_clear_playlist'));
+				}
+			});
+		},
 
 		playVideoFile: function(options) {
 			var settings = {

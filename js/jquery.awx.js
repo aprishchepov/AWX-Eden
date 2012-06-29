@@ -1310,6 +1310,48 @@
 
 	}; // END defaultRecentAlbumViewer
 	
+	/* ########################### *\
+	 |  Show the Music Videos.
+	 |
+	 |  @param albumResult		Result of AudioLibrary.GetAlbums.
+	 |  @param parentPage		Page which is used as parent for new sub pages.
+	\* ########################### */
+	$.fn.defaultMusicVideosViewer = function(mvResult, parentPage) {
+
+		if (!mvResult.limits.total > 0) { return };
+		
+		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+		var view = mkf.cookieSettings.get('musicVideosView', 'cover');
+		
+		var $mvViewerElement = $(this);
+		
+		switch (view) {
+			case 'list':
+				uiviews.AlbumsViewList(mvResult, parentPage).appendTo($mvViewerElement);
+				break;
+			case 'cover':
+				uiviews.MusicVideosViewThumbnails(mvResult, parentPage).appendTo($mvViewerElement);
+				break;
+			/*case 'listin':
+				uiviews.AlbumsViewListInline(albumResult).appendTo($albumViewerElement);
+				break;*/
+		};
+
+		if (useLazyLoad) {
+			function loadThumbs(i) {
+				$mvViewerElement.find('img.thumb').lazyload(
+					{
+						queuedLoad: true,
+						container: ($('#main').length? $('#main'): $('#content')),	// TODO remove fixed #main
+						errorImage: 'images/thumb.png'
+					}
+				);
+			};
+			setTimeout(loadThumbs, 100);
+		}
+
+	}; // END defaultMusicVideosViewer
+
 	
 	/* ########################### *\
 	 |  Show the songlist.
