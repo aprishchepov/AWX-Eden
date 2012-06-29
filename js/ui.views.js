@@ -355,6 +355,134 @@ var uiviews = {};
 			return false;
 		},
 		
+		/*--------------------*/
+		AddMusicVideoToPlaylist: function(event) {
+			var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_musicvid_to_playlist'));
+
+			xbmc.addMusicVideoToPlaylist({
+				musicvideoid: event.data.idMusicVideo,
+				onSuccess: function() {
+					mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+				},
+				onError: function() {
+					mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 8000, mkf.messageLog.status.error);
+				}
+			});
+
+			return false;
+		},
+		
+		/*------*/
+		MusicVideoPlay: function(event) {
+			var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_musicvideo'));
+
+			xbmc.playMusicVideo({
+				musicvideoid: event.data.idMusicVideo,
+				onSuccess: function() {
+					mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+				},
+				onError: function(errorText) {
+					mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+				}
+			});
+
+			return false;
+		},
+		
+		/*-------------*/
+		MusicVideoInfoOverlay: function(e) {
+			var dialogHandle = mkf.dialog.show();
+			var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+			//May be event data or just movieid from playlists
+			var musicvideoID = '';
+			if (typeof(e) == 'number' ) { musicvideoID = e } else { musicvideoID = e.data.idMusicVideo };
+
+			xbmc.getMusicVideoInfo({
+				musicvideoid: musicvideoID,
+				onSuccess: function(mv) {
+					//var dialogContent = '';
+					var fileDownload = '';
+					
+					xbmc.getPrepDownload({
+						path: mv.file,
+						onSuccess: function(result) {
+							fileDownload = xbmc.getUrl(result.details.path);
+							// no better way?
+							$('.filelink').find('a').attr('href',fileDownload);
+						},
+						onError: function(errorText) {
+							$('.filelink').find('a').replaceWith(mv.file);
+						},
+					});
+					
+					var streamdetails = {
+						vFormat: 'SD',
+						vCodec: 'Unknown',
+						aCodec: 'Unknown',
+						channels: 0,
+						aStreams: 0,
+						hasSubs: false,
+						aLang: '',
+						aspect: 0,
+						vwidth: 0
+					};
+					
+					if ( useFanart ) {
+						$('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(mv.fanart) + '")');
+					};
+					
+					if (mv.streamdetails) {
+						if (mv.streamdetails.subtitle) { streamdetails.hasSubs = true };
+						if (mv.streamdetails.audio) {
+							streamdetails.channels = mv.streamdetails.audio[0].channels;
+							streamdetails.aStreams = mv.streamdetails.audio.length;
+							$.each(mv.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
+							if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
+						};
+					streamdetails.aspect = xbmc.getAspect(mv.streamdetails.video[0].aspect);
+					//Get video standard
+					streamdetails.vFormat = xbmc.getvFormat(mv.streamdetails.video[0].width);
+					//Get video codec
+					streamdetails.vCodec = xbmc.getVcodec(mv.streamdetails.video[0].codec);
+					//Set audio icon
+					streamdetails.aCodec = xbmc.getAcodec(mv.streamdetails.audio[0].codec);
+					};
+					
+					var thumb = (mv.thumbnail? xbmc.getThumbUrl(mv.thumbnail) : 'images/thumb.png');
+					var dialogContent = $('<div><img src="' + thumb + '" class="thumb dialogThumb" />' +
+						'<div><h1 class="underline">' + mv.title + '</h1></div>' +
+						'<div class="movieinfo"><span class="label">' + mkf.lang.get('label_runtime') + '</span><span class="value">' + (mv.runtime? mv.runtime : mkf.lang.get('label_not_available')) + '</span></div>' +
+						'<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="value">' + (mv.genre? mv.genre : mkf.lang.get('label_not_available')) + '</span></div>' +
+						'<div class="movieinfo"><span class="label">' + mkf.lang.get('label_year') + '</span><span class="value">' + (mv.year? mv.year : mkf.lang.get('label_not_available')) + '</span></div>' +
+						(mv.director? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_director') + '</span><span class="value">' + mv.director + '</span></div>' : '') +
+						(mv.lastplayed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_lastplayed') + '</span><span class="value">' + mv.lastplayed + '</span></div>' : '') +
+						(mv.playcount? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_playcount') + '</span><span class="value">' + mv.playcount + '</span></div>' : '') +
+						'<div class="movieinfo filelink"><span class="label">' + mkf.lang.get('label_file') + '</span><span class="value">' + '<a href="' + fileDownload + '">' + mv.file + '</a>' + '</span></div></div>' +
+						'<br /><div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /></div>');
+
+					if (mv.streamdetails) {
+						dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
+						'<div class="aspect' + streamdetails.aspect + '" />' +
+						'<div class="vCodec' + streamdetails.vCodec + '" />' +
+						'<div class="aCodec' + streamdetails.aCodec + '" />' +
+						'<div class="channels' + streamdetails.channels + '" />' +
+						(streamdetails.hasSubs? '<div class="vSubtitles" />' : ''));
+					};
+
+					$(dialogContent).find('.infoplay').on('click', {idMusicVideo: mv.musicvideoid, strMovie: mv.label}, uiviews.MusicVideoPlay);
+					$(dialogContent).find('.infoqueue').on('click', {idMusicVideo: mv.musicvideoid, strMovie: mv.label}, uiviews.AddMusicVideoToPlaylist);
+					
+					mkf.dialog.setContent(dialogHandle, dialogContent);
+					return false;
+				},
+				onError: function() {
+					mkf.messageLog.show(mkf.lang.get('message_failed_musicvideo_list'), mkf.messageLog.status.error, 5000);
+					mkf.dialog.close(dialogHandle);
+				}
+			});
+			return false;
+		},
+		
 /*--------------------*/
 /* Movie UI functions */
 /*--------------------*/
@@ -1638,7 +1766,43 @@ var uiviews = {};
 				});
 			return $songList;
 		},
-		
+	
+		/*----Music Videos thumbnail view----*/
+		MusicVideosViewThumbnails: function(mv, parentPage) {
+			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
+			var $mvList = $('<div></div>');
+			
+			$.each(mv.musicvideos, function(i, mv) {
+				var thumb = (mv.thumbnail? xbmc.getThumbUrl(mv.thumbnail) : 'images/thumb.png');
+				$mv = $('<div class="mv'+mv.musicvideoid+' thumbWrapper">' +
+						'<div class="linkWrapper">' + 
+							'<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
+						'</div>' +
+						(useLazyLoad?
+							'<img src="images/loading_thumb.gif" alt="' + mv.label + '" class="thumb" data-original="' + thumb + '" />':
+							'<img src="' + thumb + '" alt="' + mv.label + '" class="thumb" />'
+						) +
+						'<div class="albumName">' + mv.label + '' +
+						'<div class="albumArtist">' + mv.artist + '</div></div>' +
+						'<div class="findKeywords">' + mv.label.toLowerCase() + ' ' + mv.artist.toLowerCase() + '</div>' +
+					'</div>');
+
+				$mvList.append($mv);
+				/*$mv.find('.play').bind('click', {idAlbum: mv.musicvideoid, strAlbum: mv.label}, uiviews.AlbumPlay);
+				$mv.find('.songs').bind('click', {idAlbum: mv.musicvideoid, strAlbum: mv.label, objParentPage: parentPage }, uiviews.Songlist);
+				$mv.find('.playlist').bind('click', {idAlbum: mv.musicvideoid}, uiviews.AddAlbumToPlaylist);*/
+				$mv.find('.play').bind('click', {idMusicVideo: mv.musicvideoid, strMovie: mv.label}, uiviews.MusicVideoPlay);
+				$mv.find('.playlist').bind('click', {idMusicVideo: mv.musicvideoid}, uiviews.AddMusicVideoToPlaylist);
+				$mv.find('.info').bind('click', {idMusicVideo: mv.musicvideoid}, uiviews.MusicVideoInfoOverlay);
+				
+			});
+			
+			$mvList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkWrapper').show() });			
+			$mvList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkWrapper').hide() });
+			
+			return $mvList;
+		},
 /*-------------*/
 /* Movie views */
 /*-------------*/
