@@ -94,6 +94,13 @@
 		$controls.find('.right').click(function() {
 			xbmc.input({type: 'Right', onError: 'failed'}); return false;
 		});
+		/*$controls.find('.left').dblclick(function() {
+			//xbmc.seekPercentage({percentage: '"bigbackward"', onError: 'failed'}); return false;
+			console.log('dbl left');
+		});*/
+		$controls.find('.right').dblclick(function() {
+			xbmc.seekPercentage({percentage: '"bigforward"', onError: 'failed'}); return false;
+		});
 		$controls.find('.up').click(function() {
 			xbmc.input({type: 'Up', onError: 'failed'}); return false;
 		});

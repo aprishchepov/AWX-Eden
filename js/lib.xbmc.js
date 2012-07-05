@@ -575,27 +575,14 @@ var xbmc = {};
 				onError: null
 			};
 			$.extend(settings, options);
-
-			//var commands = {play: 'PlayPause', stop: 'Stop', prev: 'GoPrevious', next: 'GoNext', shuffle: 'Shuffle', unshuffle: 'Unshuffle'};
-
-			/*if (commands[settings.type]) {
-				xbmc.sendCommand(
-					'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
-
-					function (response) {*/
-
-						if (activePlayerid == 1 || activePlayerid == 0) {
-							xbmc.sendCommand(
-								'{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + activePlayerid + ', "speed": "' + settings.type + '" }, "id": 1}',
-								settings.onSuccess,
-								settings.onError
-							);
-						}
-					/*},
-					settings.onError
-				);
-				return true;
-			}*/
+			
+				if (activePlayerid == 1 || activePlayerid == 0) {
+					xbmc.sendCommand(
+						'{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + activePlayerid + ', "speed": "' + settings.type + '" }, "id": 1}',
+						settings.onSuccess,
+						settings.onError
+					);
+				}
 			return false;
 		},
 		
@@ -607,25 +594,13 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			//var commands = {repeat: 'all', repeat1: 'one', unrepeat: 'off'};
-
-			/*if (settings.type) {
-				xbmc.sendCommand(
-					'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
-
-					function (response) {*/
-						if (activePlayerid == 1 || activePlayerid == 0) {
-							xbmc.sendCommand(
-								'{"jsonrpc": "2.0", "method": "Player.Repeat", "params": { "playerid": ' + activePlayerid + ', "state": "' + settings.type + '" }, "id": 1}',
-								settings.onSuccess,
-								settings.onError
-							);
-						}
-					/*},
-					settings.onError
-				);
-				return true;
-			}*/
+				if (activePlayerid == 1 || activePlayerid == 0) {
+					xbmc.sendCommand(
+						'{"jsonrpc": "2.0", "method": "Player.Repeat", "params": { "playerid": ' + activePlayerid + ', "state": "' + settings.type + '" }, "id": 1}',
+						settings.onSuccess,
+						settings.onError
+					);
+				}
 			return false;
 		},
 		
@@ -668,7 +643,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			xbmc.sendCommand(
+			/*xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
 
 				function (response) {
@@ -684,19 +659,21 @@ var xbmc = {};
 					} else {
 						// No player is active
 						return;
-					}
+					}*/
 
+				if (activePlayerid == 1 || activePlayerid == 0) {
 					xbmc.sendCommand(
 						//'{"jsonrpc": "2.0", "method": "' + player + 'Player.SeekPercentage", "params": ' + settings.percentage + ', "id": 1}',
-						'{"jsonrpc": "2.0", "method": "Player.Seek", "params": {"value": ' + settings.percentage + ', "playerid": ' + playerResult[0].playerid + '}, "id": 1}',
+						'{"jsonrpc": "2.0", "method": "Player.Seek", "params": {"value": ' + settings.percentage + ', "playerid": ' + activePlayerid + '}, "id": 1}',
 
 						settings.onSuccess,
 						settings.onError
 					);
-				},
+				}
+				/*},
 
 				settings.onError
-			);
+			);*/
 		},
 
 		getAspect: function(aspect) {
