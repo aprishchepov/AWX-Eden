@@ -53,6 +53,48 @@ var uiviews = {};
 			return false;
 		}, // END onArtistInformationClick
 
+		/*--------------*/
+		AlbumInfoOverlay: function(e) {
+			
+			var dialogHandle = mkf.dialog.show();
+			//var dialogContent = $('<div></div>');
+			var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+
+			xbmc.getAlbumDetails({
+				albumid: e.data.idAlbum,
+				onSuccess: function(albumdetails) {
+					console.log(albumdetails);
+					if ( useFanart ) {
+						$('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(albumdetails.fanart) + '")');
+					};
+					
+					var thumb = (albumdetails.thumbnail? xbmc.getThumbUrl(albumdetails.thumbnail) : 'images/thumb.png');
+					var dialogContent = $('<img src="' + thumb + '" class="thumbAlbums dialogThumb" />' +
+						'<h1 class="underline">' + albumdetails.label + '</h1>' +
+						//'<div class="test"><img src="' + tvshow.file + 'logo.png' + '" /></div>' +
+						(albumdetails.artist? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_artist') + '</span><span class="labelinfo">' + albumdetails.artist + '</span></div>' : '') +
+						(albumdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + albumdetails.genre + '</span></div>' : '') +
+						(albumdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + albumdetails.mood + '</span></div>' : '') +
+						(albumdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  albumdetails.style + '</span></div>' : '') +
+						(albumdetails.rating? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="labelinfo">' + albumdetails.rating + '</span></div>' : '') +
+						//(albumdetails.type? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_type') + '</span><span class="labelinfo">' + albumdetails.type + '</span></div>' : '') +
+						(albumdetails.year? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_year') + '</span><span class="labelinfo">' + albumdetails.year + '</span></div>' : '') +
+						(albumdetails.albumlabel? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_label') + '</span><span class="labelinfo">' + albumdetails.albumlabel + '</span></div>' : '') +
+						//(albumdetails.yearsactive? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_yearsactive') + '</span><span class="labelinfo">' + albumdetails.yearsactive + '</span></div>' : '') +
+						//(albumdetails.instrument? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_instrument') + '</span><span class="labelinfo">' + albumdetails.instrument + '</span></div>' : '') +
+						'<p class="artistdesc">' + albumdetails.description + '</p>');
+					
+					mkf.dialog.setContent(dialogHandle, dialogContent);
+					
+				},
+				onError: function() {
+					mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+					mkf.dialog.close(dialogHandle);				
+				}
+			});
+
+			return false;
+		}, // END onArtistInformationClick
 		/*---------*/
 		ArtistAlbums: function(e) {
 			// open new page to show artist's albums
@@ -1469,7 +1511,8 @@ var uiviews = {};
 			//var albums = albumResult.albums;
 			var $albumsList = $('<ul class="fileList"></ul>');
 				$.each(albums.albums, function(i, album)  {
-					$album = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' + 
+					$album = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
+						'<a href="" class="button info' + album.albumid + '" title="' + mkf.lang.get('btn_information') + '"><span class="miniIcon information" /></a>' +
 						'<a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
 						'<a href="" class="button play" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>' +
 						'<a href="" class="album' + album.albumid + '">' + album.label + ' - ' + album.artist + '<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist.toLowerCase() + '</div>' +
@@ -1478,6 +1521,8 @@ var uiviews = {};
 					$album.find('.album'+ album.albumid).bind('click', {idAlbum: album.albumid, strAlbum: album.label, objParentPage: parentPage }, uiviews.Songlist);
 					$album.find('.playlist').bind('click', {idAlbum: album.albumid}, uiviews.AddAlbumToPlaylist);
 					$album.find('.play').bind('click', {idAlbum: album.albumid, strAlbum: album.label}, uiviews.AlbumPlay);
+					$album.find('.info'+ album.albumid).on('click', {idAlbum: album.albumid}, uiviews.AlbumInfoOverlay);
+					
 				});
 			return $albumsList
 		},
@@ -1492,7 +1537,7 @@ var uiviews = {};
 				var thumb = (album.thumbnail? xbmc.getThumbUrl(album.thumbnail) : 'images/thumb.png');
 				$album = $('<div class="album'+album.albumid+' thumbWrapper">' +
 						'<div class="linkWrapper">' + 
-							'<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="songs">' + mkf.lang.get('btn_songs') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a>' +
+							'<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="songs">' + mkf.lang.get('btn_songs') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
 						'</div>' +
 						(useLazyLoad?
 							'<img src="images/loading_thumb.gif" alt="' + album.label + '" class="thumb" data-original="' + thumb + '" />':
@@ -1507,6 +1552,7 @@ var uiviews = {};
 				$album.find('.play').bind('click', {idAlbum: album.albumid, strAlbum: album.label}, uiviews.AlbumPlay);
 				$album.find('.songs').bind('click', {idAlbum: album.albumid, strAlbum: album.label, objParentPage: parentPage }, uiviews.Songlist);
 				$album.find('.playlist').bind('click', {idAlbum: album.albumid}, uiviews.AddAlbumToPlaylist);
+				$album.find('.info').bind('click', {idAlbum: album.albumid}, uiviews.AlbumInfoOverlay);
 				
 			});
 			
@@ -1558,9 +1604,9 @@ var uiviews = {};
 									//var thumb = (songs.songs[0].thumbnail? xbmc.getThumbUrl(songs.songs[0].thumbnail) : 'images/thumb.png');
 									infodiv.removeClass('loading');
 									//console.log(songs);
-									var albumContent = $('<div style="float: left; margin: 5px;"><img src="' + thumb + '" class="thumb" />' +
-									'<div style="width: 102px; display: block; padding-left: 13px; padding-bottom: 50px"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /></div>' +
-									'<div class="albumInfo"><div><span class="label">' + mkf.lang.get('label_genre') + '</span>' +
+									var albumContent = $('<div style="float: left; margin: 5px;"><img src="' + thumb + '" style="width: 154px; height: 154px;" />' +
+									'<div style="width: 154px; display: block; padding-left: 0px; padding-bottom: 50px"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /><span class="infoinfo" title="' + mkf.lang.get('btn_information') + '" /></div>' +
+									'<div style="width: 154px;"><div><span class="label">' + mkf.lang.get('label_genre') + '</span>' +
 									'<span class="value">' + albuminfo.genre + '</span></div><div><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="value">' + (albuminfo.rating? albuminfo.rating : mkf.lang.get('label_not_available')) + '</span></div>' +
 									'<div><span class="label">' + mkf.lang.get('label_year') + '</span><span class="value">' + (albuminfo.year? albuminfo.year : mkf.lang.get('label_not_available')) + '</span></div>' +
 									'<div><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="value">' + (albuminfo.mood? albuminfo.mood : mkf.lang.get('label_not_available')) + '</span></div>' +
@@ -1568,6 +1614,7 @@ var uiviews = {};
 									
 									albumContent.find('.infoplay').bind('click', {idAlbum: albuminfo.albumid, strAlbum: albuminfo.label}, uiviews.AlbumPlay);
 									albumContent.find('.infoqueue').bind('click', {idAlbum: albuminfo.albumid}, uiviews.AddAlbumToPlaylist);
+									albumContent.find('.infoinfo').bind('click', {idAlbum: albuminfo.albumid}, uiviews.AlbumInfoOverlay);
 									
 									var $songList = $('<ul class="fileList" style="margin: 5px 0 5px 0"></ul>');
 
@@ -1579,6 +1626,7 @@ var uiviews = {};
 											$song.find('.playlist').bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
 											$song.find('.play').bind('click', {idSong: song.songid}, uiviews.SongPlay);
 											$song.find('.playnext').bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
+											
 										});
 										
 									//albumContent.append($songList);

@@ -231,6 +231,8 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'label_settings_hint': 				'（设置保存到cookies，需要允许本站点的cookies。）',
 	'label_settings_warning': 			'* 不建议用于大量项目。',
 	'label_not_available': 				'（无）',
+	'label_artist':						'Artist:',
+	'label_label':						'Label:',
 	'label_premiered': 					'首映：',
 	'label_episodes': 					'集：',
 	'label_original_title': 			'原片名：',

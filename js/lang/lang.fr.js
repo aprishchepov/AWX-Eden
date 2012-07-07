@@ -231,6 +231,8 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'label_settings_hint':				'(Les paramètres sont stockés dans les Cookies. Vous devez les activer pour ce site.)',
 	'label_settings_warning':			'* Not recommended for a large amount of items.',
 	'label_not_available':				'N/A',
+	'label_artist':						'Artist:',
+	'label_label':						'Label:',
 	'label_premiered': 					'Premiered:',
 	'label_episodes': 					'Episodes:',
 	'label_original_title': 			'Titre Original :',

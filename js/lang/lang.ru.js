@@ -231,6 +231,8 @@ mkf.lang.add({language: 'Russian', short: 'ru', author: 'Scaramush', values: {
 	'label_settings_hint':				'(Настройки сохраняются в cookies. Вам нужно включить cookies для этого сайта.)',
 	'label_settings_warning':			'* Not recommended for a large amount of items.',
 	'label_not_available':				'Н/Д',
+	'label_artist':						'Artist:',
+	'label_label':						'Label:',
 	'label_premiered': 				'Премьера:',
 	'label_episodes': 				'Эпизоды:',
 	'label_original_title': 			'Оригинальное название:',

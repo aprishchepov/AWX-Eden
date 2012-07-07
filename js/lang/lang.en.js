@@ -231,6 +231,8 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
 	'label_settings_hint': 				'(Settings are stored in cookies. You need to enable cookies for this site.)',
 	'label_settings_warning': 			'* Not recommended for a large amount of items.',
 	'label_not_available': 				'N/A',
+	'label_artist':						'Artist:',
+	'label_label':						'Label:',
 	'label_premiered': 					'Premiered:',
 	'label_episodes': 					'Episodes:',
 	'label_original_title': 			'Original Title:',
