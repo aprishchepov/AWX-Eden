@@ -1028,7 +1028,25 @@ var xbmc = {};
 				settings.onError
 			);
 		},
+		
+		getAlbumDetails: function(options) {
+			var settings = {
+				albumid: -1,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbumDetails", "params": { "albumid" : ' + settings.albumid + ', "properties" : ["rating", "artist", "thumbnail", "description", "title", "genre", "theme", "mood", "style", "type", "albumlabel", "year", "musicbrainzalbumid", "musicbrainzalbumartistid", "artistid", "fanart" ] }, "id": 1}',
+
+				function(response) {
+					settings.onSuccess(response.result.albumdetails);
+				},
+				settings.onError
+			);
+		},
+		
 		getMusicVideos: function(options) {
 			var settings = {
 				sortby: 'none',

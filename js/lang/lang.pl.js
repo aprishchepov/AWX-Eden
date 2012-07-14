@@ -249,6 +249,8 @@ mkf.lang.add({language: 'Polski', short: 'pl', author: 'cienislaw', values: {
 	'label_settings_hint': 				'(Ustawienia są przechowywane w ciasteczkach. Dla tej strony musisz włączyć ciasteczka.)',
 	'label_settings_warning': 			'* Nie zalecane dla dużej ilości pozycji.',
 	'label_not_available': 				'N/A',
+	'label_artist':						'Artist:',
+	'label_label':						'Label:',
 	'label_premiered': 					'Premiera:',
 	'label_episodes': 					'Odcinki:',
 	'label_original_title': 			'Tytuł oryginalny:',
