@@ -63,7 +63,6 @@ var uiviews = {};
 			xbmc.getAlbumDetails({
 				albumid: e.data.idAlbum,
 				onSuccess: function(albumdetails) {
-					console.log(albumdetails);
 					if ( useFanart ) {
 						$('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(albumdetails.fanart) + '")');
 					};
