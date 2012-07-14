@@ -714,6 +714,7 @@ var mkf = {};
 			show: function(options) {
 				var settings = {
 					content			: '',
+					classname		: '',
 					loadingIcon		: false,
 					closeButton		: true,
 					closeButtonText	: ''
@@ -728,7 +729,7 @@ var mkf = {};
 				$('body').append(
 					'<div id="mkfDialog' + dialogHandle +
 					'" class="mkfOverlay">' +
-						'<div class="dialog">' + 
+						'<div class="dialog ' + settings.classname + '">' + 
 						(settings.closeButton?
 							'<a href="" class="close">' +
 							settings.closeButtonText + '</a>':

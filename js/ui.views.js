@@ -63,7 +63,6 @@ var uiviews = {};
 			xbmc.getAlbumDetails({
 				albumid: e.data.idAlbum,
 				onSuccess: function(albumdetails) {
-					console.log(albumdetails);
 					if ( useFanart ) {
 						$('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(albumdetails.fanart) + '")');
 					};
@@ -98,7 +97,6 @@ var uiviews = {};
 		/*---------*/
 		ArtistAlbums: function(e) {
 			// open new page to show artist's albums
-			//console.log(e.data);
 			var $artistContent = $('<div class="pageContentWrapper"></div>');
 			var artistPage = mkf.pages.createTempPage(e.data.objParentPage, {
 				title: e.data.strArtist,
@@ -1239,7 +1237,6 @@ var uiviews = {};
 				content: $unwatchedEpsContent
 			});
 			
-			//console.log(e.data);
 			var fillPage = function() {
 				$unwatchedEpsContent.addClass('loading');
 				xbmc.getunwatchedEps({
@@ -1751,7 +1748,6 @@ var uiviews = {};
 									var thumb = (albuminfo.thumbnail? xbmc.getThumbUrl(albuminfo.thumbnail) : 'images/thumb.png');
 									//var thumb = (songs.songs[0].thumbnail? xbmc.getThumbUrl(songs.songs[0].thumbnail) : 'images/thumb.png');
 									infodiv.removeClass('loading');
-									//console.log(songs);
 									var albumContent = $('<div style="float: left; margin: 5px;"><img src="' + thumb + '" style="width: 154px; height: 154px;" />' +
 									'<div style="width: 154px; display: block; padding-left: 0px; padding-bottom: 50px"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /><span class="infoinfo" title="' + mkf.lang.get('btn_information') + '" /></div>' +
 									'<div style="width: 154px;"><div><span class="label">' + mkf.lang.get('label_genre') + '</span>' +
@@ -1883,7 +1879,6 @@ var uiviews = {};
 								'</div>').appendTo($moviesList);
 				});
 			
-			//console.log($moviesList);
 			
 			page.find('#accordion').accordion({
 				active:false,
@@ -2103,7 +2098,6 @@ var uiviews = {};
 		
 		var imgHeight = contentHeight -100;
 		//var imgWidthName = $('img.singleThumb').width();
-		//console.log(imgWidthName);
 		contentWidth += -100;
 		contentHeight += -5;
 		
@@ -2680,6 +2674,29 @@ var uiviews = {};
 				});
 				
 			return page;		
+		},
+		
+		InputSendText: function() {
+			var dialogHandle = mkf.dialog.show({classname: 'inputSendText'});
+			var dialogContent = $('<div><h1>Send Text</h1><form name="sendtext" id="sendTextForm">' +
+				'<input type="text" size=90 id="sendText" /><input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" /></form></div>');
+
+			dialogContent.find('#sendTextForm').on('submit', function() {
+				console.log($('input').val());
+				xbmc.sendText({
+					text: $('input').val(),
+					onSuccess: function() {
+						$('div.inputSendText .close').click();
+					},
+					onError: function(errorText) {
+						//mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+					}
+				});
+			return false;
+			});
+			mkf.dialog.setContent(dialogHandle, dialogContent);
+
+			return false;
 		}
 		
 	}); // END ui.views

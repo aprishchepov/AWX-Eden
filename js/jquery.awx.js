@@ -1149,7 +1149,7 @@
 		}
 		if (view != 'logosingle') {
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</div></div>').prependTo($artistsViewerElement);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCount + '/' + artistResult.limits.total + '</div></div>').appendTo($artistsViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastArtistCount > artistResult.limits.total? artistResult.limits.total : lastArtistCount) + '/' + artistResult.limits.total + '</div></div>').appendTo($artistsViewerElement);
 			$artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
 			$artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
 		};
@@ -1473,7 +1473,7 @@
 		
 		if (!albumResult.isArtist) {
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastAlbumCountStart + '/' + albumResult.limits.total + '</div></div>').prependTo($albumViewerElement);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastAlbumCount + '/' + albumResult.limits.total + '</div></div>').appendTo($albumViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastAlbumCount > albumResult.limits.total? albumResult.limits.total : lastAlbumCount) + '/' + albumResult.limits.total + '</div></div>').appendTo($albumViewerElement);
 			$albumViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onAlbumsShow);
 			$albumViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onAlbumsShow);
 		}
@@ -1679,7 +1679,7 @@
 		if (view == 'singlePoster') { movieResult.isSet = true };
 		if (!movieResult.isSet) {
 			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</div></div>').prependTo($movieContainer);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCount + '/' + movieResult.limits.total + '</div></div>').appendTo($movieContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastMovieCount > movieResult.limits.total? movieResult.limits.total : lastMovieCount)+ '/' + movieResult.limits.total + '</div></div>').appendTo($movieContainer);
 			$movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
 			$movieContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onMoviesShow);
 		}
@@ -1844,7 +1844,7 @@
 		}
 
 		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCountStart + '/' + totalTVCount + '</div></div>').prependTo($tvshowContainer);
-		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCount + '/' + totalTVCount + '</div></div>').appendTo($tvshowContainer);
+		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastTVCount > totalTVCount? totalTVCount : lastTVCount) + '/' + totalTVCount + '</div></div>').appendTo($tvshowContainer);
 		$tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
 		$tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
 		

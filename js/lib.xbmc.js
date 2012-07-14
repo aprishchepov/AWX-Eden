@@ -3755,9 +3755,11 @@ var xbmc = {};
 					break;
 					case 'Input.OnInputRequested':
 						console.log('Input requested');
+						uiviews.InputSendText();
 					break;
 					case 'Input.OnInputFinished':
 						console.log('Input closed');
+						$('div.inputSendText .close').click();
 					break;
 					case 'System.OnQuit':
 						$('body').empty();
