@@ -535,7 +535,20 @@ var xbmc = {};
 			return false;
 		},
 
-
+		executeAction: function(options) {
+			var settings = {
+				action: 'left',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
+			
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "' + settings.action + '" }, "id": 1}',
+				settings.onSuccess,
+				settings.onError
+			);
+		},
 
 		control: function(options) {
 			var settings = {
@@ -602,6 +615,22 @@ var xbmc = {};
 					);
 				}
 			return false;
+		},
+		
+		sendText: function(options) {
+			var settings = {
+				text: '',
+				done: true,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
+			
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "Input.SendText", "params": { "text": "' + settings.text + '", "done": ' + settings.done + ' }, "id": 1}',
+				settings.onSuccess,
+				settings.onError
+			);
 		},
 		
 		setSubtitles:  function(options) {
@@ -3705,6 +3734,12 @@ var xbmc = {};
 					break;
 					case 'VideoLibrary.OnScanFinished':
 						mkf.messageLog.show(mkf.lang.get('message_video_scan_fin'), mkf.messageLog.status.success, 3000);
+					break;
+					case 'Input.OnInputRequested':
+						console.log('Input requested');
+					break;
+					case 'Input.OnInputFinished':
+						console.log('Input closed');
 					break;
 					case 'System.OnQuit':
 						$('body').empty();
