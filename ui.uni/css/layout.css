@@ -556,7 +556,7 @@ div.goNextPrev a.nextPage{
 	float: right;
 	margin-left: 10px;
 }
-div.goNextPrev div.lastCount{
+div.goNextPrev div.lastCount {
 	font-size: 26px;
 	text-align: center;
 }
