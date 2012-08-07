@@ -935,7 +935,7 @@ var xbmc = {};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"genreid": ' + settings.genreid + ', "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"filter": {"genreid": ' + settings.genreid + '}, "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result);
@@ -961,7 +961,7 @@ var xbmc = {};
 			settings.order = mkf.cookieSettings.get('adesc', 'ascending');
 			
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "genreid" : ' + settings.genreid + ', "properties": ["artist", "genre", "rating", "thumbnail"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "filter" : {"genreid": ' + settings.genreid + '}, "properties": ["artist", "genre", "rating", "thumbnail"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result);
@@ -984,7 +984,7 @@ var xbmc = {};
 			settings.order = mkf.cookieSettings.get('adesc', 'ascending');
 			
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "artistid" : ' + settings.artistid + ', "properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "filter": {"artistid" : ' + settings.artistid + '}, "properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result);
@@ -1711,7 +1711,7 @@ var xbmc = {};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "albumid": ' + settings.albumid + ', "properties": ["artist", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating"], "sort": { "method": "' + settings.sortby + '"} }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "filter": {"albumid": ' + settings.albumid + '}, "properties": ["artist", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating"], "sort": { "method": "' + settings.sortby + '"} }, "id": 1}',
 				//'{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "albumid": ' + settings.albumid + ', "properties": ["artist", "track", "thumbnail"], "sort": { "method": "' + settings.sortby + '"} }, "id": 1}',
 
 				function(response) {
@@ -3755,7 +3755,7 @@ var xbmc = {};
 					break;
 					case 'Input.OnInputRequested':
 						console.log('Input requested');
-						uiviews.InputSendText();
+						uiviews.InputSendText(JSONRPCnotification.params.data);
 					break;
 					case 'Input.OnInputFinished':
 						console.log('Input closed');

@@ -30,9 +30,9 @@ var uiviews = {};
 					var dialogContent = $('<img src="' + thumb + '" class="thumbAlbums dialogThumb" />' +
 						'<h1 class="underline">' + artistdetails.label + '</h1>' +
 						//'<div class="test"><img src="' + tvshow.file + 'logo.png' + '" /></div>' +
-						(artistdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + artistdetails.genre + '</span></div>' : '') +
-						(artistdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + artistdetails.mood + '</span></div>' : '') +
-						(artistdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  artistdetails.style + '</span></div>' : '') +
+						(artistdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + artistdetails.genre.join(', ') + '</span></div>' : '') +
+						(artistdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + artistdetails.mood.join(', ') + '</span></div>' : '') +
+						(artistdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  artistdetails.style.join(', ') + '</span></div>' : '') +
 						(artistdetails.born? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_born') + '</span><span class="labelinfo">' + artistdetails.born + '</span></div>' : '') +
 						(artistdetails.formed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_formed') + '</span><span class="labelinfo">' + artistdetails.formed + '</span></div>' : '') +
 						(artistdetails.died? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_died') + '</span><span class="labelinfo">' + artistdetails.died + '</span></div>' : '') +
@@ -72,9 +72,9 @@ var uiviews = {};
 						'<h1 class="underline">' + albumdetails.label + '</h1>' +
 						//'<div class="test"><img src="' + tvshow.file + 'logo.png' + '" /></div>' +
 						(albumdetails.artist? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_artist') + '</span><span class="labelinfo">' + albumdetails.artist + '</span></div>' : '') +
-						(albumdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + albumdetails.genre + '</span></div>' : '') +
-						(albumdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + albumdetails.mood + '</span></div>' : '') +
-						(albumdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  albumdetails.style + '</span></div>' : '') +
+						(albumdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + albumdetails.genre.join(', ') + '</span></div>' : '') +
+						(albumdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + albumdetails.mood.join(', ') + '</span></div>' : '') +
+						(albumdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  albumdetails.style.join(', ') + '</span></div>' : '') +
 						(albumdetails.rating? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="labelinfo">' + albumdetails.rating + '</span></div>' : '') +
 						//(albumdetails.type? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_type') + '</span><span class="labelinfo">' + albumdetails.type + '</span></div>' : '') +
 						(albumdetails.year? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_year') + '</span><span class="labelinfo">' + albumdetails.year + '</span></div>' : '') +
@@ -1657,7 +1657,7 @@ var uiviews = {};
 						'<a href="" class="button info' + album.albumid + '" title="' + mkf.lang.get('btn_information') + '"><span class="miniIcon information" /></a>' +
 						'<a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
 						'<a href="" class="button play" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>' +
-						'<a href="" class="album' + album.albumid + '">' + album.label + ' - ' + album.artist + '<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist.toLowerCase() + '</div>' +
+						'<a href="" class="album' + album.albumid + '">' + album.label + ' - ' + album.artist[0] + '<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist[0].toLowerCase() + '</div>' +
 						'</a></div></li>').appendTo($albumsList);
 
 					$album.find('.album'+ album.albumid).bind('click', {idAlbum: album.albumid, strAlbum: album.label, objParentPage: parentPage }, uiviews.Songlist);
@@ -1687,8 +1687,8 @@ var uiviews = {};
 							'<img src="' + thumb + '" alt="' + album.label + '" class="thumb" />'
 						) +
 						'<div class="albumName">' + album.label + '' +
-						'<div class="albumArtist">' + album.artist + '</div></div>' +
-						'<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist.toLowerCase() + '</div>' +
+						'<div class="albumArtist">' + album.artist[0] + '</div></div>' +
+						'<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist[0].toLowerCase() + '</div>' +
 					'</div>');
 
 				$albumsList.append($album);
@@ -1717,7 +1717,7 @@ var uiviews = {};
 			
 				$.each(albums.albums, function(i, album) {
 							//var thumb = (album.thumbnail? xbmc.getThumbUrl(album.thumbnail) : 'images/thumb.png');
-							$album = $('<h3 class="multiOpenAccordion-header" id="albumName' + album.albumid + '"><a href="#" id="album' + i + '">' + album.label + ' - ' + album.artist +
+							$album = $('<h3 class="multiOpenAccordion-header" id="albumName' + album.albumid + '"><a href="#" id="album' + i + '">' + album.label + ' - ' + album.artist[0] +
 							'<div class="findKeywords">' + album.label.toLowerCase() + '</div></a></h3>' +
 							'<div class="multiOpenAccordion-content" style="display: table; padding: 0px; width: 100%;">' +
 								'</div>').appendTo($albumsList);
@@ -1753,8 +1753,8 @@ var uiviews = {};
 									'<div style="width: 154px;"><div><span class="label">' + mkf.lang.get('label_genre') + '</span>' +
 									'<span class="value">' + albuminfo.genre + '</span></div><div><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="value">' + (albuminfo.rating? albuminfo.rating : mkf.lang.get('label_not_available')) + '</span></div>' +
 									'<div><span class="label">' + mkf.lang.get('label_year') + '</span><span class="value">' + (albuminfo.year? albuminfo.year : mkf.lang.get('label_not_available')) + '</span></div>' +
-									'<div><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="value">' + (albuminfo.mood? albuminfo.mood : mkf.lang.get('label_not_available')) + '</span></div>' +
-									'<div><span class="label">' + mkf.lang.get('label_style') + '</span><span class="value">' + (albuminfo.style? albuminfo.style : mkf.lang.get('label_not_available')) + '</span></div>' + '</div></div>');
+									'<div><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="value">' + (albuminfo.mood? albuminfo.mood.join(', ') : mkf.lang.get('label_not_available')) + '</span></div>' +
+									'<div><span class="label">' + mkf.lang.get('label_style') + '</span><span class="value">' + (albuminfo.style? albuminfo.style.join(', ') : mkf.lang.get('label_not_available')) + '</span></div>' + '</div></div>');
 									
 									albumContent.find('.infoplay').bind('click', {idAlbum: albuminfo.albumid, strAlbum: albuminfo.label}, uiviews.AlbumPlay);
 									albumContent.find('.infoqueue').bind('click', {idAlbum: albuminfo.albumid}, uiviews.AddAlbumToPlaylist);
@@ -2676,9 +2676,9 @@ var uiviews = {};
 			return page;		
 		},
 		
-		InputSendText: function() {
+		InputSendText: function(data) {
 			var dialogHandle = mkf.dialog.show({classname: 'inputSendText'});
-			var dialogContent = $('<div><h1>Send Text</h1><form name="sendtext" id="sendTextForm">' +
+			var dialogContent = $('<div><h1>' + data.title + '</h1><form name="sendtext" id="sendTextForm">' +
 				'<input type="text" size=90 id="sendText" /><input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" /></form></div>');
 
 			dialogContent.find('#sendTextForm').on('submit', function() {
