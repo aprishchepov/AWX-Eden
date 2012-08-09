@@ -1077,7 +1077,39 @@ var xbmc = {};
 				settings.onError
 			);		
 		},
+		
+		getGenreMusicVideos: function(options) {
+			var settings = {
+				genreid: 0,
+				sortby: 'none',
+				order: 'ascending',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			//var order = mkf.cookieSettings.get('albumOrder')=='album'? 'label' : 'artist';
+			settings.sortby = mkf.cookieSettings.get('musicVideoSort', 'label');
+			settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
+
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "filter": { "genreid": ' + settings.genreid + '}, "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+
+				function(response) {
+					if (settings.order == 'descending' && settings.sortby == 'none') {
+					var aresult = $.makeArray(response.result.albums).reverse();
+					delete response.result.musicvideos;
+					response.result.musicvideos = aresult;
+					settings.onSuccess(response.result);
+					} else {
+					settings.onSuccess(response.result);
+					}
+				},
+
+				settings.onError
+			);		
+		},
+		
 		getMusicVideoInfo: function(options) {
 			var settings = {
 				musicvideoid: 0,
@@ -1169,8 +1201,6 @@ var xbmc = {};
 				settings.async
 			);
 		},
-
-
 
 
 		addAudioFolderToPlaylist: function(options) {
@@ -1761,6 +1791,23 @@ var xbmc = {};
 			);
 		},
 		
+		getVideoGenres: function(options) {
+			var settings = {
+				type: 'movie',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
+			
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetGenres", "params": { "type": "' + settings.type +'" , "sort": { "method": "label" } }, "id": 1}',
+				function(response) {
+					settings.onSuccess(response.result);
+				},
+				settings.onError
+			);
+		},
+		
 		clearVideoPlaylist: function(options) {
 			var settings = {
 				onSuccess: null,
@@ -2066,6 +2113,38 @@ var xbmc = {};
 			});
 		},
 
+		getGenreMovie: function(options) {
+			var settings = {
+				sortby: 'label',
+				order: 'ascending',
+				start: 0,
+				end: 99999,
+				lastStart: 0,
+				genreid: 0,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
+
+			settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
+			settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
+
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": { "genreid": ' + settings.genreid + '}, "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+				//'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["genre", "director", "plot", "title", "originaltitle", "runtime", "year", "rating", "thumbnail", "playcount", "file", "tagline", "set"], "sort": { "order": "ascending", "method": "label" } }, "id": 1}',
+				function(response) {
+					if (settings.order == 'descending' && settings.sortby == 'none') {
+						var mresult = $.makeArray(response.result.movies).reverse();
+						delete response.result.movies;
+						response.result.movies = mresult;
+						settings.onSuccess(response.result);
+					} else {
+						settings.onSuccess(response.result);
+					};
+				},
+				settings.onError
+			);
+		},
 		
 		getMovies: function(options) {
 			var settings = {
@@ -2250,7 +2329,32 @@ var xbmc = {};
 				settings.onError
 			);
 		},
+		
+		getGenreTVshow: function(options) {
+			var settings = {
+				sortby: 'label',
+				order: 'ascending',
+				start: 0,
+				end: 99999,
+				lastStart: 0,
+				genreid: 0,
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options);
 
+			settings.sortby = mkf.cookieSettings.get('TVSort', 'label');
+			settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
+
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "filter": { "genreid": ' + settings.genreid + '}, "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
+				function(response) {
+					settings.onSuccess(response.result);
+				},
+				settings.onError
+			);
+		},
+		
 		getTvShowInfo: function(options) {
 			var settings = {
 				tvshowid: 0,

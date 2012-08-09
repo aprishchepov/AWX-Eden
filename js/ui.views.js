@@ -523,6 +523,58 @@ var uiviews = {};
 			return false;
 		},
 		
+		/*--------*/
+		musicvidGenreList: function(e) {
+			// open new page to show movieGenre
+			var $musicvidGenreContent = $('<div class="pageContentWrapper"></div>');
+			var musicvidGenrePage = mkf.pages.createTempPage(e.data.objParentPage, {
+				title: e.data.strGenre,
+				content: $musicvidGenreContent
+			});
+			var fillPage = function() {
+				$musicvidGenreContent.addClass('loading');
+				xbmc.getGenreMusicVideos({
+					genreid: e.data.idGenre,
+
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_musicvid_genre'), mkf.messageLog.status.error, 5000);
+						$musicvidGenreContent.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						//result.isSet = true;
+						$musicvidGenreContent.defaultMusicVideosViewer(result, musicvidGenrePage);
+						$musicvidGenreContent.removeClass('loading');
+					}
+				});
+			}
+			musicvidGenrePage.setContextMenu(
+				[
+					{
+						'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+						function() {
+							mkf.pages.closeTempPage(musicvidGenrePage);
+							return false;
+						}
+					},
+					{
+						'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+							function(){
+								$musicvidGenreContent.empty();
+								fillPage();
+								return false;
+							}
+					}
+				]
+			);
+			mkf.pages.showTempPage(musicvidGenrePage);
+
+			// movieGenre
+			fillPage();
+
+			return false;
+		},
+		
 /*--------------------*/
 /* Movie UI functions */
 /*--------------------*/
@@ -922,6 +974,58 @@ var uiviews = {};
 					$setContent.removeClass('loading');
 				}
 			});
+
+			return false;
+		},
+		
+		/*--------*/
+		movieGenreList: function(e) {
+			// open new page to show movieGenre
+			var $movieGenreContent = $('<div class="pageContentWrapper"></div>');
+			var movieGenrePage = mkf.pages.createTempPage(e.data.objParentPage, {
+				title: e.data.strGenre,
+				content: $movieGenreContent
+			});
+			var fillPage = function() {
+				$movieGenreContent.addClass('loading');
+				xbmc.getGenreMovie({
+					genreid: e.data.idGenre,
+
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_movie_genre'), mkf.messageLog.status.error, 5000);
+						$movieGenreContent.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						result.isSet = true;
+						$movieGenreContent.defaultMovieViewer(result);
+						$movieGenreContent.removeClass('loading');
+					}
+				});
+			}
+			movieGenrePage.setContextMenu(
+				[
+					{
+						'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+						function() {
+							mkf.pages.closeTempPage(movieGenrePage);
+							return false;
+						}
+					},
+					{
+						'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+							function(){
+								$movieGenreContent.empty();
+								fillPage();
+								return false;
+							}
+					}
+				]
+			);
+			mkf.pages.showTempPage(movieGenrePage);
+
+			// movieGenre
+			fillPage();
 
 			return false;
 		},
@@ -1337,7 +1441,60 @@ var uiviews = {};
 
 			return false;
 		},
-	
+		
+		/*--------*/
+		tvshowGenreList: function(e) {
+			// open new page to show movieGenre
+			var $tvshowGenreContent = $('<div class="pageContentWrapper"></div>');
+			var tvshowGenrePage = mkf.pages.createTempPage(e.data.objParentPage, {
+				title: e.data.strGenre,
+				content: $tvshowGenreContent
+			});
+			var fillPage = function() {
+				$tvshowGenreContent.addClass('loading');
+				xbmc.getGenreTVshow({
+					genreid: e.data.idGenre,
+
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_tv_genre'), mkf.messageLog.status.error, 5000);
+						$tvshowGenreContent.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						result.isFiltered = true;
+						$tvshowGenreContent.defaultTvShowViewer(result, tvshowGenrePage);
+						$tvshowGenreContent.removeClass('loading');
+					}
+				});
+			}
+			tvshowGenrePage.setContextMenu(
+				[
+					{
+						'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+						function() {
+							mkf.pages.closeTempPage(tvshowGenrePage);
+							return false;
+						}
+					},
+					{
+						'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+							function(){
+								$tvshowGenreContent.empty();
+								fillPage();
+								return false;
+							}
+					}
+				]
+			);
+
+			mkf.pages.showTempPage(tvshowGenrePage);
+
+			// tvshowGenre
+			fillPage();
+
+			return false;
+		},
+		
 /*-----------------------*/
 /* Playlist UI functions */
 /*-----------------------*/
@@ -1816,7 +1973,6 @@ var uiviews = {};
 			var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
 			var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
 			var $mvList = $('<div></div>');
-			
 			$.each(mv.musicvideos, function(i, mv) {
 				var thumb = (mv.thumbnail? xbmc.getThumbUrl(mv.thumbnail) : 'images/thumb.png');
 				$mv = $('<div class="mv'+mv.musicvideoid+' thumbWrapper">' +
@@ -1828,8 +1984,8 @@ var uiviews = {};
 							'<img src="' + thumb + '" alt="' + mv.label + '" class="thumb" />'
 						) +
 						'<div class="albumName">' + mv.label + '' +
-						'<div class="albumArtist">' + mv.artist + '</div></div>' +
-						'<div class="findKeywords">' + mv.label.toLowerCase() + ' ' + mv.artist.toLowerCase() + '</div>' +
+						'<div class="albumArtist">' + mv.artist[0] + '</div></div>' +
+						'<div class="findKeywords">' + mv.label.toLowerCase() + ' ' + mv.artist[0].toLowerCase() + '</div>' +
 					'</div>');
 
 				$mvList.append($mv);
@@ -1847,6 +2003,85 @@ var uiviews = {};
 			
 			return $mvList;
 		},
+
+/*-------------*/
+/* Video views */
+/*-------------*/
+
+		/*----video genres list view----*/
+		VideoGenresViewList: function(e) {
+		
+			//set page title
+			var typetitle = mkf.lang.get('page_title_videos');
+			if (e.data.type == 'movie') { typetitle = mkf.lang.get('page_title_movies') };
+			if (e.data.type == 'tvshow') { typetitle = mkf.lang.get('page_title_tvshows') };
+			if (e.data.type == 'musicvideo') { typetitle = mkf.lang.get('page_title_musicvideos') };
+			
+			// open new page to show genre list
+			var $videoGenreContent = $('<div class="pageContentWrapper"></div>');
+			var videoGenrePage = mkf.pages.createTempPage(e.data.parentPage, {
+				title: typetitle,
+				content: $videoGenreContent
+			});
+			var fillPage = function() {
+				$videoGenreContent.addClass('loading');
+				xbmc.getVideoGenres({
+					type: e.data.type,
+
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_tvshows_seasons'), mkf.messageLog.status.error, 5000);
+						$videoGenreContent.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						$videoGenreContent.removeClass('loading');
+						var $videoGenresList = $('<ul class="fileList"></ul>');
+						$.each(result.genres, function(i, videoGenres)  {
+							if (videoGenres.genreid == 0 || videoGenres.label == '') { return };
+							$videoGenresList.append('<li' + (i%2==0? ' class="even"': '') + 
+												'><div class="folderLinkWrapper"><a href="" class="genre' + 
+												videoGenres.genreid + '">' +
+												videoGenres.label + '<div class="findKeywords">' + videoGenres.label.toLowerCase() + '</div>' +
+												'</a></div></li>');
+							if (e.data.type == 'movie' ) {					
+								$videoGenresList.find('.genre' + videoGenres.genreid).bind('click',{idGenre: videoGenres.genreid,strGenre: videoGenres.label, objParentPage: videoGenrePage}, uiviews.movieGenreList);
+							} else if (e.data.type == 'tvshow') {
+								$videoGenresList.find('.genre' + videoGenres.genreid).bind('click',{idGenre: videoGenres.genreid,strGenre: videoGenres.label, objParentPage: videoGenrePage}, uiviews.tvshowGenreList);
+							} else if (e.data.type == 'musicvideo') {
+								$videoGenresList.find('.genre' + videoGenres.genreid).bind('click',{idGenre: videoGenres.genreid,strGenre: videoGenres.label, objParentPage: videoGenrePage}, uiviews.musicvidGenreList);
+							}
+						});
+						$videoGenreContent.append($videoGenresList);
+					}
+				});
+			}
+			videoGenrePage.setContextMenu(
+				[
+					{
+						'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+						function() {
+							mkf.pages.closeTempPage(videoGenrePage);
+							return false;
+						}
+					},
+					{
+						'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+							function(){
+								$videoGenreContent.empty();
+								fillPage();
+								return false;
+							}
+					}
+				]
+			);
+			mkf.pages.showTempPage(videoGenrePage);
+
+			// show tv show's seasons
+			fillPage();
+
+			return false;
+		},
+		
 /*-------------*/
 /* Movie views */
 /*-------------*/
@@ -2578,7 +2813,7 @@ var uiviews = {};
 							'<a class="button remove" href="" title="' + mkf.lang.get('btn_remove') +  '"><span class="miniIcon remove" /></a><a class="button playlistmove" href="" title="' + mkf.lang.get('btn_swap') +  '"><span class="miniIcon playlistmove" /></a>' +
 							'<a class="' + playlistItemCur + ' apli' + i + ' play" href="">' + (i+1) + '. ' +
 							(artist? artist + ' - ' : '') + (album? album + ' - ' : '') + (title? title : label) + '&nbsp;&nbsp;&nbsp;&nbsp;' + (duration? xbmc.formatTime(duration) : '') +
-							(artist? '<div class="findKeywords">' + artist.toLowerCase() + ' ' + album.toLowerCase() + ' ' + label.toLowerCase() + '</div>' : '' ) +
+							(artist? '<div class="findKeywords">' + artist[0].toLowerCase() + ' ' + album.toLowerCase() + ' ' + label.toLowerCase() + '</div>' : '' ) +
 							'</a></div></li>').appendTo($itemList);
 
 						$item.find('a.play').bind('click', {itemNum: i}, uiviews.PlaylistAudioItemPlay);

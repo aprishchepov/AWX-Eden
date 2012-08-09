@@ -40,6 +40,7 @@ var awxUI = {};
 		VideoPlaylistsPage: null,
 		tvShowsPage: null,
 		tvShowsRecentlyAddedPage: null,
+		videoGenres: null,
 		videoFilesPage: null,
 		videoPlaylistPage: null,
 		videoScanPage: null,
@@ -60,6 +61,7 @@ var awxUI = {};
 		$moviesContent: null,
 		$VideoPlaylistsContent: null,
 		$moviesRecentContent: null,
+		$videoGenresContent: null,
 		$tvShowsContent: null,
 		$tvShowsRecentlyAddedContent: null,
 		$videoFilesContent: null,
@@ -578,6 +580,29 @@ var awxUI = {};
 			});
 			//end Music Videos
 			
+			//Video genres
+			this.$videoGenresContent = $('<div class="pageContentWrapper"></div>');
+			var videoGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
+			videoGenresContextMenu.push({
+				'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+					function(){
+						awxUI.$videoGenresContent.empty();
+						awxUI.onVideoGenresShow();
+
+						return false;
+					}
+			});
+
+			this.videoGenresPage = videosPage.addPage({
+				title: mkf.lang.get('page_title_genres'),
+				menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+				content: this.$videoGenresContent,
+				contextMenu: videoGenresContextMenu,
+				onShow: $.proxy(this, "onVideoGenresShow"),
+				className: 'videoGenres'
+			});
+			//end Video genres
+			
 			//Video Files
 			this.$videoFilesContent = $('<div class="pageContentWrapper"></div>');
 			this.videoFilesPage = videosPage.addPage({
@@ -969,6 +994,21 @@ var awxUI = {};
 						$contentBox.removeClass('loading');
 					}
 				});
+			}
+		},
+		
+		/**************************************
+		 * Called when Video Genres -Page is shown. *
+		 **************************************/
+		onVideoGenresShow: function() {
+			if (this.$videoGenresContent.html() == '') {
+				var videoGenresPage = this.videoGenresPage;
+				var $contentBox = this.$videoGenresContent;
+				$contentBox.addClass('loading');
+
+				$contentBox.defaultVideoGenresViewer(videoGenresPage);
+				$contentBox.removeClass('loading');
+
 			}
 		},
 		

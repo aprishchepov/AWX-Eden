@@ -1539,9 +1539,9 @@
 		var $mvViewerElement = $(this);
 		
 		switch (view) {
-			case 'list':
+			/*case 'list':
 				uiviews.AlbumsViewList(mvResult, parentPage).appendTo($mvViewerElement);
-				break;
+				break;*/
 			case 'cover':
 				uiviews.MusicVideosViewThumbnails(mvResult, parentPage).appendTo($mvViewerElement);
 				break;
@@ -1620,7 +1620,7 @@
 	 |
 	 |  @param movieResult	Result of VideoLibrary.GetMovies.
 	\* ########################### */
-	$.fn.defaultMovieViewer = function(movieResult) {
+	$.fn.defaultMovieViewer = function(movieResult, parentPage) {
 
 		if (!movieResult.limits.total > 0) { return };
 		totalMovieCount = movieResult.limits.total;
@@ -1802,14 +1802,16 @@
 		
 		if (!tvShowResult.limits.total > 0) { return };
 		totalTVCount = tvShowResult.limits.total;
+		if (!tvShowResult.isFiltered) {
 		//Out of bound checking. Reset to start, really should cycle backwards.
-		if (lastTVCountStart > tvShowResult.limits.total -1) {
-			lastTVCount = mkf.cookieSettings.get('limitTV', 25);
-			lastTVCountStart = 0;		
-			awxUI.onTvShowsShow();
-			return
+			if (lastTVCountStart > tvShowResult.limits.total -1) {
+				lastTVCount = mkf.cookieSettings.get('limitTV', 25);
+				lastTVCountStart = 0;		
+				awxUI.onTvShowsShow();
+				return
+			};
 		};
-
+		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
 		var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
 		//var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
@@ -1843,11 +1845,12 @@
 			setTimeout(loadThumbs, 100);
 		}
 
-		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCountStart + '/' + totalTVCount + '</div></div>').prependTo($tvshowContainer);
-		$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastTVCount > totalTVCount? totalTVCount : lastTVCount) + '/' + totalTVCount + '</div></div>').appendTo($tvshowContainer);
-		$tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
-		$tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
-		
+		if (!tvShowResult.isFiltered) {
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCountStart + '/' + totalTVCount + '</div></div>').prependTo($tvshowContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastTVCount > totalTVCount? totalTVCount : lastTVCount) + '/' + totalTVCount + '</div></div>').appendTo($tvshowContainer);
+			$tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
+			$tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
+		};
 		
 	}; // END defaultTvShowViewer
 
@@ -1974,7 +1977,7 @@
 	 |
 	 |  @param episodesResult
 	\* ########################### */
-	$.fn.defaultEpisodesViewer = function(episodesResult) {
+	$.fn.defaultEpisodesViewer = function(episodesResult, parentPage) {
 		
 		if (!episodesResult.limits.total > 0) { return };
 		
@@ -2005,7 +2008,24 @@
 		}
 		
 	}; // END defaultEpisodesViewer
-
+	
+	/* ########################### *\
+	 |  Video Genres
+	 |
+	 |  @param episodesResult
+	\* ########################### */
+	$.fn.defaultVideoGenresViewer = function(parentPage) {
+		
+		var $scanVideoList = $('<div class="tools"><span class="genres genreMovies" title="' + mkf.lang.get('page_buttontext_movies') +
+		'">' + mkf.lang.get('page_buttontext_movies') + '</span><span class="genres genreTV" title="' + mkf.lang.get('page_buttontext_tvshows') +
+		'">' + mkf.lang.get('page_buttontext_tvshows') + '</span><span class="genres genreMusicVid" title="' + mkf.lang.get('page_buttontext_musicvideos') +'">' + mkf.lang.get('page_buttontext_musicvideos') +'</span></div><br />').appendTo($(this));
+		
+		$scanVideoList.find('.genreMovies').on('click', {type: 'movie', parentPage: parentPage }, uiviews.VideoGenresViewList);
+		$scanVideoList.find('.genreTV').on('click', {type: 'tvshow', parentPage: parentPage }, uiviews.VideoGenresViewList);
+		$scanVideoList.find('.genreMusicVid').on('click', {type: 'musicvideo', parentPage: parentPage }, uiviews.VideoGenresViewList);
+		
+	}; // END defaultVideoGenresViewer
+	
 	/* ########################### *\
 	 |  Show unwatched episodes.
 	 |
