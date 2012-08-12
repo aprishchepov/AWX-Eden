@@ -2029,7 +2029,7 @@ var uiviews = {};
 					type: e.data.type,
 
 					onError: function() {
-						mkf.messageLog.show(mkf.lang.get('message_failed_tvshows_seasons'), mkf.messageLog.status.error, 5000);
+						mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
 						$videoGenreContent.removeClass('loading');
 					},
 
