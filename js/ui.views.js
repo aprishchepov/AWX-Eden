@@ -1569,6 +1569,60 @@ var uiviews = {};
 			return false;
 		},
 		
+		/*--------*/
+		adFilterList: function(result) {
+			// open new page to show movieGenre
+			var $adFilterContent = $('<div class="pageContentWrapper"></div>');
+			var adFilterPage = mkf.pages.createTempPage(result.objParentPage, {
+				title: 'adFilter',
+				content: $adFilterContent
+			});
+			var fillPage = function() {
+				$adFilterContent.addClass('loading');
+				//pipe result to type default viewer
+				if (result.Type == 'movies') { $adFilterContent.defaultMovieViewer(result.movies); };
+				/*xbmc.getGenreMovie({
+					genreid: e.data.idGenre,
+
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_movie_genre'), mkf.messageLog.status.error, 5000);
+						$movieGenreContent.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						result.isSet = true;
+						$movieGenreContent.defaultMovieViewer(result);
+						$movieGenreContent.removeClass('loading');
+					}
+				});*/
+			}
+			adFilterPage.setContextMenu(
+				[
+					{
+						'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+						function() {
+							mkf.pages.closeTempPage(adFilterPage);
+							return false;
+						}
+					},
+					{
+						'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+							function(){
+								$adFilterContent.empty();
+								fillPage();
+								return false;
+							}
+					}
+				]
+			);
+			mkf.pages.showTempPage(adFilterPage);
+
+			//ad filter page
+			fillPage();
+
+			return false;
+		},
+		
 /*----------*/
 /* UI Views */
 /*----------*/
@@ -2911,13 +2965,307 @@ var uiviews = {};
 			return page;		
 		},
 		
+/*------------*/
+/* Misc views */
+/*------------*/	
+	
+		AdvancedSearch: function(search, parentPage) {
+			//Music or video?
+			var n = 0;
+			var andOr = 'and';
+			var indentLevel = 0;
+			var searchLib = 'movies';
+			var adFilterPage = $('<div class="AdFilter"></div>');
+			var fillOptions = function(fields, ops, num) {
+				page.find('select#searchFields' + num).children().remove();
+				$.each(fields, function(i, field) {
+					page.find('select#searchFields' + num).append('<option value=' + field + '>' + field + '</option>');
+				});
+				page.find('select#searchOps' + num).children().remove();
+				$.each(ops, function(i, op) {
+					page.find('select#searchOps' + num).append('<option value=' + op + '>' + op + '</option>');
+				});	
+			};
+			var addItem = function() {
+				n += 1;
+				var indentLev = indentLevel;
+				if (n > 9) { page.find('.addSearch').attr('disabled', true) };
+				//Create a value from n that won't change.
+				var i = n;
+				var searchBlock = $('<div class="searchDiv' + (indentLevel >0? ' indent' + indentLev + '">' : '">') +
+					(n > 1? '<select id="searchAndOr' + n + '" name="searchAndOr' + n + '" style="width: 50px; clear: both; margin-bottom:10px;"><option value="and">and</option><option value="or" ' + (andOr == 'or'? 'selected="selected"' : '') + '>or</option></select>' +
+					'<a href="" class="btnRemove">Remove </a><a href="" class="btnIndent"> Indent </a><a href="" class="btnRemoveIndent"> Remove Indent</a><br />' : '') +
+					'<fieldset class="searchBlock">' +
+					'<legend>' + mkf.lang.get('Field') + '</legend>' +
+					'<select id="searchFields' + n + '" name="searchFields' + n + '"></select>' +
+					'</fieldset>' +
+					'<fieldset class="searchBlock">' +
+					'<legend>' + mkf.lang.get('Operator') + '</legend>' +
+					'<select id="searchOps' + n + '" name="searchOps' + n + '"></select>' +
+					'</fieldset>' +
+					'<fieldset>' +
+					'<legend>' + mkf.lang.get('SearchFor') + '</legend>' +
+					'<input type="text" id="searchTerms' + n + '" name="searchTerms' + n + '" style="width: 100%" />' +
+					'</fieldset></div>');
+
+				page.find('input#search').before(searchBlock);
+				searchBlock.find('a.btnRemove').on('click', {num: n}, removeItem);
+				searchBlock.find('a.btnIndent').on('click', {num: n}, indentItem);
+				searchBlock.find('a.btnRemoveIndent').on('click', {num: n}, indentDelItem);
+				if (n > 2) {
+					searchBlock.find('select#searchAndOr' + n).on('change', {andOrState: 'change'}, indentItem);
+				};//{andOr: $(this).val()}, indentItem);
+				fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), i);
+				return false;
+			};
+			
+			var removeItem = function(e) {
+				var toDel = page.find('select#searchFields' + e.data.num).parentsUntil('form');
+				page.find('select#searchFields' + e.data.num).parentsUntil('form').remove();
+				return false;
+			};
+			
+			var indentItem = function(e) {
+				if (typeof(e)!== 'undefined') {
+					if (e.data.andOrState == 'change') { if (andOr == 'and') { andOr = 'or' } else { andOr = 'and' } };
+				};
+				var indentLev = indentLevel;
+				$(this).parent().removeClass('indent' + indentLev);
+				if (indentLevel <5) { indentLevel += 1 } else { indentLevel = 5 };
+				var indentLev = indentLevel;
+				$(this).parent().addClass('indent' + indentLev);
+				return false;
+			};
+			
+			var indentDelItem = function(e) {
+				//Bad naming, more like decrease indent level
+				var indentLev = indentLevel;
+				indentLevel -= 1;
+				$(this).parent().removeClass('indent' + indentLev);
+				var indentLev = indentLevel;
+				if (indentLevel > 0) { $(this).parent().addClass('indent' + indentLev) };
+				return false;
+			};
+			
+			if (search == 'video') {
+				var searchFieldsmovies = ["title","plot","plotoutline","tagline","votes","rating","time","writers","playcount","lastplayed","inprogress","genre","country","year","director","actor","mpaarating","top250","studio","hastrailer","filename","path","set","tag","dateadded","videoresolution","audiochannels","videocodec","audiocodec","audiolanguage","subtitlelanguage","videoaspect","playlist"];
+				var searchOpsmovies = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldstvshows = ["title","plot","status","votes","rating","year","genre","director","actor","numepisodes","numwatched","playcount","path","studio","mpaarating","dateadded","playlist"];
+				var searchOpstvshows = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldsepisodes = ["title","tvshow","plot","votes","rating","time","writers","airdate","playcount","lastplayed","inprogress","genre","year","director","actor","episode","season","filename","path","studio","mpaarating","dateadded","videoresolution","audiochannels","videocodec","audiocodec","audiolanguage","subtitlelanguage","videoaspect","playlist"];
+				var searchOpsepisodes = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldsmusicvideos = ["title","genre","album","year","artist","filename","path","playcount","lastplayed","time","director","studio","plot","dateadded","videoresolution","audiochannels","videocodec","audiocodec","audiolanguage","subtitlelanguage","videoaspect","playlist"];
+				var searchOpsmusicvideos = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+
+					
+				var page = $('<div class="advSearch"><h2>' + mkf.lang.get('advSearchVideo') + '</h2>' +
+					'<form name="advSearchForm" id="advSearchForm">' +
+					'<fieldset>' +
+					'<legend>' + mkf.lang.get('Library') + '</legend>' +
+					'<select id="searchType" name="searchType">' +
+					'<option value="movies">' + mkf.lang.get('page_buttontext_movies') + '</option>' +
+					'<option value="tvshows">' + mkf.lang.get('page_buttontext_tvshows') + '</option>' +
+					'<option value="episodes">' + mkf.lang.get('group_episodes') + '</option>' +
+					'<option value="musicvideos">' + mkf.lang.get('page_buttontext_musicvideos') + '</option>' +
+					'</select>' +
+					'</fieldset>' +
+					'<input type="submit" name="search" value="Search" id="search" />' +
+					'<input type="button" class="addSearch" value="Add">' +
+					'</form>').appendTo(adFilterPage);
+					
+				addItem();
+				page.find('#searchType').change(function() {
+					//remove fields on library change
+					searchLib = $(this).val()
+					page.find('.searchDiv').empty().remove();
+					n = 0;
+					indentLevel = 0;
+					andOr = 'and';
+					addItem();
+					page.find('.addSearch').attr('disabled', false);
+					fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), 1);
+				});
+				fillOptions(searchFieldsmovies, searchOpsmovies);
+				
+
+				
+				page.find('input.addSearch').on('click', addItem);
+				
+				page.find('form#advSearchForm').submit(function() {
+					//Build a useful object to pharse later
+					var searchType = $(this).find('#searchType').val();
+					var searchParams = {library: search};
+					searchParams.searchType = searchType;
+					searchParams.fields = {};
+					var indentA = 0;
+					var oldIndent = 0;
+					page.find('div.searchDiv').each(function(c, div) {
+						var classlist = $(this).attr('class').split(/\s+/);						
+						var indent = 0;						
+						//if (classlist.length = 2) { console.log(classlist[1]) };
+						//console.log(classlist);
+						//console.log(classlist.length);
+						if (typeof(classlist[1]) !== 'undefined') { cl = classlist[1]; indent = cl[cl.length-1] };
+						//console.log(indent);
+
+						if (typeof(searchParams.fields[indent]) === 'undefined') { searchParams.fields[indent] = {} };
+						if (oldIndent != indent) { indentA = 0; };
+						//if (typeof(searchParams.fields[indent][indentA]) === 'undefined') { searchParams.fields[indent][indentA] = {} };
+						//searchParams.fields[indent][c] = {};
+						searchParams.fields[indent][indentA] = {};
+						searchParams.num = c;
+						
+						$(this).find(':input').each(function(x, y) {
+							var name = y.name.slice(0, -1);
+							searchParams.fields[indent][indentA][name] = y.value;
+
+						});
+						indentA ++;
+						oldIndent = indent;
+					});
+					//console.log(searchParams);
+					/*var searchForm = $(this).serializeArray();
+					searchParams.searchType = searchForm[0].value;
+					searchForm.splice(0,1);
+					console.log(searchForm);
+					$.each(searchForm, function(i, param) {
+						console.log(param);
+						searchParams[param.name] = param.value;
+					});
+					console.log(searchParams);*/
+				/*
+				xbmc.getGenreMusicVideos({
+					genreid: e.data.idGenre,
+
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_musicvid_genre'), mkf.messageLog.status.error, 5000);
+						$musicvidGenreContent.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						//result.isSet = true;
+						$musicvidGenreContent.defaultMusicVideosViewer(result, musicvidGenrePage);
+						$musicvidGenreContent.removeClass('loading');
+					}
+				});
+				
+				xbmc.getTvShows({
+					start: lastTVCountStart,
+					end: lastTVCount,
+					onError: function() {
+						mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+						$contentBox.removeClass('loading');
+					},
+
+					onSuccess: function(result) {
+						$contentBox.defaultTvShowViewer(result, tvShowsPage);
+						$contentBox.removeClass('loading');
+					}
+				});
+*/
+					console.log(searchParams);
+					xbmc.getAdFilter({
+						options: searchParams,
+						onSuccess: function(result) {
+							result.Type = searchParams.searchType;
+							//result.objParentPage = parentPage;						
+							console.log(result);
+							//make sub page for result
+
+							var $adFilterRContent = $('<div class="pageContentWrapper"></div>');
+							var adFilterRPage = mkf.pages.createTempPage(parentPage, {
+								title: 'adFilterR',
+								content: $adFilterRContent
+							});
+							var fillPage = function() {
+								$adFilterRContent.addClass('loading');
+								switch (result.Type) {
+									case 'movies':
+										result.isSet = true;
+										$adFilterRContent.defaultMovieViewer(result);
+									break;
+									case 'tvshows':
+										result.isFiltered = true;
+										$adFilterRContent.defaultTvShowViewer(result);
+									break;
+									case 'episodes':
+										$adFilterRContent.defaultEpisodesViewer(result);
+									break;
+									case 'musicvideos':
+										$adFilterRContent.defaultMusicVideosViewer(result);
+									break;
+								}
+								
+								$adFilterRContent.removeClass('loading');
+
+							}
+							adFilterRPage.setContextMenu(
+								[
+									{
+										'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+										function() {
+											mkf.pages.closeTempPage(adFilterRPage);
+											return false;
+										}
+									},
+									{
+										'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+											function(){
+												$adFilterRContent.empty();
+												fillPage();
+												return false;
+											}
+									}
+								]
+							);
+							mkf.pages.showTempPage(adFilterRPage);
+
+							// movieGenre
+							fillPage();
+
+							return false;
+			
+							//xbmc.defaultMovieViewer(result, parentPage);
+							
+						},
+						onError: function() {
+							console.log('Error ad filter');
+							//mkf.messageLog.show(mkf.lang.get('message_failed_adFilter'), mkf.messageLog.status.error, 5000);
+						}					
+					});
+					return false;
+				});
+
+			} else if (search == 'audio') {
+				console.log('music search');
+				var searchFieldsArtists = ["artist","genre","moods","styles","instruments","biography","born","bandformed","disbanded","died","playlist"];
+				var searchOpsArtists = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldsAlbums = ["genre","album","artist","albumartist","year","review","themes","moods","styles","type","label","rating","playlist"];
+				var searchOpsAlbums = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldsSongs = ["genre","album","artist","albumartist","title","year","time","tracknumber","filename","path","playcount","lastplayed","rating","comment","dateadded","playlist"];
+				var searchOpsSongs = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				
+				var page = $('<div><h2>' + mfk.lang.get('advSearchMusic') + '</h2>' +
+					'<form name="advSearchForm">' +
+					'<fieldset>' +
+					'<select id="searchType" name="searchType">' +
+					'<option value="artists">' + mkf.lang.get('page_buttontext_artists') + '</option>' +
+					'<option value="albums">' + mkf.lang.get('page_buttontext_albums') + '</option>' +
+					'<option value="songs">' + mkf.lang.get('btn_songs') + '</option>' +
+					'</select>' +
+					'</fieldset>' +
+					'</form>').appendTo(adFilterPage);
+			}
+			
+		return page;
+		},
+		
 		InputSendText: function(data) {
 			var dialogHandle = mkf.dialog.show({classname: 'inputSendText'});
 			var dialogContent = $('<div><h1>' + data.title + '</h1><form name="sendtext" id="sendTextForm">' +
 				'<input type="text" size=90 id="sendText" /><input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" /></form></div>');
 
 			dialogContent.find('#sendTextForm').on('submit', function() {
-				console.log($('input').val());
 				xbmc.sendText({
 					text: $('input').val(),
 					onSuccess: function() {

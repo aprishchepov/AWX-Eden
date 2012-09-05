@@ -62,6 +62,17 @@ var xbmc = {};
 		   }
 		},
 
+		objLength: function (obj) {
+		  var result = 0;
+		  for(var prop in obj) {
+			if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+			// or Object.prototype.hasOwnProperty.call(obj, prop)
+			  result++;
+			}
+		  }
+		  return result;
+		},
+
 		input: function(options) {
 			var settings = {
 				type: 'Select',
@@ -2583,7 +2594,135 @@ var xbmc = {};
 				settings.onError
 			);
 		},
-
+		
+		getAdFilter: function(options) {
+			var settings = {
+				library: 'Video',
+				searchType: 'movie',
+				onSuccess: null,
+				onError: null
+			};
+			$.extend(settings, options.options);
+			//temp fix
+			settings.onSuccess = options.onSuccess;
+			settings.onError = options.onError;
+			console.log(settings);
+			//console.log(options);
+			//console.log(xbmc.objLength(settings.fields));
+			var fieldsLen = xbmc.objLength(settings.fields);
+			var fields = settings.fields;
+			var query = '';
+			var properties = '';
+			
+			switch (settings.searchType) {
+				case 'movies':
+					properties = '"properties" : ["rating", "thumbnail", "playcount", "file"],';
+				break;
+				case 'tvshows':
+					properties = '"properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"],';
+				break;
+				case 'episodes':
+					properties = '"properties": ["episode", "playcount", "fanart", "plot", "season", "showtitle", "thumbnail", "rating"],';
+				break;
+				case 'musicvideos':
+					properties = '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ],';
+				break;
+			};
+			if (fieldsLen > 1 ) {
+				//nested
+				//console.log(fields);
+				query = '{"jsonrpc": "2.0", "id": 1, "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "' + fields[1][0].searchAndOr + '": [ ';
+				$.each(fields, function(indent, ifields) {
+					//console.log(indent);
+					//console.log(ifields);
+					var tempQ = '';
+					if (xbmc.objLength(ifields) > 1) {
+						//multiple fields
+						console.log('multi');
+						query += '{ "' + ifields[1].searchAndOr + '": [ ';
+						$.each(ifields, function(i, field) {
+							tempQ += '{"field": "' + field.searchFields +'", "operator": "' + field.searchOps + '", "value": "' + field.searchTerms + '"},';
+							if (i == xbmc.objLength(ifields)-1) {
+								tempQ = tempQ.slice(0, -1);
+								tempQ += ' ] }, ' 
+							};
+							//console.log(field);
+						});
+						//console.log('ident : ' + indent);
+						//console.log(xbmc.objLength(ifields)-1)
+						//tempQ = tempQ.slice(0, -1);
+						if (indent < xbmc.objLength(ifields)-1) {
+							tempQ = tempQ.slice(0, -1);
+							//tempQ += ' ] } ] ';
+						}
+					} else {
+						//single field
+						console.log('single');
+						tempQ += '{"field": "' + ifields[0].searchFields +'", "operator": "' + ifields[0].searchOps + '", "value": "' + ifields[0].searchTerms + '"}, ';
+						console.log(tempQ);
+					};
+					query += tempQ;
+				});
+				//console.log(query.length);
+				//query.slice(0, -2); <-- doesn't work for some reason.
+				query = query.substring(0, query.length - 2)
+				//console.log(query.length);
+				query += ']';
+				for (i=0; i<fieldsLen+1; i++) {
+					query += ' }';
+				}
+				//console.log(query);
+			} else {
+				//not nested - simple (hopefully)
+				var fieldNum = xbmc.objLength(settings.fields[0]);
+				if (fieldNum == 1) {
+					query = '{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "field": "' + fields[0][0].searchFields +'", "operator": "' + fields[0][0].searchOps + '", "value": "' + fields[0][0].searchTerms + '" } }, "id": 1}';
+				} else {
+					var query = '{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "' + fields[0][1].searchAndOr + '": [ ';
+					$.each(fields[0], function(i, field) {
+						query += '{"field": "' + fields[0][i].searchFields +'", "operator": "' + fields[0][i].searchOps + '", "value": "' + fields[0][i].searchTerms + '"},';
+					});
+					//remove last comma
+					query = query.slice(0, -1);
+					query += '] } }, "id": 1}';
+					//console.log(query);
+				};
+			};
+			
+			console.log(query);
+			
+			xbmc.sendCommand(
+				query,
+				function(response) {
+					settings.onSuccess(response.result);
+				},
+				function() {
+					settings.onError;
+				}
+			);
+			/*if (settings.num == 0) {
+				console.log('{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "field": "' + settings[0].searchFields +'", "operator": "' + settings[0].searchOps + '", "value": "' + settings[0].searchTerms + '" } }, "id": 1}');
+			} else {
+				var fieldsets = [];
+				for (i=0; i<=settings.num; i++) {
+					if (i>1) { if (settings[i].searchAndOr != settings[i-1].searchAndOr) fieldsets[i] = ' ] "' + settings[i].searchAndOr + '": [ {"field": "' + settings[i].searchFields + '", "operator": "' + settings[i].searchOps + '", "value": "' + settings[i].searchTerms + '"}';
+					} else { fieldsets[i] = '{"field": "' + settings[i].searchFields + '", "operator": "' + settings[i].searchOps + '", "value": "' + settings[i].searchTerms + '"}' };
+				}
+				console.log(fieldsets);
+				console.log('{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "' + settings[1].searchAndOr + '": [ ' + fieldsets + ' ] } }, "id": 1}');
+			};*/
+			/*xbmc.sendCommand(
+				//{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "filter": { "field": "title", "operator": "startswith", "value": "v" } }, "id": 1}
+				'{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "field": "' + settings.searchFields +'", "operator": "' + settings.searchOps + '", "value": "' + settings.searchTerms + '" } }, "id": 1}',
+				function(response) {
+					settings.onSuccess(response.result);
+				},
+				function() {
+					settings.onError;
+				}
+			);*/
+		},
+		
 		getPrepDownload: function(options) {
 			var settings = {
 				path: '',

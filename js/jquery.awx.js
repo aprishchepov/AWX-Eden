@@ -1622,6 +1622,7 @@
 	\* ########################### */
 	$.fn.defaultMovieViewer = function(movieResult, parentPage) {
 
+		console.log(movieResult);
 		if (!movieResult.limits.total > 0) { return };
 		totalMovieCount = movieResult.limits.total;
 		//may be passed from set page. No limiting with movie sets.
@@ -2590,6 +2591,17 @@
 		});
 	}; // END defaultVideoPlaylistsViewer
 
+	/* ########################### *\
+	 |  Video Advanced Filter
+	 |
+	 |  @param episodesResult
+	\* ########################### */
+	$.fn.defaultVideoAdFilterViewer = function(parentPage) {
+		
+		var adFilterContainer = $(this);
+		uiviews.AdvancedSearch('video', parentPage).appendTo(adFilterContainer);
+		
+	}; // END defaultAdFilterViewer
 	
 	/* ########################### *\
 	 |  Show filesystem.

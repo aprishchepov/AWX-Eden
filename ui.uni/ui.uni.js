@@ -44,6 +44,7 @@ var awxUI = {};
 		videoFilesPage: null,
 		videoPlaylistPage: null,
 		videoScanPage: null,
+		videoAdFilterPage: null,
 
 		// --- Page Content ---
 		$musicContent: null,
@@ -67,6 +68,7 @@ var awxUI = {};
 		$videoFilesContent: null,
 		$videoPlaylistContent: null,
 		$videoScanContent: null,
+		$videoAdFilterContent: null,
 
 
 
@@ -668,7 +670,19 @@ var awxUI = {};
 				onShow: $.proxy(this, "onVideoScanShow"),
 				className: 'videoscan'
 			});
+
+			//Video Advanced Filter
+			this.$videoAdFilterContent = $('<div class="pageContentWrapper"></div>');
+			var videoAdFilterContextMenu = $.extend(true, [], standardVideosContextMenu);
 			
+			this.videoAdFilterPage = videosPage.addPage({
+				title: mkf.lang.get('page_title_video_AdFilter'),
+				content: this.$videoAdFilterContent,
+				menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_AdFilter'),
+				contextMenu: videoAdFilterContextMenu,
+				onShow: $.proxy(this, "onVideoAdFilterShow"),
+				className: 'videoAdFilter'
+			});			
 			/*
 			 * Page Content
 			 */
@@ -1285,6 +1299,15 @@ var awxUI = {};
 			$contentBox.defaultVideoScanViewer('Video');
 		},
 		
+		/*********************************************
+		 * Called when Ad Filter-Page is shown. *
+		 *********************************************/
+		onVideoAdFilterShow	: function() {
+			var $contentBox = this.$videoAdFilterContent;
+			$contentBox.empty();
+			$contentBox.defaultVideoAdFilterViewer(this.videoAdFilterPage);
+		},
+	
 		/*********************************************
 		 * Called when Music-Scan-Page is shown. *
 		 *********************************************/

@@ -2335,6 +2335,32 @@ span.currentlyPlaying {
 	width: 580px;
 	height: 20px;
 }
+div.advSearch {
+	background-color: rgba(0,0,0,0.8);
+	width: 500px;
+	margin-right: auto;
+	margin-left: auto;
+}
+fieldset.searchBlock {
+    float: left;
+	/*width: 45%;*/
+    margin-right: 10px;
+}
+div.searchDiv.indent1 {
+	margin-left: 20px;
+}
+div.searchDiv.indent2 {
+	margin-left: 40px;
+}
+div.searchDiv.indent3 {
+	margin-left: 60px;
+}
+div.searchDiv.indent4 {
+	margin-left: 80px;
+}
+div.searchDiv.indent5 {
+	margin-left: 100px;
+}
 #preload {
     display: none;
 }
