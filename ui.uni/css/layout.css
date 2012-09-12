@@ -544,21 +544,32 @@ ul.mkfPageContextMenu li {
 }
 div.goNextPrev {
 	display: block;
+	height: 48px;
 	clear: both;
 }
-div.goNextPrev a.prevPage{
-	font-size: 26px;
-	float: left;
-	margin-left: 10px;
+div.goNextPrev a.prevPage {
+    background: url("../images/quick_controls.png") no-repeat scroll -48px 0 transparent;
+	margin-left: 5px;
+    float: left;
+    height: 48px;
+    width: 48px;	
 }
-div.goNextPrev a.nextPage{
-	font-size: 26px;
-	float: right;
-	margin-left: 10px;
+div.goNextPrev a.nextPage {
+    background: url("../images/quick_controls.png") no-repeat scroll -144px 0 transparent;
+	margin-right: 5px;
+    float: right;
+    height: 48px;
+    width: 48px;
 }
 div.goNextPrev div.lastCount {
 	font-size: 26px;
 	text-align: center;
+}
+div.goNextPrev span.npCount {
+	background-color: rgba(0,0,0,0.8);
+	vertical-align: middle;
+	padding: 0 5px;
+	border-radius: 2px;
 }
 img.thumb {
     /*border: 1px solid #575757;*/
@@ -1385,6 +1396,7 @@ span.toolsclean:hover {
 span.toolsexport:hover {
     background-position: -256px 0px;
 }
+
 ul.RecentfileList {
 	background-color: rgba(0,0,0,0.7);
     border-top: 1px solid #ABABAB;
@@ -2341,10 +2353,29 @@ div.advSearch {
 	margin-right: auto;
 	margin-left: auto;
 }
+form#advSearchForm {
+	padding: 5px;
+}
+div.searchDiv {
+	background-color: rgba(50,50,50,0.8);
+	padding: 5px;
+	border-radius: 3px 3px 3px 3px;
+}
+div.searchGroupOpen {
+	background-color: rgba(250,50,50,0.8);
+}
+div.searchGroupClose {
+	background-color: rgba(50,250,50,0.8);
+}
 fieldset.searchBlock {
     float: left;
 	/*width: 45%;*/
     margin-right: 10px;
+}
+fieldset.searchRoot {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
 }
 div.searchDiv.indent1 {
 	margin-left: 20px;
@@ -2360,6 +2391,10 @@ div.searchDiv.indent4 {
 }
 div.searchDiv.indent5 {
 	margin-left: 100px;
+}
+div.searchCom {
+	clear: both;
+	margin-bottom: 10px;
 }
 #preload {
     display: none;

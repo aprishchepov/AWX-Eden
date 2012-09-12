@@ -2606,13 +2606,16 @@ var xbmc = {};
 			//temp fix
 			settings.onSuccess = options.onSuccess;
 			settings.onError = options.onError;
-			console.log(settings);
+			//console.log(settings);
 			//console.log(options);
 			//console.log(xbmc.objLength(settings.fields));
-			var fieldsLen = xbmc.objLength(settings.fields);
 			var fields = settings.fields;
-			var query = '';
-			var properties = '';
+			var fieldsLen = xbmc.objLength(fields);
+			var open = 0;
+			var finalClose = true;
+			
+			console.log(fieldsLen);
+			//Do we have single search term?
 			
 			switch (settings.searchType) {
 				case 'movies':
@@ -2628,7 +2631,72 @@ var xbmc = {};
 					properties = '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ],';
 				break;
 			};
-			if (fieldsLen > 1 ) {
+			
+			var query = '{"jsonrpc": "2.0", "id": 1, "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": ';
+			var properties = '';
+			
+			if (typeof(fields[0]) !== 'undefined' && fieldsLen == 1) {
+				//Single search term
+				query += '{"field": "' + fields[0].searchFields +'", "operator": "' + fields[0].searchOps + '", "value": "' + fields[0].searchTerms + '"} } }';
+			} else {
+				//Multiple search fields
+				
+				//Catch start with openning
+				if (fields[0].searchAndOr != '' && typeof(fields[0].searchFields) === 'undefined') { finalClose = false };
+					
+				for (i=0; i<fieldsLen; i++) {
+				
+				
+				console.log('finalclose: ' + finalClose);
+				//console.log(query);
+					
+					if (fields[i].searchAndOr != '' && fields[i].open == 'continue') {
+						query += ' { "' + fields[i].searchAndOr + '": [';
+						//console.log(query);
+					};
+					//console.log(fields[i]);
+					if (fields[i].open == 'continue') {
+						query += ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + (i!=fieldsLen-1? ',' : ' ] }');
+						//console.log(query);						
+					};
+
+					if (fields[i].open == 'open') {
+						//console.log('open - open: ' + open);
+						if (typeof(fields[i].searchFields) === 'undefined') {
+							query += ' { "' + fields[i].searchAndOr + '": [';
+							console.log(query);
+							open ++;
+						} else {
+							query += ' { "' + fields[i].searchAndOr + '": [' + ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + (i!=fieldsLen-1? ',' : '');
+							//console.log(query);
+						}
+					};
+					
+					if (fields[i].open == 'close') {					
+						if (typeof(fields[i].searchFields) === 'undefined') {
+							query = query.substring(0, query.length-1);
+							query += ' ] }'; // +  (i!=fieldsLen-1? ',' : '] }');
+							if (i!=fieldsLen-1) {
+								query += ',';
+							} else if (open > 0 && finalClose) {
+								query += ' ] }';
+							};
+							open --;
+							console.log(query);
+						} else {
+							query += ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + ' ] },' //+ (open != 0? ',' : '');
+							console.log(query);
+							if (i==fieldsLen-1) {
+								query = query.substring(0, query.length-1);
+								query += ' ] }';
+							}
+						};
+						
+					};
+				};
+				query += ' } }';
+			}
+			/*if (fieldsLen > 1 ) {
 				//nested
 				//console.log(fields);
 				query = '{"jsonrpc": "2.0", "id": 1, "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "' + fields[1][0].searchAndOr + '": [ ';
@@ -2687,7 +2755,7 @@ var xbmc = {};
 					query += '] } }, "id": 1}';
 					//console.log(query);
 				};
-			};
+			};*/
 			
 			console.log(query);
 			
@@ -2700,6 +2768,7 @@ var xbmc = {};
 					settings.onError;
 				}
 			);
+			
 			/*if (settings.num == 0) {
 				console.log('{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "field": "' + settings[0].searchFields +'", "operator": "' + settings[0].searchOps + '", "value": "' + settings[0].searchTerms + '" } }, "id": 1}');
 			} else {
@@ -3855,8 +3924,8 @@ var xbmc = {};
 															});
 															xbmc.periodicUpdater.nextPlayingFile = nextItem.file;
 															xbmc.periodicUpdater.fireNextPlayingChanged(nextItem);
-															console.log(nextItem);
-															console.log(xbmc.periodicUpdater.currentlyPlayingFile);
+															//console.log(nextItem);
+															//console.log(xbmc.periodicUpdater.currentlyPlayingFile);
 														}
 													},
 													onError: function() {

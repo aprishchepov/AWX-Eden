@@ -2972,8 +2972,10 @@ var uiviews = {};
 		AdvancedSearch: function(search, parentPage) {
 			//Music or video?
 			var n = 0;
-			var andOr = 'and';
+			//var andOr = 'and';
 			var indentLevel = 0;
+			var openGroups = 0;
+			var openGroupsToClose = 0;
 			var searchLib = 'movies';
 			var adFilterPage = $('<div class="AdFilter"></div>');
 			var fillOptions = function(fields, ops, num) {
@@ -2986,7 +2988,110 @@ var uiviews = {};
 					page.find('select#searchOps' + num).append('<option value=' + op + '>' + op + '</option>');
 				});	
 			};
+
 			var addItem = function() {
+				n += 1;
+				var indentLev = indentLevel;
+				//if (n > 9) { page.find('.addSearch').attr('disabled', true) };
+				//Create a value from n that won't change.
+				var i = n;
+				var searchBlock = $('<div class="searchDiv' + (indentLevel >0? ' indent' + indentLev + '">' : '">') +
+					'<div class="searchCom">' + (n != 0? '<a href="" class="btnRemove">Remove </a> <a href="" class="groupOpen">Open Group </a> <a href="" class="groupClose">Close Group </a>' : '') + '<a href="" class="btnAdd">Add </a></div>' +
+					//'<a href="" class="btnRemove">Remove </a><a href="" class="btnIndent"> Indent </a><a href="" class="btnRemoveIndent"> Remove Indent</a><br />' : '') +
+					'<div class="searchFieldset">' +
+					'<fieldset class="searchBlock">' +
+					'<legend>' + mkf.lang.get('Field') + '</legend>' +
+					'<select id="searchFields' + n + '" name="searchFields' + n + '"></select>' +
+					'</fieldset>' +
+					'<fieldset class="searchBlock">' +
+					'<legend>' + mkf.lang.get('Operator') + '</legend>' +
+					'<select id="searchOps' + n + '" name="searchOps' + n + '"></select>' +
+					'</fieldset>' +
+					'<fieldset>' +
+					'<legend>' + mkf.lang.get('SearchFor') + '</legend>' +
+					'<input type="text" id="searchTerms' + n + '" name="searchTerms' + n + '" style="width: 100%" />' +
+					'</fieldset>' +
+					'</div>' +
+					'<select id="searchAndOr' + n + '" name="searchAndOr' + n + '" style="width: 50px; clear: both; margin-bottom:10px; display: none;"></select>' +
+					'</div>');
+
+				page.find('input#search').before(searchBlock);
+				searchBlock.find('a.btnAdd').on('click', addItem);
+				searchBlock.find('a.btnRemove').on('click', {num: n}, removeItem);
+				searchBlock.find('a.groupOpen').on('click', {num: n}, groupOpen);
+				searchBlock.find('a.groupClose').on('click', {num: n}, groupClose);
+				
+				if (n == 2) {
+					//console.log(searchBlock.prevAll('.searchDiv:first'));
+					//Show AndOr
+					//console.log(searchBlock.prevAll('.searchDiv:eq(1)'));
+					searchBlock.prevAll('.searchDiv:first').find('select').append('<option value="and">and</option><option value="or">or</option>');
+					searchBlock.prevAll('.searchDiv:first').find('select').show();
+				};
+				//searchBlock.find('a.btnIndent').on('click', {num: n}, indentItem);
+				//searchBlock.find('a.btnRemoveIndent').on('click', {num: n}, indentDelItem);
+				//if (n > 2) {
+				//	searchBlock.find('select#searchAndOr' + n).on('change', {andOrState: 'change'}, indentItem);
+				//};//{andOr: $(this).val()}, indentItem);
+				fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), i);
+				return false;
+			};
+			
+			var addItemAndOr = function(searchN, block) {
+				console.log(block.prevAll('.searchDiv:first'));
+				//'<option value="and">and</option><option value="or">or</option>'
+			};
+			
+			var removeItem = function(e) {
+				var toDel = page.find('select#searchFields' + e.data.num).parentsUntil('form');
+				page.find('select#searchFields' + e.data.num).parentsUntil('form').remove();
+				return false;
+			};
+			
+			var groupOpen = function(e) {
+				//console.log($(this));
+				indentLevel += 1;
+				$(this).parent().parent().removeClass('searchGroupClose');
+				$(this).parent().parent().addClass('searchGroupOpen');
+				//var indentLev = indentLevel;
+				$(this).parent().parent().removeClass('indent' + indentLevel-1);
+				//if (indentLevel <5) { indentLevel += 1 } else { indentLevel = 5 };
+				//indentLevel += 1;
+				//indentLev = indentLevel;
+				$(this).parent().parent().addClass('indent' + indentLevel);
+				var prevDiv = $(this).parent().parent().prevAll('.searchDiv:first');
+				if (prevDiv.hasClass('searchGroupOpen')) {
+					prevDiv.find('div.searchFieldset').empty();
+					openGroupsToClose += 1;
+				};
+				$(this).parent().parent().find('select:last').append('<option value="and">and</option><option value="or">or</option>');
+				$(this).parent().parent().find('select:last').show();
+				openGroups += 1;
+				//openGroupsToClose += 1;
+				//console.log('Add - openGroupsToClose: ' + openGroupsToClose);
+
+				return false;
+			};
+			
+			var groupClose = function(e) {
+				
+				$(this).parent().parent().removeClass('searchGroupOpen');
+				$(this).parent().parent().addClass('searchGroupClose');
+				var indentLev = indentLevel;
+				indentLevel -= 1;
+				var prevDiv = $(this).parent().parent().prevAll('.searchDiv:first');
+				//console.log('OpenGroups: ' + openGroups);
+				//console.log('openGroupsToClose: ' + openGroupsToClose);
+				if ((openGroups - openGroupsToClose) != 1) { $(this).parent().parent().empty(); openGroupsToClose -= 1; };
+				openGroups -= 1;
+				//prevDiv.find('select').children().remove();
+				//$(this).parent().parent().removeClass('indent' + indentLev);
+				//var indentLev = indentLevel;
+				//if (indentLevel > 0) { $(this).parent().parent().addClass('indent' + indentLev) };
+				return false;
+			};
+			
+			/*var addItem = function() {
 				n += 1;
 				var indentLev = indentLevel;
 				if (n > 9) { page.find('.addSearch').attr('disabled', true) };
@@ -3045,7 +3150,7 @@ var uiviews = {};
 				var indentLev = indentLevel;
 				if (indentLevel > 0) { $(this).parent().addClass('indent' + indentLev) };
 				return false;
-			};
+			};*/
 			
 			if (search == 'video') {
 				var searchFieldsmovies = ["title","plot","plotoutline","tagline","votes","rating","time","writers","playcount","lastplayed","inprogress","genre","country","year","director","actor","mpaarating","top250","studio","hastrailer","filename","path","set","tag","dateadded","videoresolution","audiochannels","videocodec","audiocodec","audiolanguage","subtitlelanguage","videoaspect","playlist"];
@@ -3060,7 +3165,7 @@ var uiviews = {};
 					
 				var page = $('<div class="advSearch"><h2>' + mkf.lang.get('advSearchVideo') + '</h2>' +
 					'<form name="advSearchForm" id="advSearchForm">' +
-					'<fieldset>' +
+					'<fieldset class="searchRoot">' +
 					'<legend>' + mkf.lang.get('Library') + '</legend>' +
 					'<select id="searchType" name="searchType">' +
 					'<option value="movies">' + mkf.lang.get('page_buttontext_movies') + '</option>' +
@@ -3080,7 +3185,9 @@ var uiviews = {};
 					page.find('.searchDiv').empty().remove();
 					n = 0;
 					indentLevel = 0;
-					andOr = 'and';
+					openGroups = 0;
+					openGroupsToClose = 0;
+					//andOr = 'and';
 					addItem();
 					page.find('.addSearch').attr('disabled', false);
 					fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), 1);
@@ -3093,146 +3200,164 @@ var uiviews = {};
 				
 				page.find('form#advSearchForm').submit(function() {
 					//Build a useful object to pharse later
+					var groupOpen = 0;
 					var searchType = $(this).find('#searchType').val();
 					var searchParams = {library: search};
 					searchParams.searchType = searchType;
 					searchParams.fields = {};
-					var indentA = 0;
-					var oldIndent = 0;
+					searchParams.fields[0] = {};
+					
 					page.find('div.searchDiv').each(function(c, div) {
-						var classlist = $(this).attr('class').split(/\s+/);						
-						var indent = 0;						
-						//if (classlist.length = 2) { console.log(classlist[1]) };
-						//console.log(classlist);
-						//console.log(classlist.length);
-						if (typeof(classlist[1]) !== 'undefined') { cl = classlist[1]; indent = cl[cl.length-1] };
-						//console.log(indent);
-
-						if (typeof(searchParams.fields[indent]) === 'undefined') { searchParams.fields[indent] = {} };
-						if (oldIndent != indent) { indentA = 0; };
-						//if (typeof(searchParams.fields[indent][indentA]) === 'undefined') { searchParams.fields[indent][indentA] = {} };
-						//searchParams.fields[indent][c] = {};
-						searchParams.fields[indent][indentA] = {};
-						searchParams.num = c;
+						if (typeof(searchParams.fields[c]) === 'undefined') { searchParams.fields[c] = {} };
 						
-						$(this).find(':input').each(function(x, y) {
-							var name = y.name.slice(0, -1);
-							searchParams.fields[indent][indentA][name] = y.value;
-
+						if ($(this).hasClass('searchGroupOpen')) {
+							searchParams.fields[c].open = 'open';
+							groupOpen += 1;
+						} else if ($(this).hasClass('searchGroupClose')) {
+							searchParams.fields[c].open = 'close';
+							groupOpen -= 1;
+						} else {
+							searchParams.fields[c].open = 'continue';
+						};
+						
+						
+						
+						$(this).find(':input').each(function(i, val) {							
+							var name = val.name.slice(0, -1);							
+							searchParams.fields[c][name] = val.value;
 						});
-						indentA ++;
-						oldIndent = indent;
+						
+						
+						/*if ($(this).hasClass('searchGroupOpen')) {
+							groupOpen += 1;
+							searchParams.fields[groupOpen] = {};
+							if (typeof(searchParams.fields[groupOpen][c]) === 'undefined') { searchParams.fields[groupOpen][c] = {} };
+							searchParams.fields[groupOpen][c].open = true;
+						};
+						
+						$(this).find(':input').each(function(i, val) {
+							
+							var name = val.name.slice(0, -1);
+							if (typeof(searchParams.fields[groupOpen][c]) === 'undefined') { searchParams.fields[groupOpen][c] = {} };
+							searchParams.fields[groupOpen][c][name] = val.value;
+							console.log(groupOpen + ' ' + c + ' ' + searchParams.fields[groupOpen][c][name]);
+						});
+						
+
+
+						//if (typeof(searchParams.fields[groupOpen]) === 'undefined') { searchParams.fields[groupOpen] = {} };
+						
+						
+						if ($(this).hasClass('searchGroupClose')) {
+							if (typeof(searchParams.fields[groupOpen][c]) === 'undefined') { searchParams.fields[groupOpen][c] = {} };
+							searchParams.fields[groupOpen][c].open = false;
+							groupOpen -= 1;
+							//console.log('close');							
+						};*/
+						
 					});
-					//console.log(searchParams);
-					/*var searchForm = $(this).serializeArray();
-					searchParams.searchType = searchForm[0].value;
-					searchForm.splice(0,1);
-					console.log(searchForm);
-					$.each(searchForm, function(i, param) {
-						console.log(param);
-						searchParams[param.name] = param.value;
-					});
-					console.log(searchParams);*/
-				/*
-				xbmc.getGenreMusicVideos({
-					genreid: e.data.idGenre,
+					
+					if (groupOpen != 0) {
+						alert('Unclosed') 
+					} else {
+						/*var indentA = 0;
+						var oldIndent = 0;
+						page.find('div.searchDiv').each(function(c, div) {
+							var classlist = $(this).attr('class').split(/\s+/);
+							var indent = 0;						
+							//if (classlist.length = 2) { console.log(classlist[1]) };
+							//console.log(classlist);
+							//console.log(classlist.length);
+							if (typeof(classlist[1]) !== 'undefined') { cl = classlist[1]; indent = cl[cl.length-1] };
+							//console.log(indent);
 
-					onError: function() {
-						mkf.messageLog.show(mkf.lang.get('message_failed_musicvid_genre'), mkf.messageLog.status.error, 5000);
-						$musicvidGenreContent.removeClass('loading');
-					},
+							if (typeof(searchParams.fields[indent]) === 'undefined') { searchParams.fields[indent] = {} };
+							if (oldIndent != indent) { indentA = 0; };
+							//if (typeof(searchParams.fields[indent][indentA]) === 'undefined') { searchParams.fields[indent][indentA] = {} };
+							//searchParams.fields[indent][c] = {};
+							searchParams.fields[indent][indentA] = {};
+							searchParams.num = c;
+							
+							$(this).find(':input').each(function(x, y) {
+								var name = y.name.slice(0, -1);
+								searchParams.fields[indent][indentA][name] = y.value;
 
-					onSuccess: function(result) {
-						//result.isSet = true;
-						$musicvidGenreContent.defaultMusicVideosViewer(result, musicvidGenrePage);
-						$musicvidGenreContent.removeClass('loading');
-					}
-				});
-				
-				xbmc.getTvShows({
-					start: lastTVCountStart,
-					end: lastTVCount,
-					onError: function() {
-						mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
-						$contentBox.removeClass('loading');
-					},
-
-					onSuccess: function(result) {
-						$contentBox.defaultTvShowViewer(result, tvShowsPage);
-						$contentBox.removeClass('loading');
-					}
-				});
-*/
-					console.log(searchParams);
-					xbmc.getAdFilter({
-						options: searchParams,
-						onSuccess: function(result) {
-							result.Type = searchParams.searchType;
-							//result.objParentPage = parentPage;						
-							console.log(result);
-							//make sub page for result
-
-							var $adFilterRContent = $('<div class="pageContentWrapper"></div>');
-							var adFilterRPage = mkf.pages.createTempPage(parentPage, {
-								title: 'adFilterR',
-								content: $adFilterRContent
 							});
-							var fillPage = function() {
-								$adFilterRContent.addClass('loading');
-								switch (result.Type) {
-									case 'movies':
-										result.isSet = true;
-										$adFilterRContent.defaultMovieViewer(result);
-									break;
-									case 'tvshows':
-										result.isFiltered = true;
-										$adFilterRContent.defaultTvShowViewer(result);
-									break;
-									case 'episodes':
-										$adFilterRContent.defaultEpisodesViewer(result);
-									break;
-									case 'musicvideos':
-										$adFilterRContent.defaultMusicVideosViewer(result);
-									break;
-								}
-								
-								$adFilterRContent.removeClass('loading');
+							indentA ++;
+							oldIndent = indent;
+						});*/
 
-							}
-							adFilterRPage.setContextMenu(
-								[
-									{
-										'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
-										function() {
-											mkf.pages.closeTempPage(adFilterRPage);
-											return false;
-										}
-									},
-									{
-										'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
-											function(){
-												$adFilterRContent.empty();
-												fillPage();
+						console.log(searchParams);
+						xbmc.getAdFilter({
+							options: searchParams,
+							onSuccess: function(result) {
+								result.Type = searchParams.searchType;
+								//result.objParentPage = parentPage;						
+								console.log(result);
+								//make sub page for result
+
+								var $adFilterRContent = $('<div class="pageContentWrapper"></div>');
+								var adFilterRPage = mkf.pages.createTempPage(parentPage, {
+									title: 'adFilterR',
+									content: $adFilterRContent
+								});
+								var fillPage = function() {
+									$adFilterRContent.addClass('loading');
+									switch (result.Type) {
+										case 'movies':
+											result.isSet = true;
+											$adFilterRContent.defaultMovieViewer(result);
+										break;
+										case 'tvshows':
+											result.isFiltered = true;
+											$adFilterRContent.defaultTvShowViewer(result);
+										break;
+										case 'episodes':
+											$adFilterRContent.defaultEpisodesViewer(result);
+										break;
+										case 'musicvideos':
+											$adFilterRContent.defaultMusicVideosViewer(result);
+										break;
+									}
+									
+									$adFilterRContent.removeClass('loading');
+
+								}
+								adFilterRPage.setContextMenu(
+									[
+										{
+											'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+											function() {
+												mkf.pages.closeTempPage(adFilterRPage);
 												return false;
 											}
-									}
-								]
-							);
-							mkf.pages.showTempPage(adFilterRPage);
+										},
+										{
+											'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+												function(){
+													$adFilterRContent.empty();
+													fillPage();
+													return false;
+												}
+										}
+									]
+								);
+								mkf.pages.showTempPage(adFilterRPage);
 
-							// movieGenre
-							fillPage();
+								// movieGenre
+								fillPage();
 
-							return false;
-			
-							//xbmc.defaultMovieViewer(result, parentPage);
-							
-						},
-						onError: function() {
-							console.log('Error ad filter');
-							//mkf.messageLog.show(mkf.lang.get('message_failed_adFilter'), mkf.messageLog.status.error, 5000);
-						}					
-					});
+								return false;
+				
+								//xbmc.defaultMovieViewer(result, parentPage);
+								
+							},
+							onError: function() {
+								console.log('Error ad filter');
+								//mkf.messageLog.show(mkf.lang.get('message_failed_adFilter'), mkf.messageLog.status.error, 5000);
+							}					
+						});
+					};
 					return false;
 				});
 

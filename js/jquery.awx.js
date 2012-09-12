@@ -1148,8 +1148,8 @@
 			setTimeout(loadThumbs, 100);
 		}
 		if (view != 'logosingle') {
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</div></div>').prependTo($artistsViewerElement);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastArtistCount > artistResult.limits.total? artistResult.limits.total : lastArtistCount) + '/' + artistResult.limits.total + '</div></div>').appendTo($artistsViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</span></div></div>').prependTo($artistsViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastArtistCount > artistResult.limits.total? artistResult.limits.total : lastArtistCount) + '/' + artistResult.limits.total + '</span></div></div>').appendTo($artistsViewerElement);
 			$artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
 			$artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
 		};
@@ -1472,8 +1472,8 @@
 		}
 		
 		if (!albumResult.isArtist) {
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastAlbumCountStart + '/' + albumResult.limits.total + '</div></div>').prependTo($albumViewerElement);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastAlbumCount > albumResult.limits.total? albumResult.limits.total : lastAlbumCount) + '/' + albumResult.limits.total + '</div></div>').appendTo($albumViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastAlbumCountStart + '/' + albumResult.limits.total + '</span></div></div>').prependTo($albumViewerElement);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastAlbumCount > albumResult.limits.total? albumResult.limits.total : lastAlbumCount) + '/' + albumResult.limits.total + '</span></div></div>').appendTo($albumViewerElement);
 			$albumViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onAlbumsShow);
 			$albumViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onAlbumsShow);
 		}
@@ -1679,8 +1679,8 @@
 		//NFC why the || doesn't work below but it doesn't?!
 		if (view == 'singlePoster') { movieResult.isSet = true };
 		if (!movieResult.isSet) {
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</div></div>').prependTo($movieContainer);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastMovieCount > movieResult.limits.total? movieResult.limits.total : lastMovieCount)+ '/' + movieResult.limits.total + '</div></div>').appendTo($movieContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</span></div></div>').prependTo($movieContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastMovieCount > movieResult.limits.total? movieResult.limits.total : lastMovieCount)+ '/' + movieResult.limits.total + '</span></div></div>').appendTo($movieContainer);
 			$movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
 			$movieContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onMoviesShow);
 		}
@@ -1847,8 +1847,8 @@
 		}
 
 		if (!tvShowResult.isFiltered) {
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + lastTVCountStart + '/' + totalTVCount + '</div></div>').prependTo($tvshowContainer);
-			$('<div class="goNextPrev"><a class="prevPage" href="">Previous</a><a class="nextPage" href="">Next</a><div class="lastCount">' + (lastTVCount > totalTVCount? totalTVCount : lastTVCount) + '/' + totalTVCount + '</div></div>').appendTo($tvshowContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastTVCountStart + '/' + totalTVCount + '</span></div></div>').prependTo($tvshowContainer);
+			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastTVCount > totalTVCount? totalTVCount : lastTVCount) + '/' + totalTVCount + '</span></div></div>').appendTo($tvshowContainer);
 			$tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
 			$tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
 		};
