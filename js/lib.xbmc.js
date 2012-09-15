@@ -2614,25 +2614,31 @@ var xbmc = {};
 			var open = 0;
 			var finalClose = true;
 			
-			console.log(fieldsLen);
+			//console.log(fieldsLen);
 			//Do we have single search term?
 			
 			switch (settings.searchType) {
 				case 'movies':
 					properties = '"properties" : ["rating", "thumbnail", "playcount", "file"],';
+					settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
+					settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
 				break;
 				case 'tvshows':
 					properties = '"properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"],';
+					settings.sortby = mkf.cookieSettings.get('TVSort', 'label');
+					settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
 				break;
 				case 'episodes':
 					properties = '"properties": ["episode", "playcount", "fanart", "plot", "season", "showtitle", "thumbnail", "rating"],';
+					settings.sortby = mkf.cookieSettings.get('EpSort', 'episode');
+					settings.order = mkf.cookieSettings.get('epdesc', 'ascending');
 				break;
 				case 'musicvideos':
 					properties = '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ],';
 				break;
 			};
 			
-			var query = '{"jsonrpc": "2.0", "id": 1, "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": ';
+			var query = '{"jsonrpc": "2.0", "id": 1, "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true }, ' + properties + ' "filter": ';
 			var properties = '';
 			
 			if (typeof(fields[0]) !== 'undefined' && fieldsLen == 1) {
@@ -2647,7 +2653,7 @@ var xbmc = {};
 				for (i=0; i<fieldsLen; i++) {
 				
 				
-				console.log('finalclose: ' + finalClose);
+				//console.log('finalclose: ' + finalClose);
 				//console.log(query);
 					
 					if (fields[i].searchAndOr != '' && fields[i].open == 'continue') {
@@ -2664,7 +2670,7 @@ var xbmc = {};
 						//console.log('open - open: ' + open);
 						if (typeof(fields[i].searchFields) === 'undefined') {
 							query += ' { "' + fields[i].searchAndOr + '": [';
-							console.log(query);
+							//console.log(query);
 							open ++;
 						} else {
 							query += ' { "' + fields[i].searchAndOr + '": [' + ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + (i!=fieldsLen-1? ',' : '');
@@ -2682,10 +2688,10 @@ var xbmc = {};
 								query += ' ] }';
 							};
 							open --;
-							console.log(query);
+							//console.log(query);
 						} else {
 							query += ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + ' ] },' //+ (open != 0? ',' : '');
-							console.log(query);
+							//console.log(query);
 							if (i==fieldsLen-1) {
 								query = query.substring(0, query.length-1);
 								query += ' ] }';
@@ -2757,15 +2763,15 @@ var xbmc = {};
 				};
 			};*/
 			
-			console.log(query);
+			//console.log(query);
 			
 			xbmc.sendCommand(
 				query,
 				function(response) {
 					settings.onSuccess(response.result);
 				},
-				function() {
-					settings.onError;
+				function(response) {
+					settings.onError(response.error);
 				}
 			);
 			

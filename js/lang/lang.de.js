@@ -38,6 +38,8 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'page_title_album_recent':			'Recent Albums',
 	'page_title_video_scan':			'Scanning Video Library Activated',
 	'page_title_music_scan':			'Scanning Music Library Activated',
+	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_results':				'Results',
 	
 	'page_buttontext_music':			'Musik',
 	'page_buttontext_artist':			'Interpreten',
@@ -59,6 +61,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'page_buttontext_album_recent':		'Recent Albums',
 	'page_buttontext_video_scan':		'Scan Video Library',
 	'page_buttontext_music_scan':		'Scan Music Library',
+	'page_buttontext_video_adv_search':	'Advanced Search',
 	
 	'ctxt_btn_back_to_music':			'Zur%FCck zu Musik (Strg+1)',
 	'ctxt_btn_find':					'Suchen (Strg+2)',
@@ -68,6 +71,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'ctxt_btn_close_song_list':			'Schlie%DFe Song-Liste (Strg+1)',
 	'ctxt_btn_close_season_list': 		'Schlie%DFe Staffel-Liste (Strg+1)',
 	'ctxt_btn_close_episode_list':		'Schlie%DFe Episoden-Liste (Strg+1)',
+	'ctxt_btn_close_adv_search_list':	'Close Advanced Search (Ctrl+1)',
 	'ctxt_btn_refresh_list':			'Refresh this page',
 
 	'message_clear_audio_playlist':		'Leere Audio-Playlist ... ',
@@ -307,6 +311,21 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'label_cinex_play':					'Play via Cinema Experience',
 	'label_resume_from':				'Resume from: ',
 	'label_resume_start':				'Play from beginning',
+	
+	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_filter_field':			'Field',
+	'label_adv_filter_operator':		'Operator',
+	'label_adv_filter_searchFor':		'Search For',
+	'label_adv_filter_and':				'and',
+	'label_adv_filter_or':				'or',
+	'label_adv_library':				'Library',
+	'btn_adv_search':					'Search',
+	'btn_adv_add':						'Add',
+	'btn_adv_reset':					'Reset',
+	'adv_search_help':					'The advanced search provides a multitude of ways to search your library. Because of the complexity it is possible to create invalid queries. Examples are available on the wiki page: <a href="http://wiki.xbmc.org/index.php?title=Add-on:AWXi">http://wiki.xbmc.org/index.php?title=Add-on:AWXi</a>',
+	'messsage_run_adv_search':			'Running advanced search...',
+	'message_failed_adv_search':		'Failed! \nCheck your query.',
+	'message_warn_adv_search_open':		'Please close all statements',
 
 	'settings_help':					'LazyLoad:\nSofern Sie LazyLoad aktivieren, werden Thumbnails erst geladen, wenn sie sichtbar werden. Dies sch%FCtzt den Server vor zu vielen Bild-Anfragen.\nWenn Sie jedoch sehr viele Eintr%E4ge (Filme, Alben, ...) haben, kann das Webinterface beim Scrollen langsam reagieren, sofern viele Thumbnails noch nicht geladen wurden.\nWenn Sie LazyLoad deaktivieren, werden alle Thumbnails geladen, sobald die entsprechende Seite (Film-Seite, Alben-Seite, ...) angezeigt wird. Es kann dann jedoch einen Moment dauern, bis alle Thumbnails geladen wurden.\n\nTimeOut:\nWenn Sie viele Filme (oder Alben etc.) haben, kann es einige Zeit in Anspruch nehmen, bis die komplette Film-Liste geladen wird. Sie k%F6nnen den TimeOut-Wert erh%F6hen, um Fehler beim Laden der Film-Liste zu vermeiden.',
 

@@ -38,6 +38,8 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'page_title_album_recent':			'Albums Récents',
 	'page_title_video_scan':			'Mise à jour de la médiathèque Vidéos activée',
 	'page_title_music_scan':			'Mise à jour de la médiathèque Musicale activée',
+	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_results':				'Results',
 
 	'page_buttontext_music':			'Musique',
 	'page_buttontext_artist':			'Artistes',
@@ -59,6 +61,7 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'page_buttontext_album_recent':		'Albums Récents',
 	'page_buttontext_video_scan':		'MAJ médiathèque',
 	'page_buttontext_music_scan':		'MAJ médiathèque',
+	'page_buttontext_video_adv_search':	'Advanced Search',
 
 	'ctxt_btn_back_to_music':			'Retourner à la Musique (Ctrl+1)',
 	'ctxt_btn_find':					'Rechercher (Ctrl+2)',
@@ -68,6 +71,7 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'ctxt_btn_close_song_list':			'Fermer la liste des Titres (Ctrl+1)',
 	'ctxt_btn_close_season_list': 		'Fermer la liste des Saisons (Ctrl+1)',
 	'ctxt_btn_close_episode_list':		'Fermer la liste des Episodes (Ctrl+1)',
+	'ctxt_btn_close_adv_search_list':	'Close Advanced Search (Ctrl+1)',
 	'ctxt_btn_refresh_list':			'Rafraichir cette page',
 
 	'message_clear_audio_playlist':		'Vider la liste de lecture Musicale... ',
@@ -307,6 +311,21 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'label_cinex_play':					'Play via Cinema Experience',
 	'label_resume_from':				'Resume from: ',
 	'label_resume_start':				'Play from beginning',
+	
+	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_filter_field':			'Field',
+	'label_adv_filter_operator':		'Operator',
+	'label_adv_filter_searchFor':		'Search For',
+	'label_adv_filter_and':				'and',
+	'label_adv_filter_or':				'or',
+	'label_adv_library':				'Library',
+	'btn_adv_search':					'Search',
+	'btn_adv_add':						'Add',
+	'btn_adv_reset':					'Reset',
+	'adv_search_help':					'The advanced search provides a multitude of ways to search your library. Because of the complexity it is possible to create invalid queries. Examples are available on the wiki page: <a href="http://wiki.xbmc.org/index.php?title=Add-on:AWXi">http://wiki.xbmc.org/index.php?title=Add-on:AWXi</a>',
+	'messsage_run_adv_search':			'Running advanced search...',
+	'message_failed_adv_search':		'Failed! \nCheck your query.',
+	'message_warn_adv_search_open':		'Please close all statements',
 	
 	'settings_help':					'LazyLoad :\nSi vous activez LazyLoad, les vignettes ne seront pas chargées tant qu\'elles ne sont pas visibles. Cela permettra de réduire la charge serveur.\nMais si vous avez beaucoup d\'objets (films, albums, ...) l\'interface sera ralentie lors du défillement des vignettes non-chargées.\nSi vous désactivez LazyLoad, toutes les vignettes seront chargées au chargement de la page (films, albums, ...). Cela peut prendre un certain temps avant que toutes les vignettes soient chargées.\n\nTimeOut :\nSi vous avez beaucoup de films (ou d\'albums...) cela peut prendre du temps pour charger la liste complète. Vous pouvez augmenter la valeur du TimeOut pour éviter des erreur lors du chargement des listes.',
 	'settings_select_artists_path': 	'Please select the location of your artists logos',

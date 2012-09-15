@@ -38,6 +38,8 @@ mkf.lang.add({language: 'Russian', short: 'ru', author: 'Scaramush', values: {
 	'page_title_album_recent':			'Новые альбомы',
 	'page_title_video_scan':			'Активировано сканирование видео библиотеки',
 	'page_title_music_scan':			'Активировано сканирование музыкальной библиотеки',
+	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_results':				'Results',
 	
 	'page_buttontext_music':			'Музыка',
 	'page_buttontext_artist':			'Исполнители',
@@ -59,6 +61,7 @@ mkf.lang.add({language: 'Russian', short: 'ru', author: 'Scaramush', values: {
 	'page_buttontext_album_recent':			'Новые альбомы',
 	'page_buttontext_video_scan':			'Обновить видео',
 	'page_buttontext_music_scan':			'Обновить музыку',
+	'page_buttontext_video_adv_search':	'Advanced Search',
 	
 	'ctxt_btn_back_to_music':			'Вернуться в Музыку (Ctrl+1)',
 	'ctxt_btn_find':				'Поиск (Ctrl+2)',
@@ -68,6 +71,7 @@ mkf.lang.add({language: 'Russian', short: 'ru', author: 'Scaramush', values: {
 	'ctxt_btn_close_song_list':			'Закрыть список песен (Ctrl+1)',
 	'ctxt_btn_close_season_list': 			'Закрыть список сезонов (Ctrl+1)',
 	'ctxt_btn_close_episode_list':			'Закрыть список эпизодов (Ctrl+1)',
+	'ctxt_btn_close_adv_search_list':	'Close Advanced Search (Ctrl+1)',
 	'ctxt_btn_refresh_list':			'Обновить страницу',
 
 	'message_clear_audio_playlist':			'Очистить аудио плейлист ... ',
@@ -307,6 +311,21 @@ mkf.lang.add({language: 'Russian', short: 'ru', author: 'Scaramush', values: {
 	'label_cinex_play':				'Воспроизвести через Cinema Experience',
 	'label_resume_from':				'Resume from: ',
 	'label_resume_start':				'Play from beginning',
+	
+	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_filter_field':			'Field',
+	'label_adv_filter_operator':		'Operator',
+	'label_adv_filter_searchFor':		'Search For',
+	'label_adv_filter_and':				'and',
+	'label_adv_filter_or':				'or',
+	'label_adv_library':				'Library',
+	'btn_adv_search':					'Search',
+	'btn_adv_add':						'Add',
+	'btn_adv_reset':					'Reset',
+	'adv_search_help':					'The advanced search provides a multitude of ways to search your library. Because of the complexity it is possible to create invalid queries. Examples are available on the wiki page: <a href="http://wiki.xbmc.org/index.php?title=Add-on:AWXi">http://wiki.xbmc.org/index.php?title=Add-on:AWXi</a>',
+	'messsage_run_adv_search':			'Running advanced search...',
+	'message_failed_adv_search':		'Failed! \nCheck your query.',
+	'message_warn_adv_search_open':		'Please close all statements',
 
 	'settings_help':				'LazyLoad:\nЕсли вы включите LazyLoad, постеры не рагрузятся до тех пор пока они не понадобятся. Это уменьшает нагрузку на сервер.\nНо если у вас много элементов (фильмов, альбомов, ...) вебинтерфейс может тормозить при прокрутке если много постеров не подгружено.\nЕсли вы выключите LazyLoad, все постеры загрузятся как только страница будет показана (страница фильмов, страница альбомов, ...). Это может занять некоторое время.\n\nTimeOut:\nЕсли у вас много фильмов (или альбомов ...) загрузка постеров может занять некоторое время. Вы можете увеличить значение параметра TimeOut, чтобы избежать ошибок по таймауту, когда пытаетесь просмотреть весь список фильмов.',
 	'settings_select_artists_path': 		'Пожалуйса выберите расположение лого артистов',

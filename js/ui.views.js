@@ -2996,36 +2996,36 @@ var uiviews = {};
 				//Create a value from n that won't change.
 				var i = n;
 				var searchBlock = $('<div class="searchDiv' + (indentLevel >0? ' indent' + indentLev + '">' : '">') +
-					'<div class="searchCom">' + (n != 0? '<a href="" class="btnRemove">Remove </a> <a href="" class="groupOpen">Open Group </a> <a href="" class="groupClose">Close Group </a>' : '') + '<a href="" class="btnAdd">Add </a></div>' +
+					'<div class="searchCom">' + (n != 0? '<a href="" class="groupOpen"><span class="advsearch open" /></a> <a href="" class="groupClose"><span class="advsearch close" /></a>' : '') +
 					//'<a href="" class="btnRemove">Remove </a><a href="" class="btnIndent"> Indent </a><a href="" class="btnRemoveIndent"> Remove Indent</a><br />' : '') +
 					'<div class="searchFieldset">' +
 					'<fieldset class="searchBlock">' +
-					'<legend>' + mkf.lang.get('Field') + '</legend>' +
+					'<legend>' + mkf.lang.get('label_adv_filter_field') + '</legend>' +
 					'<select id="searchFields' + n + '" name="searchFields' + n + '"></select>' +
 					'</fieldset>' +
 					'<fieldset class="searchBlock">' +
-					'<legend>' + mkf.lang.get('Operator') + '</legend>' +
+					'<legend>' + mkf.lang.get('label_adv_filter_operator') + '</legend>' +
 					'<select id="searchOps' + n + '" name="searchOps' + n + '"></select>' +
 					'</fieldset>' +
 					'<fieldset>' +
-					'<legend>' + mkf.lang.get('SearchFor') + '</legend>' +
+					'<legend>' + mkf.lang.get('label_adv_filter_searchFor') + '</legend>' +
 					'<input type="text" id="searchTerms' + n + '" name="searchTerms' + n + '" style="width: 100%" />' +
 					'</fieldset>' +
 					'</div>' +
-					'<select id="searchAndOr' + n + '" name="searchAndOr' + n + '" style="width: 50px; clear: both; margin-bottom:10px; display: none;"></select>' +
+					'<select id="searchAndOr' + n + '" name="searchAndOr' + n + '" style="width: 70px; clear: both; display: none;"></select>' +
 					'</div>');
 
 				page.find('input#search').before(searchBlock);
-				searchBlock.find('a.btnAdd').on('click', addItem);
-				searchBlock.find('a.btnRemove').on('click', {num: n}, removeItem);
+				//searchBlock.find('a.btnAdd').on('click', addItem);
+				//searchBlock.find('a.btnRemove').on('click', {num: n}, removeItem);
 				searchBlock.find('a.groupOpen').on('click', {num: n}, groupOpen);
 				searchBlock.find('a.groupClose').on('click', {num: n}, groupClose);
 				
 				if (n == 2) {
 					//console.log(searchBlock.prevAll('.searchDiv:first'));
-					//Show AndOr
+					//Show AndOr in case no open used.
 					//console.log(searchBlock.prevAll('.searchDiv:eq(1)'));
-					searchBlock.prevAll('.searchDiv:first').find('select').append('<option value="and">and</option><option value="or">or</option>');
+					searchBlock.prevAll('.searchDiv:first').find('select').append('<option value="and">' + mkf.lang.get('label_adv_filter_and') + '</option><option value="or">' + mkf.lang.get('label_adv_filter_or') + '</option>');
 					searchBlock.prevAll('.searchDiv:first').find('select').show();
 				};
 				//searchBlock.find('a.btnIndent').on('click', {num: n}, indentItem);
@@ -3050,22 +3050,28 @@ var uiviews = {};
 			
 			var groupOpen = function(e) {
 				//console.log($(this));
+				var prevFieldSet = $(this).parent().parent();
 				indentLevel += 1;
-				$(this).parent().parent().removeClass('searchGroupClose');
-				$(this).parent().parent().addClass('searchGroupOpen');
+				prevFieldSet.removeClass('searchGroupClose');
+				prevFieldSet.addClass('searchGroupOpen');
 				//var indentLev = indentLevel;
-				$(this).parent().parent().removeClass('indent' + indentLevel-1);
+				prevFieldSet.removeClass('indent' + indentLevel-1);
 				//if (indentLevel <5) { indentLevel += 1 } else { indentLevel = 5 };
 				//indentLevel += 1;
 				//indentLev = indentLevel;
-				$(this).parent().parent().addClass('indent' + indentLevel);
+				prevFieldSet.addClass('indent' + indentLevel);
 				var prevDiv = $(this).parent().parent().prevAll('.searchDiv:first');
 				if (prevDiv.hasClass('searchGroupOpen')) {
 					prevDiv.find('div.searchFieldset').empty();
 					openGroupsToClose += 1;
 				};
-				$(this).parent().parent().find('select:last').append('<option value="and">and</option><option value="or">or</option>');
-				$(this).parent().parent().find('select:last').show();
+				//if (n !=2) { prevFieldSet.find('select:last').append('<option value="and">' + mkf.lang.get('label_adv_filter_and') + '</option><option value="or">' + mkf.lang.get('label_adv_filter_or') + '</option>') };
+				//$(this).parent().parent().find('select:last').show();
+				console.log($(this).parent().find('select:last').html());
+				if ($(this).parent().find('select:last').html() == '') {
+					$(this).parent().find('select:last').append('<option value="and">' + mkf.lang.get('label_adv_filter_and') + '</option><option value="or">' + mkf.lang.get('label_adv_filter_or') + '</option>');
+					$(this).parent().find('select:last').show();
+				}
 				openGroups += 1;
 				//openGroupsToClose += 1;
 				//console.log('Add - openGroupsToClose: ' + openGroupsToClose);
@@ -3091,67 +3097,6 @@ var uiviews = {};
 				return false;
 			};
 			
-			/*var addItem = function() {
-				n += 1;
-				var indentLev = indentLevel;
-				if (n > 9) { page.find('.addSearch').attr('disabled', true) };
-				//Create a value from n that won't change.
-				var i = n;
-				var searchBlock = $('<div class="searchDiv' + (indentLevel >0? ' indent' + indentLev + '">' : '">') +
-					(n > 1? '<select id="searchAndOr' + n + '" name="searchAndOr' + n + '" style="width: 50px; clear: both; margin-bottom:10px;"><option value="and">and</option><option value="or" ' + (andOr == 'or'? 'selected="selected"' : '') + '>or</option></select>' +
-					'<a href="" class="btnRemove">Remove </a><a href="" class="btnIndent"> Indent </a><a href="" class="btnRemoveIndent"> Remove Indent</a><br />' : '') +
-					'<fieldset class="searchBlock">' +
-					'<legend>' + mkf.lang.get('Field') + '</legend>' +
-					'<select id="searchFields' + n + '" name="searchFields' + n + '"></select>' +
-					'</fieldset>' +
-					'<fieldset class="searchBlock">' +
-					'<legend>' + mkf.lang.get('Operator') + '</legend>' +
-					'<select id="searchOps' + n + '" name="searchOps' + n + '"></select>' +
-					'</fieldset>' +
-					'<fieldset>' +
-					'<legend>' + mkf.lang.get('SearchFor') + '</legend>' +
-					'<input type="text" id="searchTerms' + n + '" name="searchTerms' + n + '" style="width: 100%" />' +
-					'</fieldset></div>');
-
-				page.find('input#search').before(searchBlock);
-				searchBlock.find('a.btnRemove').on('click', {num: n}, removeItem);
-				searchBlock.find('a.btnIndent').on('click', {num: n}, indentItem);
-				searchBlock.find('a.btnRemoveIndent').on('click', {num: n}, indentDelItem);
-				if (n > 2) {
-					searchBlock.find('select#searchAndOr' + n).on('change', {andOrState: 'change'}, indentItem);
-				};//{andOr: $(this).val()}, indentItem);
-				fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), i);
-				return false;
-			};
-			
-			var removeItem = function(e) {
-				var toDel = page.find('select#searchFields' + e.data.num).parentsUntil('form');
-				page.find('select#searchFields' + e.data.num).parentsUntil('form').remove();
-				return false;
-			};
-			
-			var indentItem = function(e) {
-				if (typeof(e)!== 'undefined') {
-					if (e.data.andOrState == 'change') { if (andOr == 'and') { andOr = 'or' } else { andOr = 'and' } };
-				};
-				var indentLev = indentLevel;
-				$(this).parent().removeClass('indent' + indentLev);
-				if (indentLevel <5) { indentLevel += 1 } else { indentLevel = 5 };
-				var indentLev = indentLevel;
-				$(this).parent().addClass('indent' + indentLev);
-				return false;
-			};
-			
-			var indentDelItem = function(e) {
-				//Bad naming, more like decrease indent level
-				var indentLev = indentLevel;
-				indentLevel -= 1;
-				$(this).parent().removeClass('indent' + indentLev);
-				var indentLev = indentLevel;
-				if (indentLevel > 0) { $(this).parent().addClass('indent' + indentLev) };
-				return false;
-			};*/
-			
 			if (search == 'video') {
 				var searchFieldsmovies = ["title","plot","plotoutline","tagline","votes","rating","time","writers","playcount","lastplayed","inprogress","genre","country","year","director","actor","mpaarating","top250","studio","hastrailer","filename","path","set","tag","dateadded","videoresolution","audiochannels","videocodec","audiocodec","audiolanguage","subtitlelanguage","videoaspect","playlist"];
 				var searchOpsmovies = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
@@ -3163,10 +3108,10 @@ var uiviews = {};
 				var searchOpsmusicvideos = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
 
 					
-				var page = $('<div class="advSearch"><h2>' + mkf.lang.get('advSearchVideo') + '</h2>' +
+				var page = $('<div class="advSearch"><h2>' + mkf.lang.get('label_adv_search_video') + '<a href="" class="advhelp"><span class="advsearch help" /></a></h2>' +
 					'<form name="advSearchForm" id="advSearchForm">' +
 					'<fieldset class="searchRoot">' +
-					'<legend>' + mkf.lang.get('Library') + '</legend>' +
+					'<legend>' + mkf.lang.get('label_adv_library') + '</legend>' +
 					'<select id="searchType" name="searchType">' +
 					'<option value="movies">' + mkf.lang.get('page_buttontext_movies') + '</option>' +
 					'<option value="tvshows">' + mkf.lang.get('page_buttontext_tvshows') + '</option>' +
@@ -3174,11 +3119,19 @@ var uiviews = {};
 					'<option value="musicvideos">' + mkf.lang.get('page_buttontext_musicvideos') + '</option>' +
 					'</select>' +
 					'</fieldset>' +
-					'<input type="submit" name="search" value="Search" id="search" />' +
-					'<input type="button" class="addSearch" value="Add">' +
-					'</form>').appendTo(adFilterPage);
+					'<input type="submit" name="search" value="' + mkf.lang.get('btn_adv_search') + '" id="search" />' +
+					'<input type="button" class="addSearch" value="' + mkf.lang.get('btn_adv_add') + '">' +
+					'<input type="button" class="resetSearch" value="' + mkf.lang.get('btn_adv_reset') + '">' +
+					'</form></div>').appendTo(adFilterPage);
 					
 				addItem();
+				
+				page.find('.advhelp').click(function() {
+					var dialogHandle = mkf.dialog.show();
+					mkf.dialog.setContent(dialogHandle, mkf.lang.get('adv_search_help'));
+					//alert(mkf.lang.get('adv_search_help'));
+					return false;
+				});
 				page.find('#searchType').change(function() {
 					//remove fields on library change
 					searchLib = $(this).val()
@@ -3189,7 +3142,7 @@ var uiviews = {};
 					openGroupsToClose = 0;
 					//andOr = 'and';
 					addItem();
-					page.find('.addSearch').attr('disabled', false);
+					//page.find('.addSearch').attr('disabled', false);
 					fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), 1);
 				});
 				fillOptions(searchFieldsmovies, searchOpsmovies);
@@ -3197,9 +3150,24 @@ var uiviews = {};
 
 				
 				page.find('input.addSearch').on('click', addItem);
+				page.find('input.resetSearch').on('click', function() {
+					page.find('.searchDiv').empty().remove();
+					n = 0;
+					indentLevel = 0;
+					openGroups = 0;
+					openGroupsToClose = 0;
+					//andOr = 'and';
+					addItem();
+					//fillOptions(searchFieldsmovies, searchOpsmovies);
+				});
 				
 				page.find('form#advSearchForm').submit(function() {
 					//Build a useful object to pharse later
+					
+					//var dialogContent = '';
+					//var dialogHandle = mkf.dialog.show({closeButton: false, classname: 'advloader'});
+					//mkf.dialog.setContent(dialogHandle, dialogContent);
+					
 					var groupOpen = 0;
 					var searchType = $(this).find('#searchType').val();
 					var searchParams = {library: search};
@@ -3227,70 +3195,18 @@ var uiviews = {};
 							searchParams.fields[c][name] = val.value;
 						});
 						
-						
-						/*if ($(this).hasClass('searchGroupOpen')) {
-							groupOpen += 1;
-							searchParams.fields[groupOpen] = {};
-							if (typeof(searchParams.fields[groupOpen][c]) === 'undefined') { searchParams.fields[groupOpen][c] = {} };
-							searchParams.fields[groupOpen][c].open = true;
-						};
-						
-						$(this).find(':input').each(function(i, val) {
-							
-							var name = val.name.slice(0, -1);
-							if (typeof(searchParams.fields[groupOpen][c]) === 'undefined') { searchParams.fields[groupOpen][c] = {} };
-							searchParams.fields[groupOpen][c][name] = val.value;
-							console.log(groupOpen + ' ' + c + ' ' + searchParams.fields[groupOpen][c][name]);
-						});
-						
-
-
-						//if (typeof(searchParams.fields[groupOpen]) === 'undefined') { searchParams.fields[groupOpen] = {} };
-						
-						
-						if ($(this).hasClass('searchGroupClose')) {
-							if (typeof(searchParams.fields[groupOpen][c]) === 'undefined') { searchParams.fields[groupOpen][c] = {} };
-							searchParams.fields[groupOpen][c].open = false;
-							groupOpen -= 1;
-							//console.log('close');							
-						};*/
-						
 					});
 					
 					if (groupOpen != 0) {
-						alert('Unclosed') 
+						mkf.messageLog.show(mkf.lang.get('message_warn_adv_search_open'), mkf.messageLog.status.error, 5000);
 					} else {
-						/*var indentA = 0;
-						var oldIndent = 0;
-						page.find('div.searchDiv').each(function(c, div) {
-							var classlist = $(this).attr('class').split(/\s+/);
-							var indent = 0;						
-							//if (classlist.length = 2) { console.log(classlist[1]) };
-							//console.log(classlist);
-							//console.log(classlist.length);
-							if (typeof(classlist[1]) !== 'undefined') { cl = classlist[1]; indent = cl[cl.length-1] };
-							//console.log(indent);
-
-							if (typeof(searchParams.fields[indent]) === 'undefined') { searchParams.fields[indent] = {} };
-							if (oldIndent != indent) { indentA = 0; };
-							//if (typeof(searchParams.fields[indent][indentA]) === 'undefined') { searchParams.fields[indent][indentA] = {} };
-							//searchParams.fields[indent][c] = {};
-							searchParams.fields[indent][indentA] = {};
-							searchParams.num = c;
-							
-							$(this).find(':input').each(function(x, y) {
-								var name = y.name.slice(0, -1);
-								searchParams.fields[indent][indentA][name] = y.value;
-
-							});
-							indentA ++;
-							oldIndent = indent;
-						});*/
-
-						console.log(searchParams);
+						var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_run_adv_search'));
+						//console.log(searchParams);
 						xbmc.getAdFilter({
 							options: searchParams,
 							onSuccess: function(result) {
+								//mkf.dialog.close(dialogHandle);
+								mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
 								result.Type = searchParams.searchType;
 								//result.objParentPage = parentPage;						
 								console.log(result);
@@ -3298,7 +3214,7 @@ var uiviews = {};
 
 								var $adFilterRContent = $('<div class="pageContentWrapper"></div>');
 								var adFilterRPage = mkf.pages.createTempPage(parentPage, {
-									title: 'adFilterR',
+									title: mkf.lang.get('page_title_results'),
 									content: $adFilterRContent
 								});
 								var fillPage = function() {
@@ -3320,13 +3236,13 @@ var uiviews = {};
 										break;
 									}
 									
-									$adFilterRContent.removeClass('loading');
+									
 
 								}
 								adFilterRPage.setContextMenu(
 									[
 										{
-											'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+											'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_adv_search_list'), 'shortcut':'Ctrl+1', 'onClick':
 											function() {
 												mkf.pages.closeTempPage(adFilterRPage);
 												return false;
@@ -3346,15 +3262,16 @@ var uiviews = {};
 
 								// movieGenre
 								fillPage();
+								$adFilterRContent.removeClass('loading');
 
-								return false;
-				
-								//xbmc.defaultMovieViewer(result, parentPage);
-								
+								return false;								
 							},
-							onError: function() {
+							onError: function(error) {
 								console.log('Error ad filter');
-								//mkf.messageLog.show(mkf.lang.get('message_failed_adFilter'), mkf.messageLog.status.error, 5000);
+								console.log(error);
+								//mkf.dialog.close(dialogHandle);
+								mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed_adv_search'), 6000, mkf.messageLog.status.error);
+								//mkf.messageLog.show(mkf.lang.get('message_failed_adv_search'), mkf.messageLog.status.error, 5000);
 							}					
 						});
 					};

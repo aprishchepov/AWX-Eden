@@ -676,9 +676,9 @@ var awxUI = {};
 			var videoAdFilterContextMenu = $.extend(true, [], standardVideosContextMenu);
 			
 			this.videoAdFilterPage = videosPage.addPage({
-				title: mkf.lang.get('page_title_video_AdFilter'),
+				title: mkf.lang.get('page_title_video_adv_search'),
 				content: this.$videoAdFilterContent,
-				menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_AdFilter'),
+				menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_adv_search'),
 				contextMenu: videoAdFilterContextMenu,
 				onShow: $.proxy(this, "onVideoAdFilterShow"),
 				className: 'videoAdFilter'
@@ -1303,9 +1303,12 @@ var awxUI = {};
 		 * Called when Ad Filter-Page is shown. *
 		 *********************************************/
 		onVideoAdFilterShow	: function() {
-			var $contentBox = this.$videoAdFilterContent;
-			$contentBox.empty();
-			$contentBox.defaultVideoAdFilterViewer(this.videoAdFilterPage);
+			
+			if (this.$videoAdFilterContent.html() == '') {
+				var $contentBox = this.$videoAdFilterContent;
+				$contentBox.empty();
+				$contentBox.defaultVideoAdFilterViewer(this.videoAdFilterPage);
+			}
 		},
 	
 		/*********************************************

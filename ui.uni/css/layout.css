@@ -7,6 +7,11 @@ html, body {
     margin: 0;
     padding: 0;
 }
+h2 {
+	font-size: 1.7em;
+	padding: 5px;
+	text-decoration: underline;
+}
 #header {
     /*background: url("../images/logo.png") no-repeat scroll 20px 10px #333333;*/
 	background-color: rgba(0,0,0,0.6);
@@ -2347,6 +2352,42 @@ span.currentlyPlaying {
 	width: 580px;
 	height: 20px;
 }
+.advloader {
+	background: url("../images/advloader.gif") no-repeat scroll left top transparent;
+	position:absolute;
+	border: 0px;
+	top:50%;
+	left:45%;
+	width:128px;
+	height: 128px;
+	z-index: 1000;
+}
+span.advsearch {
+	background: url("../images/advsearch.png") no-repeat scroll left top transparent;
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+}
+span.help {
+	background-position: 0 0;
+	float: right;
+}
+span.open {
+	background-position: -32px 0;
+}
+span.close {
+	background-position: -64px 0;
+}
+p.advhelp {
+	font-size: 1.3em;
+}
+a.advhelplink {
+	color: #fff;
+	font-size: 1.5em;
+}
+a.advhelplink:hover {
+	color: #ddd;
+}
 div.advSearch {
 	background-color: rgba(0,0,0,0.8);
 	width: 500px;
@@ -2359,6 +2400,7 @@ form#advSearchForm {
 div.searchDiv {
 	background-color: rgba(50,50,50,0.8);
 	padding: 5px;
+	margin-bottom: 5px;
 	border-radius: 3px 3px 3px 3px;
 }
 div.searchGroupOpen {
@@ -2394,7 +2436,7 @@ div.searchDiv.indent5 {
 }
 div.searchCom {
 	clear: both;
-	margin-bottom: 10px;
+	margin-bottom: 1px;
 }
 #preload {
     display: none;

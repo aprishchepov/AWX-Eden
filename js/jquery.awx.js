@@ -1628,7 +1628,7 @@
 		//may be passed from set page. No limiting with movie sets.
 		if (!movieResult.isSet) {
 			//Out of bound checking. Reset to start, really should cycle backwards.
-			if (lastMovieCountStart > movieResult.limits.total -1) {
+			if (typeof(lastMovieCountStart) === 'undefined' || lastMovieCountStart > movieResult.limits.total -1) {
 				lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
 				lastMovieCountStart = 0;		
 				awxUI.onMoviesShow();

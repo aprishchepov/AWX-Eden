@@ -38,6 +38,8 @@ mkf.lang.add({language: 'Polski', short: 'pl', author: 'cienislaw', values: {
 	'page_title_album_recent':			'Nowe albumy',
 	'page_title_video_scan':			'Narzędzia biblioteki',
 	'page_title_music_scan':			'Narzędzia biblioteki',
+	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_results':				'Results',
 
 	'page_buttontext_music':			'Muzyka',
 	'page_buttontext_artist':			'Wykonawcy',
@@ -59,6 +61,7 @@ mkf.lang.add({language: 'Polski', short: 'pl', author: 'cienislaw', values: {
 	'page_buttontext_album_recent':		'Nowe albumy',
 	'page_buttontext_video_scan':		'Narzędzia biblioteki',
 	'page_buttontext_music_scan':		'Narzędzia biblioteki',
+	'page_buttontext_video_adv_search':	'Advanced Search',
 
 	'ctxt_btn_back_to_music':			'Wróć do Muzyki (Ctrl+1)',
 	'ctxt_btn_find':					'Znajdź (Ctrl+2)',
@@ -68,6 +71,7 @@ mkf.lang.add({language: 'Polski', short: 'pl', author: 'cienislaw', values: {
 	'ctxt_btn_close_song_list':			'Zamknij listę Utworów (Ctrl+1)',
 	'ctxt_btn_close_season_list': 		'Zamknij listę Sezonów (Ctrl+1)',
 	'ctxt_btn_close_episode_list':		'Zamknij listę Odcinków (Ctrl+1)',
+	'ctxt_btn_close_adv_search_list':	'Close Advanced Search (Ctrl+1)',
 	'ctxt_btn_refresh_list':			'Odśwież stronę',
 
 	'message_clear_audio_playlist':		'Wyczyść playlistę audio... ',
@@ -307,6 +311,21 @@ mkf.lang.add({language: 'Polski', short: 'pl', author: 'cienislaw', values: {
 	'label_cinex_play':					'Odtwórz używając Cinema Experience',
 	'label_resume_from':				'Resume from: ',
 	'label_resume_start':				'Play from beginning',
+	
+	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_filter_field':			'Field',
+	'label_adv_filter_operator':		'Operator',
+	'label_adv_filter_searchFor':		'Search For',
+	'label_adv_filter_and':				'and',
+	'label_adv_filter_or':				'or',
+	'label_adv_library':				'Library',
+	'btn_adv_search':					'Search',
+	'btn_adv_add':						'Add',
+	'btn_adv_reset':					'Reset',
+	'adv_search_help':					'The advanced search provides a multitude of ways to search your library. Because of the complexity it is possible to create invalid queries. Examples are available on the wiki page: <a href="http://wiki.xbmc.org/index.php?title=Add-on:AWXi">http://wiki.xbmc.org/index.php?title=Add-on:AWXi</a>',
+	'messsage_run_adv_search':			'Running advanced search...',
+	'message_failed_adv_search':		'Failed! \nCheck your query.',
+	'message_warn_adv_search_open':		'Please close all statements',
 
 	'settings_help': 					'LazyLoad:\nJeśli włączysz LazyLoad, to miniatury nie zostaną wczytane, dopóki nie będzie trzeba ich pokazać. Zmniejszy to ilość odwołań do obrazków umieszczonych na serwerze.\nAle, jeśli masz dużą bibliotekę (wiele filmów, albumów, ...), to przez doczytywanie miniaturek przewijanie strony może stracić na płynności.\nJeśli wyłączysz LazyLoad, to przy wyświetleniu strony (z filmami, albumami, ...) zostaną wczytane wszystkie obrazki. Wczytanie wszystkich miniaturek może zająć trochę czasu.\n\nCzas oczekiwania:\nJeśli masz wiele filmów (lub albumów...) wczytanie ich kompletnej listy może zająć trochę czasu.  Możesz zwiększyć czas oczekiwania, by zapobiec błędom podczas wyświetlania listy filmów.',
 	'settings_select_artists_path': 	'Wybierz folder, w którym znajdują się loga artystów',
