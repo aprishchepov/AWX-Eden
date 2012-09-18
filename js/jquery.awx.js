@@ -2614,7 +2614,121 @@
 			media = 'video';
 		}
 
+		var playFile = function(e) {
+			if (typeof(e.file) != 'undefined') {
+				var file = e.file;
+			} else {
+				$('a.close').click();
+				var resume = e.data.resume;
+				var file = e.data.file;
+			};
+			var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_file'));
+
+			var fn = 'playVideoFile';
+			if (media == 'music') {
+				fn = 'playAudioFile';
+			}
+
+			$.proxy(xbmc, fn)({
+				file: file,
+				resume: resume,
+				onSuccess: function() {
+					mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+				},
+				onError: function(errorText) {
+					mkf.messageLog.appendTextAndHide(messageHandle, errorText, 5000, mkf.messageLog.status.error);
+				}
+			});
+			return false;
+		};
+		
 		var onFilePlayClick = function(event) {
+			//Check file for resume point
+			xbmc.getFileDetails({
+				file: event.data.file,
+				media: media,
+				onError: function() {
+					//Failed to get file info. Shouldn't happen but try to play the file anyway.
+				},
+				onSuccess: function(response) {
+					if (typeof(response.filedetails.resume) != 'undefined') {
+						if (response.filedetails.resume.position > 0) {
+							var resumeMins = response.filedetails.resume.position/60;
+							var dialogHandle = mkf.dialog.show();
+							
+							var dialogContent = $('<div>' +
+
+								'<div class="movieinfo"><span class="resume">' + '<a class="resume" href="">' + mkf.lang.get('label_resume_from') + Math.floor(resumeMins) + ' ' + mkf.lang.get('minutes') + '</a></span></div></div>' +
+								'<div class="movieinfo"><span class="resume">' + '<a class="beginning" href="">' + mkf.lang.get('label_resume_start') + '</a>' + '</span></div></div></p>' +
+								
+								'</div>');
+
+							$(dialogContent).find('a.beginning').on('click', {file: event.data.file, resume: false}, playFile);
+							$(dialogContent).find('a.resume').on('click', {file: event.data.file, resume: true}, playFile);
+								
+							mkf.dialog.setContent(dialogHandle, dialogContent);
+						} else {
+							playFile({file: event.data.file});
+						}
+					} else {
+						//Just play the file
+						playFile({file: event.data.file});
+					}
+					
+				}
+			});
+				
+			return false;
+		};
+
+		var onAddFileToPlaylistClick = function(event) {
+			var isFolder = false;
+
+			if (event.data.isFolder)
+				isFolder = true;
+
+			if (isFolder) {
+				var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_folder_to_playlist'));
+
+				var fn = xbmc.addVideoFolderToPlaylist;
+				if (media == 'music') {
+					fn = xbmc.addAudioFolderToPlaylist;
+				}
+
+				fn({
+					folder: event.data.file,
+					onSuccess: function() {
+						mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+					},
+					onError: function(errorText) {
+						mkf.messageLog.appendTextAndHide(messageHandle, errorText, 5000, mkf.messageLog.status.error);
+					}
+				});
+
+			} else {
+
+				var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_file_to_playlist'));
+
+				var fn = xbmc.addVideoFileToPlaylist;
+				if (media == 'music') {
+					fn = xbmc.addAudioFileToPlaylist;
+				}
+
+				fn({
+					file: event.data.file,
+					onSuccess: function() {
+						mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+					},
+					onError: function() {
+						mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
+					}
+				});
+			}
+			return false;
+		};
+		
+		// **** File changed to Folder
+		var onFolderPlayClick = function(event) {
 			var isFolder = false;
 
 			if (event.data.isFolder)
@@ -2659,7 +2773,7 @@
 			return false;
 		};
 
-		var onAddFileToPlaylistClick = function(event) {
+		var onAddFolderToPlaylistClick = function(event) {
 			var isFolder = false;
 
 			if (event.data.isFolder)
@@ -2760,8 +2874,8 @@
 										'<a href="" class="folder cd">' + folder.label + '/</a>' + '<div class="findKeywords">' + folder.label.toLowerCase() + '</div>' +
 										'</div></li>').appendTo($filelist);
 									$folder.find('.cd').bind('click', {folder: {name:folder.label, path:folder.file}}, onFolderClick);
-									$folder.find('.play').bind('click', {file: folder.file, isFolder: true}, onFilePlayClick);
-									$folder.find('.playlist').bind('click', {file: folder.file, isFolder: true}, onAddFileToPlaylistClick);
+									$folder.find('.play').bind('click', {file: folder.file, isFolder: true}, onFolderPlayClick);
+									$folder.find('.playlist').bind('click', {file: folder.file, isFolder: true}, onAddFolderToPlaylistClick);
 									++globalI;
 								}
 							});

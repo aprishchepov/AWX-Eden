@@ -2057,12 +2057,18 @@ var xbmc = {};
 		playVideoFile: function(options) {
 			var settings = {
 				file: '',
+				resume: false,
 				onSuccess: null,
 				onError: null
 			};
 			$.extend(settings, options);
 
-			this.clearVideoPlaylist({
+			xbmc.sendCommand(
+					'{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "file" : "' + settings.file + '"}, "options": { "resume": ' + settings.resume + ' } }, "id": 1}',
+					settings.onSuccess,
+					settings.onError
+			);
+			/*this.clearVideoPlaylist({
 				onSuccess: function() {
 					xbmc.addVideoFileToPlaylist({
 						file: settings.file,
@@ -2085,7 +2091,7 @@ var xbmc = {};
 				onError: function() {
 					settings.onError(mkf.lang.get('message_failed_clear_playlist'));
 				}
-			});
+			});*/
 		},
 
 
@@ -2817,6 +2823,27 @@ var xbmc = {};
 			);
 		},
 
+		getFileDetails: function(options) {
+			var settings = {
+				media: 'music',
+				file: '',
+				onSuccess: null,
+				onError: null,
+			};
+			$.extend(settings, options);
+			
+			xbmc.sendCommand(
+				'{"jsonrpc": "2.0", "method": "Files.GetFileDetails", "params": { "file": "' + settings.file + '", "media": "' + settings.media + '", "properties": [ "resume" ] }, "id": 1}',
+
+				function(response) {
+					settings.onSuccess(response.result);
+				},
+				function(response) {
+					settings.onError(response.error);
+				}
+				
+			);
+		},
 		
 		getDirectory: function(options) {
 			var settings = {
