@@ -2995,7 +2995,7 @@
 			xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
 				// ALL: AUDIO, VIDEO, PICTURE
 				
-				if (currentFile.title) { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
+				if (currentFile.title && currentFile.title != '') { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
 
 				if (currentFile.xbmcMediaType == 'audio') {
 					// AUDIO
