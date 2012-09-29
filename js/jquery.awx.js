@@ -1106,14 +1106,19 @@
 	$.fn.defaultArtistsViewer = function(artistResult, parentPage) {
 
 		if (!artistResult || !artistResult.limits.total > 0) { return };
-		totalArtistCount = artistResult.limits.total;
-		if (lastArtistCountStart > artistResult.limits.total -1) {
-			lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
-			lastArtistCountStart = 0;
-			/*lastArtistCount = artistResult.limits.total;
-			lastArtistCountStart = artistResult.limits.total - mkf.cookieSettings.get('limitArtists', 25);*/
-			awxUI.onArtistsShow();
-			return
+		//Hack until single logo is redone with proper limiting
+		if (view =='logosingle') { artistResult.isFiltered = true };
+		
+		if (!artistResult.isFiltered) {
+			totalArtistCount = artistResult.limits.total;
+			if (lastArtistCountStart > artistResult.limits.total -1) {
+				lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+				lastArtistCountStart = 0;
+				/*lastArtistCount = artistResult.limits.total;
+				lastArtistCountStart = artistResult.limits.total - mkf.cookieSettings.get('limitArtists', 25);*/
+				awxUI.onArtistsShow();
+				return
+			};
 		};
 		
 		var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
@@ -1147,7 +1152,8 @@
 			};
 			setTimeout(loadThumbs, 100);
 		}
-		if (view != 'logosingle') {
+		
+		if (!artistResult.isFiltered) {
 			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</span></div></div>').prependTo($artistsViewerElement);
 			$('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastArtistCount > artistResult.limits.total? artistResult.limits.total : lastArtistCount) + '/' + artistResult.limits.total + '</span></div></div>').appendTo($artistsViewerElement);
 			$artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
@@ -1504,7 +1510,7 @@
 				uiviews.AlbumsViewThumbnails(albumResult, parentPage).appendTo($albumViewerElement);
 				break;
 			case 'listin':
-				uiviews.AlbumsViewListInline(albumResult).appendTo($albumViewerElement);
+				uiviews.AlbumsViewListInline(albumResult, parentPage).appendTo($albumViewerElement);
 				break;
 		};
 
@@ -1571,11 +1577,11 @@
 	 |
 	 |  @param songResult		Result of AudioLibrary.GetSongs.
 	\* ########################### */
-	$.fn.defaultSonglistViewer = function(songResult) {
+	$.fn.defaultSonglistViewer = function(songResult, parentPage) {
 		
 		if (!songResult.limits.total > 0) { return };
 		
-		uiviews.SongViewList(songResult).appendTo($(this));
+		uiviews.SongViewList(songResult, parentPage).appendTo($(this));
 		
 	}; // END defaultSonglistViewer
 
@@ -1622,7 +1628,6 @@
 	\* ########################### */
 	$.fn.defaultMovieViewer = function(movieResult, parentPage) {
 
-		console.log(movieResult);
 		if (!movieResult.limits.total > 0) { return };
 		totalMovieCount = movieResult.limits.total;
 		//may be passed from set page. No limiting with movie sets.
@@ -2602,6 +2607,18 @@
 		uiviews.AdvancedSearch('video', parentPage).appendTo(adFilterContainer);
 		
 	}; // END defaultAdFilterViewer
+	
+	/* ########################### *\
+	 |  Audio Advanced Filter
+	 |
+	 |  @param episodesResult
+	\* ########################### */
+	$.fn.defaultAudioAdFilterViewer = function(parentPage) {
+		
+		var adFilterContainer = $(this);
+		uiviews.AdvancedSearch('audio', parentPage).appendTo(adFilterContainer);
+		
+	}; // END defaultAdAudioFilterViewer
 	
 	/* ########################### *\
 	 |  Show filesystem.

@@ -39,6 +39,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'page_title_video_scan':			'Scanning Video Library Activated',
 	'page_title_music_scan':			'Scanning Music Library Activated',
 	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_audio_adv_search':		'Advanced Search',
 	'page_title_results':				'Results',
 	
 	'page_buttontext_music':			'Musik',
@@ -62,6 +63,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'page_buttontext_video_scan':		'Scan Video Library',
 	'page_buttontext_music_scan':		'Scan Music Library',
 	'page_buttontext_video_adv_search':	'Advanced Search',
+	'page_buttontext_audio_adv_search':	'Advanced Search',
 	
 	'ctxt_btn_back_to_music':			'Zur%FCck zu Musik (Strg+1)',
 	'ctxt_btn_find':					'Suchen (Strg+2)',
@@ -313,6 +315,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'label_resume_start':				'Play from beginning',
 	
 	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_search_audio':			'Advanced Music Search',
 	'label_adv_filter_field':			'Field',
 	'label_adv_filter_operator':		'Operator',
 	'label_adv_filter_searchFor':		'Search For',
@@ -326,6 +329,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
 	'messsage_run_adv_search':			'Running advanced search...',
 	'message_failed_adv_search':		'Failed! \nCheck your query.',
 	'message_warn_adv_search_open':		'Please close all statements',
+	'message_empty_adv_search':			'No matches found!',
 
 	'settings_help':					'LazyLoad:\nSofern Sie LazyLoad aktivieren, werden Thumbnails erst geladen, wenn sie sichtbar werden. Dies sch%FCtzt den Server vor zu vielen Bild-Anfragen.\nWenn Sie jedoch sehr viele Eintr%E4ge (Filme, Alben, ...) haben, kann das Webinterface beim Scrollen langsam reagieren, sofern viele Thumbnails noch nicht geladen wurden.\nWenn Sie LazyLoad deaktivieren, werden alle Thumbnails geladen, sobald die entsprechende Seite (Film-Seite, Alben-Seite, ...) angezeigt wird. Es kann dann jedoch einen Moment dauern, bis alle Thumbnails geladen wurden.\n\nTimeOut:\nWenn Sie viele Filme (oder Alben etc.) haben, kann es einige Zeit in Anspruch nehmen, bis die komplette Film-Liste geladen wird. Sie k%F6nnen den TimeOut-Wert erh%F6hen, um Fehler beim Laden der Film-Liste zu vermeiden.',
 

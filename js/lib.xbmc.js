@@ -1049,7 +1049,7 @@ var xbmc = {};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbumDetails", "params": { "albumid" : ' + settings.albumid + ', "properties" : ["rating", "artist", "thumbnail", "description", "title", "genre", "theme", "mood", "style", "type", "albumlabel", "year", "musicbrainzalbumid", "musicbrainzalbumartistid", "artistid", "fanart" ] }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbumDetails", "params": { "albumid" : ' + settings.albumid + ', "properties" : ["rating", "artist", "thumbnail", "description", "title", "genre", "theme", "mood", "style", "type", "albumlabel", "year", "musicbrainzalbumid", "musicbrainzalbumartistid", "fanart" ] }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result.albumdetails);
@@ -2641,6 +2641,21 @@ var xbmc = {};
 				break;
 				case 'musicvideos':
 					properties = '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ],';
+				break;
+				case 'artists':
+					properties = '"properties" : ["thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre"],';
+					settings.sortby = 'artist';
+					settings.order = 'ascending';
+				break;
+				case 'albums':
+					properties = '"properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"],';
+					settings.sortby = mkf.cookieSettings.get('albumSort', 'label');
+					settings.order = mkf.cookieSettings.get('adesc', 'ascending');
+				break;
+				case 'songs':
+					properties = '"properties": ["artist", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating"],';
+					settings.sortby = 'track';
+					settings.order = 'ascending';
 				break;
 			};
 			

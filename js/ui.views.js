@@ -2007,7 +2007,7 @@ var uiviews = {};
 		},
 		
 		/*----Song list view-----*/
-		SongViewList: function(songs, options) {
+		SongViewList: function(songs, parentPage) {
 			var $songList = $('<ul class="fileList"></ul>');
 
 				$.each(songs.songs, function(i, song)  {
@@ -2970,14 +2970,7 @@ var uiviews = {};
 /*------------*/	
 	
 		AdvancedSearch: function(search, parentPage) {
-			//Music or video?
-			var n = 0;
-			//var andOr = 'and';
-			var indentLevel = 0;
-			var openGroups = 0;
-			var openGroupsToClose = 0;
-			var searchLib = 'movies';
-			var adFilterPage = $('<div class="AdFilter"></div>');
+			
 			var fillOptions = function(fields, ops, num) {
 				page.find('select#searchFields' + num).children().remove();
 				$.each(fields, function(i, field) {
@@ -2990,54 +2983,52 @@ var uiviews = {};
 			};
 
 			var addItem = function() {
-				n += 1;
-				var indentLev = indentLevel;
-				//if (n > 9) { page.find('.addSearch').attr('disabled', true) };
-				//Create a value from n that won't change.
-				var i = n;
-				var searchBlock = $('<div class="searchDiv' + (indentLevel >0? ' indent' + indentLev + '">' : '">') +
-					'<div class="searchCom">' + (n != 0? '<a href="" class="groupOpen"><span class="advsearch open" /></a> <a href="" class="groupClose"><span class="advsearch close" /></a>' : '') +
-					//'<a href="" class="btnRemove">Remove </a><a href="" class="btnIndent"> Indent </a><a href="" class="btnRemoveIndent"> Remove Indent</a><br />' : '') +
+				if (search == 'video') {
+					vn += 1;
+					var indentLev = vindentLevel;
+					//Create a value from n that won't change.
+					var i = vn;
+					var searchLib = vsearchLib;
+				} else if (search == 'audio') {
+					an += 1;
+					var indentLev = aindentLevel;
+					//Create a value from n that won't change.
+					var i = an;
+					var searchLib = asearchLib;					
+				};
+				var searchBlock = $('<div class="searchDiv' + (indentLev >0? ' indent' + indentLev + '">' : '">') +
+					'<div class="searchCom">' + (i != 0? '<a href="" class="groupOpen"><span class="advsearch open" /></a> <a href="" class="groupClose"><span class="advsearch close" /></a>' : '') +
 					'<div class="searchFieldset">' +
 					'<fieldset class="searchBlock">' +
 					'<legend>' + mkf.lang.get('label_adv_filter_field') + '</legend>' +
-					'<select id="searchFields' + n + '" name="searchFields' + n + '"></select>' +
+					'<select id="searchFields' + i + '" name="searchFields' + i + '"></select>' +
 					'</fieldset>' +
 					'<fieldset class="searchBlock">' +
 					'<legend>' + mkf.lang.get('label_adv_filter_operator') + '</legend>' +
-					'<select id="searchOps' + n + '" name="searchOps' + n + '"></select>' +
+					'<select id="searchOps' + i + '" name="searchOps' + i + '"></select>' +
 					'</fieldset>' +
 					'<fieldset>' +
 					'<legend>' + mkf.lang.get('label_adv_filter_searchFor') + '</legend>' +
-					'<input type="text" id="searchTerms' + n + '" name="searchTerms' + n + '" style="width: 100%" />' +
+					'<input type="text" id="searchTerms' + i + '" name="searchTerms' + i + '" style="width: 100%" />' +
 					'</fieldset>' +
 					'</div>' +
-					'<select id="searchAndOr' + n + '" name="searchAndOr' + n + '" style="width: 70px; clear: both; display: none;"></select>' +
+					'<select id="searchAndOr' + i + '" name="searchAndOr' + i + '" style="width: 70px; clear: both; display: none;"></select>' +
 					'</div>');
 
 				page.find('input#search').before(searchBlock);
-				//searchBlock.find('a.btnAdd').on('click', addItem);
-				//searchBlock.find('a.btnRemove').on('click', {num: n}, removeItem);
-				searchBlock.find('a.groupOpen').on('click', {num: n}, groupOpen);
-				searchBlock.find('a.groupClose').on('click', {num: n}, groupClose);
+				searchBlock.find('a.groupOpen').on('click', {num: i}, groupOpen);
+				searchBlock.find('a.groupClose').on('click', {num: i}, groupClose);
 				
-				if (n == 2) {
-					//console.log(searchBlock.prevAll('.searchDiv:first'));
-					//Show AndOr in case no open used.
-					//console.log(searchBlock.prevAll('.searchDiv:eq(1)'));
+				if (i == 2) {
 					searchBlock.prevAll('.searchDiv:first').find('select').append('<option value="and">' + mkf.lang.get('label_adv_filter_and') + '</option><option value="or">' + mkf.lang.get('label_adv_filter_or') + '</option>');
 					searchBlock.prevAll('.searchDiv:first').find('select').show();
 				};
-				//searchBlock.find('a.btnIndent').on('click', {num: n}, indentItem);
-				//searchBlock.find('a.btnRemoveIndent').on('click', {num: n}, indentDelItem);
-				//if (n > 2) {
-				//	searchBlock.find('select#searchAndOr' + n).on('change', {andOrState: 'change'}, indentItem);
-				//};//{andOr: $(this).val()}, indentItem);
+
 				fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), i);
 				return false;
 			};
 			
-			var addItemAndOr = function(searchN, block) {
+			/*var addItemAndOr = function(searchN, block) {
 				console.log(block.prevAll('.searchDiv:first'));
 				//'<option value="and">and</option><option value="or">or</option>'
 			};
@@ -3046,58 +3037,72 @@ var uiviews = {};
 				var toDel = page.find('select#searchFields' + e.data.num).parentsUntil('form');
 				page.find('select#searchFields' + e.data.num).parentsUntil('form').remove();
 				return false;
-			};
+			};*/
 			
 			var groupOpen = function(e) {
-				//console.log($(this));
 				var prevFieldSet = $(this).parent().parent();
-				indentLevel += 1;
+				if (search == 'video') {
+					vindentLevel += 1;
+					var indentLevel = vindentLevel;
+					//var openGroupsToClose = vopenGroupsToClose;
+				} else if (search =='audio') {
+					aindentLevel += 1;
+					var indentLevel = aindentLevel;
+					//var openGroupsToClose = aopenGroupsToClose;
+				};
 				prevFieldSet.removeClass('searchGroupClose');
 				prevFieldSet.addClass('searchGroupOpen');
-				//var indentLev = indentLevel;
 				prevFieldSet.removeClass('indent' + indentLevel-1);
-				//if (indentLevel <5) { indentLevel += 1 } else { indentLevel = 5 };
-				//indentLevel += 1;
-				//indentLev = indentLevel;
 				prevFieldSet.addClass('indent' + indentLevel);
 				var prevDiv = $(this).parent().parent().prevAll('.searchDiv:first');
 				if (prevDiv.hasClass('searchGroupOpen')) {
 					prevDiv.find('div.searchFieldset').empty();
-					openGroupsToClose += 1;
+					(search == 'video'? vopenGroupsToClose += 1 : aopenGroupsToClose +=1);
 				};
-				//if (n !=2) { prevFieldSet.find('select:last').append('<option value="and">' + mkf.lang.get('label_adv_filter_and') + '</option><option value="or">' + mkf.lang.get('label_adv_filter_or') + '</option>') };
-				//$(this).parent().parent().find('select:last').show();
-				console.log($(this).parent().find('select:last').html());
 				if ($(this).parent().find('select:last').html() == '') {
 					$(this).parent().find('select:last').append('<option value="and">' + mkf.lang.get('label_adv_filter_and') + '</option><option value="or">' + mkf.lang.get('label_adv_filter_or') + '</option>');
 					$(this).parent().find('select:last').show();
 				}
-				openGroups += 1;
-				//openGroupsToClose += 1;
-				//console.log('Add - openGroupsToClose: ' + openGroupsToClose);
+				(search == 'video'? vopenGroups += 1 : aopenGroups += 1);
 
 				return false;
 			};
 			
-			var groupClose = function(e) {
-				
+			var groupClose = function(e) {				
 				$(this).parent().parent().removeClass('searchGroupOpen');
 				$(this).parent().parent().addClass('searchGroupClose');
-				var indentLev = indentLevel;
-				indentLevel -= 1;
 				var prevDiv = $(this).parent().parent().prevAll('.searchDiv:first');
-				//console.log('OpenGroups: ' + openGroups);
-				//console.log('openGroupsToClose: ' + openGroupsToClose);
-				if ((openGroups - openGroupsToClose) != 1) { $(this).parent().parent().empty(); openGroupsToClose -= 1; };
-				openGroups -= 1;
-				//prevDiv.find('select').children().remove();
-				//$(this).parent().parent().removeClass('indent' + indentLev);
+				if (search == 'video') {
+					vindentLevel -= 1;
+					if ((vopenGroups - vopenGroupsToClose) != 1) { $(this).parent().parent().empty(); vopenGroupsToClose -= 1; };
+					vopenGroups -= 1;
+					//var indentLevel = vindentLevel;
+					//var openGroupsToClose = vopenGroupsToClose;
+				} else if (search =='audio') {
+					aindentLevel -= 1;
+					if ((aopenGroups - aopenGroupsToClose) != 1) { $(this).parent().parent().empty(); aopenGroupsToClose -= 1; };
+					aopenGroups -= 1;
+					//var indentLevel = aindentLevel;
+					//var openGroupsToClose = aopenGroupsToClose;
+				};
 				//var indentLev = indentLevel;
-				//if (indentLevel > 0) { $(this).parent().parent().addClass('indent' + indentLev) };
+				//indentLevel -= 1;
+				
+				//if ((openGroups - openGroupsToClose) != 1) { $(this).parent().parent().empty(); openGroupsToClose -= 1; };
+				//openGroups -= 1;
 				return false;
 			};
 			
+			//Music or video?
 			if (search == 'video') {
+			
+				var vn = 0;
+				var vindentLevel = 0;
+				var vopenGroups = 0;
+				var vopenGroupsToClose = 0;
+				var vsearchLib = 'movies';
+				var vadFilterPage = $('<div class="AdFilter"></div>');
+			
 				var searchFieldsmovies = ["title","plot","plotoutline","tagline","votes","rating","time","writers","playcount","lastplayed","inprogress","genre","country","year","director","actor","mpaarating","top250","studio","hastrailer","filename","path","set","tag","dateadded","videoresolution","audiochannels","videocodec","audiocodec","audiolanguage","subtitlelanguage","videoaspect","playlist"];
 				var searchOpsmovies = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
 				var searchFieldstvshows = ["title","plot","status","votes","rating","year","genre","director","actor","numepisodes","numwatched","playcount","path","studio","mpaarating","dateadded","playlist"];
@@ -3108,11 +3113,11 @@ var uiviews = {};
 				var searchOpsmusicvideos = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
 
 					
-				var page = $('<div class="advSearch"><h2>' + mkf.lang.get('label_adv_search_video') + '<a href="" class="advhelp"><span class="advsearch help" /></a></h2>' +
-					'<form name="advSearchForm" id="advSearchForm">' +
+				var page = $('<div class="vadvSearch"><h2>' + mkf.lang.get('label_adv_search_video') + '<a href="" class="advhelp"><span class="advsearch help" /></a></h2>' +
+					'<form name="vadvSearchForm" id="vadvSearchForm">' +
 					'<fieldset class="searchRoot">' +
 					'<legend>' + mkf.lang.get('label_adv_library') + '</legend>' +
-					'<select id="searchType" name="searchType">' +
+					'<select id="vsearchType" name="vsearchType">' +
 					'<option value="movies">' + mkf.lang.get('page_buttontext_movies') + '</option>' +
 					'<option value="tvshows">' + mkf.lang.get('page_buttontext_tvshows') + '</option>' +
 					'<option value="episodes">' + mkf.lang.get('group_episodes') + '</option>' +
@@ -3122,28 +3127,25 @@ var uiviews = {};
 					'<input type="submit" name="search" value="' + mkf.lang.get('btn_adv_search') + '" id="search" />' +
 					'<input type="button" class="addSearch" value="' + mkf.lang.get('btn_adv_add') + '">' +
 					'<input type="button" class="resetSearch" value="' + mkf.lang.get('btn_adv_reset') + '">' +
-					'</form></div>').appendTo(adFilterPage);
+					'</form></div>').appendTo(vadFilterPage);
 					
 				addItem();
 				
 				page.find('.advhelp').click(function() {
 					var dialogHandle = mkf.dialog.show();
 					mkf.dialog.setContent(dialogHandle, mkf.lang.get('adv_search_help'));
-					//alert(mkf.lang.get('adv_search_help'));
 					return false;
 				});
-				page.find('#searchType').change(function() {
+				page.find('#vsearchType').change(function() {
 					//remove fields on library change
-					searchLib = $(this).val()
+					vsearchLib = $(this).val()
 					page.find('.searchDiv').empty().remove();
-					n = 0;
-					indentLevel = 0;
-					openGroups = 0;
-					openGroupsToClose = 0;
-					//andOr = 'and';
+					vn = 0;
+					vindentLevel = 0;
+					vopenGroups = 0;
+					vopenGroupsToClose = 0;
 					addItem();
-					//page.find('.addSearch').attr('disabled', false);
-					fillOptions(eval('searchFields' + searchLib), eval('searchOps' + searchLib), 1);
+					fillOptions(eval('searchFields' + vsearchLib), eval('searchOps' + vsearchLib), 1);
 				});
 				fillOptions(searchFieldsmovies, searchOpsmovies);
 				
@@ -3152,26 +3154,19 @@ var uiviews = {};
 				page.find('input.addSearch').on('click', addItem);
 				page.find('input.resetSearch').on('click', function() {
 					page.find('.searchDiv').empty().remove();
-					n = 0;
-					indentLevel = 0;
-					openGroups = 0;
-					openGroupsToClose = 0;
-					//andOr = 'and';
+					vn = 0;
+					vindentLevel = 0;
+					vopenGroups = 0;
+					vopenGroupsToClose = 0;
 					addItem();
-					//fillOptions(searchFieldsmovies, searchOpsmovies);
 				});
 				
-				page.find('form#advSearchForm').submit(function() {
-					//Build a useful object to pharse later
-					
-					//var dialogContent = '';
-					//var dialogHandle = mkf.dialog.show({closeButton: false, classname: 'advloader'});
-					//mkf.dialog.setContent(dialogHandle, dialogContent);
-					
-					var groupOpen = 0;
-					var searchType = $(this).find('#searchType').val();
+				page.find('form#vadvSearchForm').submit(function() {
+					//Build a useful object to pharse later					
+					var vgroupOpen = 0;
+					var vsearchType = $(this).find('#vsearchType').val();
 					var searchParams = {library: search};
-					searchParams.searchType = searchType;
+					searchParams.searchType = vsearchType;
 					searchParams.fields = {};
 					searchParams.fields[0] = {};
 					
@@ -3197,81 +3192,79 @@ var uiviews = {};
 						
 					});
 					
-					if (groupOpen != 0) {
+					if (vgroupOpen != 0) {
 						mkf.messageLog.show(mkf.lang.get('message_warn_adv_search_open'), mkf.messageLog.status.error, 5000);
 					} else {
 						var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_run_adv_search'));
-						//console.log(searchParams);
+
 						xbmc.getAdFilter({
 							options: searchParams,
 							onSuccess: function(result) {
-								//mkf.dialog.close(dialogHandle);
-								mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+								
 								result.Type = searchParams.searchType;
-								//result.objParentPage = parentPage;						
-								console.log(result);
-								//make sub page for result
+								if (result.limits.total > 0) {
+									mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+									
+									//make sub page for result
+									var $vadFilterRContent = $('<div class="pageContentWrapper"></div>');
+									var vadFilterRPage = mkf.pages.createTempPage(parentPage, {
+										title: mkf.lang.get('page_title_results'),
+										content: $vadFilterRContent
+									});
+									var fillPage = function() {
+										$vadFilterRContent.addClass('loading');
+										switch (result.Type) {
+											case 'movies':
+												result.isSet = true;
+												$vadFilterRContent.defaultMovieViewer(result, vadFilterRPage);
+											break;
+											case 'tvshows':
+												result.isFiltered = true;
+												$vadFilterRContent.defaultTvShowViewer(result, vadFilterRPage);
+											break;
+											case 'episodes':
+												$vadFilterRContent.defaultEpisodesViewer(result, vadFilterRPage);
+											break;
+											case 'musicvideos':
+												$vadFilterRContent.defaultMusicVideosViewer(result, vadFilterRPage);
+											break;
+										}
+										
+										
 
-								var $adFilterRContent = $('<div class="pageContentWrapper"></div>');
-								var adFilterRPage = mkf.pages.createTempPage(parentPage, {
-									title: mkf.lang.get('page_title_results'),
-									content: $adFilterRContent
-								});
-								var fillPage = function() {
-									$adFilterRContent.addClass('loading');
-									switch (result.Type) {
-										case 'movies':
-											result.isSet = true;
-											$adFilterRContent.defaultMovieViewer(result);
-										break;
-										case 'tvshows':
-											result.isFiltered = true;
-											$adFilterRContent.defaultTvShowViewer(result);
-										break;
-										case 'episodes':
-											$adFilterRContent.defaultEpisodesViewer(result);
-										break;
-										case 'musicvideos':
-											$adFilterRContent.defaultMusicVideosViewer(result);
-										break;
 									}
-									
-									
-
-								}
-								adFilterRPage.setContextMenu(
-									[
-										{
-											'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_adv_search_list'), 'shortcut':'Ctrl+1', 'onClick':
-											function() {
-												mkf.pages.closeTempPage(adFilterRPage);
-												return false;
-											}
-										},
-										{
-											'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
-												function(){
-													$adFilterRContent.empty();
-													fillPage();
+									vadFilterRPage.setContextMenu(
+										[
+											{
+												'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_adv_search_list'), 'shortcut':'Ctrl+1', 'onClick':
+												function() {
+													mkf.pages.closeTempPage(vadFilterRPage);
 													return false;
 												}
-										}
-									]
-								);
-								mkf.pages.showTempPage(adFilterRPage);
+											},
+											{
+												'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+													function(){
+														$vadFilterRContent.empty();
+														fillPage();
+														return false;
+													}
+											}
+										]
+									);
+									
+									mkf.pages.showTempPage(vadFilterRPage);
+									fillPage();
+									$vadFilterRContent.removeClass('loading');
 
-								// movieGenre
-								fillPage();
-								$adFilterRContent.removeClass('loading');
-
-								return false;								
+									return false;
+								} else {
+									//No results
+									mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_empty_adv_search'), 6000, mkf.messageLog.status.error);
+								};
 							},
 							onError: function(error) {
-								console.log('Error ad filter');
-								console.log(error);
-								//mkf.dialog.close(dialogHandle);
 								mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed_adv_search'), 6000, mkf.messageLog.status.error);
-								//mkf.messageLog.show(mkf.lang.get('message_failed_adv_search'), mkf.messageLog.status.error, 5000);
 							}					
 						});
 					};
@@ -3279,24 +3272,176 @@ var uiviews = {};
 				});
 
 			} else if (search == 'audio') {
-				console.log('music search');
-				var searchFieldsArtists = ["artist","genre","moods","styles","instruments","biography","born","bandformed","disbanded","died","playlist"];
-				var searchOpsArtists = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
-				var searchFieldsAlbums = ["genre","album","artist","albumartist","year","review","themes","moods","styles","type","label","rating","playlist"];
-				var searchOpsAlbums = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
-				var searchFieldsSongs = ["genre","album","artist","albumartist","title","year","time","tracknumber","filename","path","playcount","lastplayed","rating","comment","dateadded","playlist"];
-				var searchOpsSongs = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				//console.log('music search');
+				var an = 0;
+				var aindentLevel = 0;
+				var aopenGroups = 0;
+				var aopenGroupsToClose = 0;
+				var asearchLib = 'artists';
+				var aadFilterPage = $('<div class="AdFilter"></div>');
+
+				var searchFieldsartists = ["artist","genre","moods","styles","instruments","biography","born","bandformed","disbanded","died","playlist"];
+				var searchOpsartists = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldsalbums = ["genre","album","artist","albumartist","year","review","themes","moods","styles","type","label","rating","playlist"];
+				var searchOpsalbums = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
+				var searchFieldssongs = ["genre","album","artist","albumartist","title","year","time","tracknumber","filename","path","playcount","lastplayed","rating","comment","dateadded","playlist"];
+				var searchOpssongs = ["contains","doesnotcontain","is","isnot","startswith","endswith","greaterthan","lessthan","after","before","inthelast","notinthelast","true","false"];
 				
-				var page = $('<div><h2>' + mfk.lang.get('advSearchMusic') + '</h2>' +
-					'<form name="advSearchForm">' +
-					'<fieldset>' +
-					'<select id="searchType" name="searchType">' +
-					'<option value="artists">' + mkf.lang.get('page_buttontext_artists') + '</option>' +
+				var page = $('<div class="aadvSearch"><h2>' + mkf.lang.get('label_adv_search_audio') + '<a href="" class="advhelp"><span class="advsearch help" /></a></h2>' +
+					'<form name="aadvSearchForm" id="aadvSearchForm">' +
+					'<fieldset class="searchRoot">' +
+					'<legend>' + mkf.lang.get('label_adv_library') + '</legend>' +
+					'<select id="asearchType" name="asearchType">' +
+					'<option value="artists">' + mkf.lang.get('page_buttontext_artist') + '</option>' +
 					'<option value="albums">' + mkf.lang.get('page_buttontext_albums') + '</option>' +
 					'<option value="songs">' + mkf.lang.get('btn_songs') + '</option>' +
 					'</select>' +
 					'</fieldset>' +
-					'</form>').appendTo(adFilterPage);
+					'<input type="submit" name="search" value="' + mkf.lang.get('btn_adv_search') + '" id="search" />' +
+					'<input type="button" class="addSearch" value="' + mkf.lang.get('btn_adv_add') + '">' +
+					'<input type="button" class="resetSearch" value="' + mkf.lang.get('btn_adv_reset') + '">' +
+					'</form></div>').appendTo(aadFilterPage);
+					
+				addItem();
+				
+				page.find('.advhelp').click(function() {
+					var dialogHandle = mkf.dialog.show();
+					mkf.dialog.setContent(dialogHandle, mkf.lang.get('adv_search_help'));
+					return false;
+				});
+				page.find('#asearchType').change(function() {
+					//remove fields on library change
+					asearchLib = $(this).val()
+					page.find('.searchDiv').empty().remove();
+					an = 0;
+					aindentLevel = 0;
+					aopenGroups = 0;
+					aopenGroupsToClose = 0;
+					addItem();
+					fillOptions(eval('searchFields' + asearchLib), eval('searchOps' + asearchLib), 1);
+				});
+				fillOptions(searchFieldsartists, searchOpsartists);
+				
+
+				
+				page.find('input.addSearch').on('click', addItem);
+				page.find('input.resetSearch').on('click', function() {
+					page.find('.searchDiv').empty().remove();
+					an = 0;
+					aindentLevel = 0;
+					aopenGroups = 0;
+					aopenGroupsToClose = 0;
+					addItem();
+				});
+				
+				page.find('form#aadvSearchForm').submit(function() {
+					//Build a useful object to pharse later					
+					var agroupOpen = 0;
+					var asearchType = $(this).find('#asearchType').val();
+					var searchParams = {library: search};
+					searchParams.searchType = asearchType;
+					searchParams.fields = {};
+					searchParams.fields[0] = {};
+					
+					page.find('div.searchDiv').each(function(c, div) {
+						if (typeof(searchParams.fields[c]) === 'undefined') { searchParams.fields[c] = {} };
+						
+						if ($(this).hasClass('searchGroupOpen')) {
+							searchParams.fields[c].open = 'open';
+							groupOpen += 1;
+						} else if ($(this).hasClass('searchGroupClose')) {
+							searchParams.fields[c].open = 'close';
+							groupOpen -= 1;
+						} else {
+							searchParams.fields[c].open = 'continue';
+						};
+						
+						
+						
+						$(this).find(':input').each(function(i, val) {							
+							var name = val.name.slice(0, -1);							
+							searchParams.fields[c][name] = val.value;
+						});
+						
+					});
+					
+					if (agroupOpen != 0) {
+						mkf.messageLog.show(mkf.lang.get('message_warn_adv_search_open'), mkf.messageLog.status.error, 5000);
+					} else {
+						var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_run_adv_search'));
+
+						xbmc.getAdFilter({
+							options: searchParams,
+							onSuccess: function(result) {
+								
+								result.Type = searchParams.searchType;
+								if (result.limits.total > 0) {
+									mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+									
+									//make sub page for result
+									var $aadFilterRContent = $('<div class="pageContentWrapper"></div>');
+									var aadFilterRPage = mkf.pages.createTempPage(parentPage, {
+										title: mkf.lang.get('page_title_results'),
+										content: $aadFilterRContent
+									});
+									var fillPage = function() {
+										$aadFilterRContent.addClass('loading');
+										switch (result.Type) {
+											case 'artists':
+												result.isFiltered = true;
+												$aadFilterRContent.defaultArtistsViewer(result, aadFilterRPage);
+											break;
+											case 'albums':
+												result.isArtist = true;
+												$aadFilterRContent.defaultAlbumViewer(result, aadFilterRPage);
+											break;
+											case 'songs':
+												result.isFiltered = true;
+												$aadFilterRContent.defaultSonglistViewer(result, aadFilterRPage);
+											break;
+											/*case 'musicvideos':
+												$aadFilterRContent.defaultMusicVideosViewer(result);
+											break;*/
+										}										
+
+									}
+									aadFilterRPage.setContextMenu(
+										[
+											{
+												'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_adv_search_list'), 'shortcut':'Ctrl+1', 'onClick':
+												function() {
+													mkf.pages.closeTempPage(aadFilterRPage);
+													return false;
+												}
+											},
+											{
+												'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+													function(){
+														$aadFilterRContent.empty();
+														fillPage();
+														return false;
+													}
+											}
+										]
+									);
+									
+									mkf.pages.showTempPage(aadFilterRPage);
+									fillPage();
+									$aadFilterRContent.removeClass('loading');
+
+									return false;
+								} else {
+									//No results
+									mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_empty_adv_search'), 6000, mkf.messageLog.status.error);
+								};
+							},
+							onError: function(error) {
+								mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed_adv_search'), 6000, mkf.messageLog.status.error);
+							}					
+						});
+					};
+					return false;
+				});
 			}
 			
 		return page;

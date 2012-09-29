@@ -360,6 +360,19 @@ var awxUI = {};
 				className: 'scanMusic'
 			});
 			
+			//Audio Advanced Filter
+			this.$audioAdFilterContent = $('<div class="pageContentWrapper"></div>');
+			var audioAdFilterContextMenu = $.extend(true, [], standardMusicContextMenu);
+			
+			this.audioAdFilterPage = musicPage.addPage({
+				title: mkf.lang.get('page_title_audio_adv_search'),
+				content: this.$audioAdFilterContent,
+				menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_audio_adv_search'),
+				contextMenu: audioAdFilterContextMenu,
+				onShow: $.proxy(this, "onAudioAdFilterShow"),
+				className: 'audioAdFilter'
+			});
+			
 			// --- VIDEOS ---
 			this.$videosContent = $('<div class="pageContentWrapper"></div>');
 			var videosPage = mkf.pages.addPage({
@@ -682,7 +695,8 @@ var awxUI = {};
 				contextMenu: videoAdFilterContextMenu,
 				onShow: $.proxy(this, "onVideoAdFilterShow"),
 				className: 'videoAdFilter'
-			});			
+			});
+			
 			/*
 			 * Page Content
 			 */
@@ -1300,7 +1314,7 @@ var awxUI = {};
 		},
 		
 		/*********************************************
-		 * Called when Ad Filter-Page is shown. *
+		 * Called when Ad video Filter-Page is shown. *
 		 *********************************************/
 		onVideoAdFilterShow	: function() {
 			
@@ -1310,7 +1324,19 @@ var awxUI = {};
 				$contentBox.defaultVideoAdFilterViewer(this.videoAdFilterPage);
 			}
 		},
-	
+		
+		/*********************************************
+		 * Called when Ad Audio Filter-Page is shown. *
+		 *********************************************/
+		onAudioAdFilterShow	: function() {
+			
+			if (this.$audioAdFilterContent.html() == '') {
+				var $contentBox = this.$audioAdFilterContent;
+				$contentBox.empty();
+				$contentBox.defaultAudioAdFilterViewer(this.audioAdFilterPage);
+			}
+		},
+		
 		/*********************************************
 		 * Called when Music-Scan-Page is shown. *
 		 *********************************************/

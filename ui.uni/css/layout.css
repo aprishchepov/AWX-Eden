@@ -2388,13 +2388,22 @@ a.advhelplink {
 a.advhelplink:hover {
 	color: #ddd;
 }
-div.advSearch {
+div.vadvSearch {
 	background-color: rgba(0,0,0,0.8);
 	width: 500px;
 	margin-right: auto;
 	margin-left: auto;
 }
-form#advSearchForm {
+form#vadvSearchForm {
+	padding: 5px;
+}
+div.aadvSearch {
+	background-color: rgba(0,0,0,0.8);
+	width: 500px;
+	margin-right: auto;
+	margin-left: auto;
+}
+form#aadvSearchForm {
 	padding: 5px;
 }
 div.searchDiv {
@@ -2418,6 +2427,9 @@ fieldset.searchRoot {
 	width: 50%;
 	margin-left: auto;
 	margin-right: auto;
+}
+div.searchDiv.indent* {
+	margin-left: 120px;
 }
 div.searchDiv.indent1 {
 	margin-left: 20px;

@@ -39,6 +39,7 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'page_title_video_scan':			'视频资料库工具',
 	'page_title_music_scan':			'音乐资料库工具',
 	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_audio_adv_search':		'Advanced Search',
 	'page_title_results':				'Results',
 
 	'page_buttontext_music':			'音乐',
@@ -62,6 +63,7 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'page_buttontext_video_scan':		'视频资料库工具',
 	'page_buttontext_music_scan':		'音乐资料库工具',
 	'page_buttontext_video_adv_search':	'Advanced Search',
+	'page_buttontext_audio_adv_search':	'Advanced Search',
 
 	'ctxt_btn_back_to_music':			'返回音乐 (Ctrl+1)',
 	'ctxt_btn_find':					'查找 (Ctrl+2)',
@@ -313,6 +315,7 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'label_resume_start':				'Play from beginning',
 	
 	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_search_audio':			'Advanced Music Search',
 	'label_adv_filter_field':			'Field',
 	'label_adv_filter_operator':		'Operator',
 	'label_adv_filter_searchFor':		'Search For',
@@ -326,6 +329,7 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
 	'messsage_run_adv_search':			'Running advanced search...',
 	'message_failed_adv_search':		'Failed! \nCheck your query.',
 	'message_warn_adv_search_open':		'Please close all statements',
+	'message_empty_adv_search':			'No matches found!',
 
 	'settings_help': 					'延迟加载：\n如果启用延迟加载，缩略图不可见时将不会被加载。这将减少服务器图片请求。\n但如果有很多项目（电影、专辑等）而很多缩略图又未加载的话，web界面滚动就会不顺畅。\n如果禁用延迟加载，页面（电影页面、专辑页面等）显示时所有缩略图都将被加载。需要等待一小会，使所有缩略图被加载。\n\n超时：\n如果有较多电影（或专辑等），则需要较长时间获取电影列表。你可以增加超时值，避免显示电影列表出错。',
 	'settings_select_album_order': 		'请先选择一个专辑顺序！',

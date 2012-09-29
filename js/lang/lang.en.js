@@ -39,6 +39,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
 	'page_title_video_scan':			'Video Library Tools',
 	'page_title_music_scan':			'Music Library Tools',
 	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_audio_adv_search':		'Advanced Search',
 	'page_title_results':				'Results',
 
 	'page_buttontext_music':			'Music',
@@ -62,6 +63,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
 	'page_buttontext_video_scan':		'Video Library Tools',
 	'page_buttontext_music_scan':		'Music Library Tools',
 	'page_buttontext_video_adv_search':	'Advanced Search',
+	'page_buttontext_audio_adv_search':	'Advanced Search',
 
 	'ctxt_btn_back_to_music':			'Back to Music (Ctrl+1)',
 	'ctxt_btn_find':					'Find (Ctrl+2)',
@@ -315,6 +317,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
 	'label_resume_start':				'Play from beginning',
 
 	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_search_audio':			'Advanced Music Search',
 	'label_adv_filter_field':			'Field',
 	'label_adv_filter_operator':		'Operator',
 	'label_adv_filter_searchFor':		'Search For',
@@ -328,6 +331,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
 	'messsage_run_adv_search':			'Running advanced search...',
 	'message_failed_adv_search':		'Failed! \nCheck your query.',
 	'message_warn_adv_search_open':		'Please close all statements',
+	'message_empty_adv_search':			'No matches found!',
 	
 	'settings_help': 					'LazyLoad:\nIf you activate LazyLoad, thumbnails will not be loaded until they become visible. This will save the server from many image-requests.\nBut if you have many items (movies, albums, ...) the webinterface can be laggy on scrolling if many thumbs are not loaded.\nIf you deactivate LazyLoad, all thumbs will be loaded when the page is shown (movies page, albums page, ...). It can take a short time until all thumbs are loaded.\n\nTimeOut:\nIf you have lots of movies (or albums ...) it can take some time to get the complete movie list. You can increase the TimeOut-value to prevent errors when trying to show the movie list.',
 	'settings_select_artists_path': 	'Please select the location of your artist\'s logos',

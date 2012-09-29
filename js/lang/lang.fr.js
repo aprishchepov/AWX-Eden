@@ -39,6 +39,7 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'page_title_video_scan':			'Mise à jour de la médiathèque Vidéos activée',
 	'page_title_music_scan':			'Mise à jour de la médiathèque Musicale activée',
 	'page_title_video_adv_search':		'Advanced Search',
+	'page_title_audio_adv_search':		'Advanced Search',
 	'page_title_results':				'Results',
 
 	'page_buttontext_music':			'Musique',
@@ -62,6 +63,7 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'page_buttontext_video_scan':		'MAJ médiathèque',
 	'page_buttontext_music_scan':		'MAJ médiathèque',
 	'page_buttontext_video_adv_search':	'Advanced Search',
+	'page_buttontext_audio_adv_search':	'Advanced Search',
 
 	'ctxt_btn_back_to_music':			'Retourner à la Musique (Ctrl+1)',
 	'ctxt_btn_find':					'Rechercher (Ctrl+2)',
@@ -313,6 +315,7 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'label_resume_start':				'Play from beginning',
 	
 	'label_adv_search_video':			'Advanced Video Search',
+	'label_adv_search_audio':			'Advanced Music Search',
 	'label_adv_filter_field':			'Field',
 	'label_adv_filter_operator':		'Operator',
 	'label_adv_filter_searchFor':		'Search For',
@@ -326,6 +329,7 @@ mkf.lang.add({language: 'Français', short: 'fr', author: 'DanoneKiD', values: {
 	'messsage_run_adv_search':			'Running advanced search...',
 	'message_failed_adv_search':		'Failed! \nCheck your query.',
 	'message_warn_adv_search_open':		'Please close all statements',
+	'message_empty_adv_search':			'No matches found!',
 	
 	'settings_help':					'LazyLoad :\nSi vous activez LazyLoad, les vignettes ne seront pas chargées tant qu\'elles ne sont pas visibles. Cela permettra de réduire la charge serveur.\nMais si vous avez beaucoup d\'objets (films, albums, ...) l\'interface sera ralentie lors du défillement des vignettes non-chargées.\nSi vous désactivez LazyLoad, toutes les vignettes seront chargées au chargement de la page (films, albums, ...). Cela peut prendre un certain temps avant que toutes les vignettes soient chargées.\n\nTimeOut :\nSi vous avez beaucoup de films (ou d\'albums...) cela peut prendre du temps pour charger la liste complète. Vous pouvez augmenter la valeur du TimeOut pour éviter des erreur lors du chargement des listes.',
 	'settings_select_artists_path': 	'Please select the location of your artists logos',
