@@ -710,15 +710,24 @@ var awxUI = {};
 		 * Build the user interface. *
 		 *****************************/
 		buildUI: function() {
-			$('body').append('<div id="preload">' +
-								'<img src="images/loading_thumb.gif" alt="Preload 1/8" />' +
-								'<img src="images/loading_thumbBanner.gif" alt="Preload 2/8" />' +
-								'<img src="images/loading_thumbPoster.gif" alt="Preload 3/8" />' +
-								'<img src="images/thumbBanner.png" alt="Preload 4/8" />' +
-								'<img src="images/thumbPoster.png" alt="Preload 5/8" />' +
-								'<img src="images/thumb.png" alt="Preload 6/8" />' +
-								'<img src="ui.uni/images/messagelog.png" alt="Preload 7/8" />' +
-								'<img src="ui.uni/images/loading.gif" alt="Preload 8/8" />' +
+			$('body').append('<div id="preload" style="display: none">' +
+								'<img src="images/loading_thumb.gif" alt="Preload 1/17" />' +
+								'<img src="images/loading_thumbBanner.gif" alt="Preload 2/17" />' +
+								'<img src="images/loading_thumbPoster.gif" alt="Preload 3/17" />' +
+								'<img src="images/thumbBanner.png" alt="Preload 4/17" />' +
+								'<img src="images/thumbPoster.png" alt="Preload 5/17" />' +
+								'<img src="images/thumb.png" alt="Preload 6/17" />' +
+								'<img src="ui.uni/images/messagelog.png" alt="Preload 7/17" />' +
+								'<img src="ui.uni/images/loading.gif" alt="Preload 8/17" />' +
+								'<img src="ui.uni/images/big_buttons.png" alt="Preload 9/17" />' +
+								'<img src="ui.uni/images/buttons.png" alt="Preload 10/17" />' +
+								'<img src="ui.uni/images/context_buttons.png" alt="Preload 11/17" />' +
+								'<img src="ui.uni/images/mini_buttons.png" alt="Preload 12/17" />' +
+								'<img src="ui.uni/images/controls_big.png" alt="Preload 13/17" />' +
+								'<img src="ui.uni/images/controls_big_player.png" alt="Preload 14/17" />' +
+								'<img src="ui.uni/images/flagging/aCodecs.png" alt="Preload 15/17" />' +
+								'<img src="ui.uni/images/flagging/vCodecs.png" alt="Preload 16/17" />' +
+								'<img src="ui.uni/images/flagging/channels.png" alt="Preload 17/17" />' +
 							'</div>' +
 							'<div id="background">' +
 							'<div id="header">' +
@@ -731,8 +740,13 @@ var awxUI = {};
 							'<div id="statusLine"><div id="location"></div><div id="contextMenu"></div></div>' +
 							'</div>' + 
 							'<div id="content">' +
-							'<div id="displayoverlay"><div id="controls"></div><div id="artwork"><img class="discThumb" src="images/blank_cdart.png" style="display: none; width: 194px; height: 194px; position: absolute; z-index: -1;"><img class="artThumb" src="images/thumbPoster.png"></div><div><div id="volumeSlider"></div><img src="ui.uni/images/volume.png"></div><div class="playingSliderWrapper"><div class="playingSlider"></div></div></div>' +
-							'</div>' +
+							'<div id="displayoverlay">' +
+							'<div id="displayoverlaytop"><div class="playingSliderWrapper"><div class="playingSlider"></div></div></div>' +
+							'<div style="position: fixed; bottom: 100px; left: 5px; z-index: 50; height: 100%;"><div id="volumeSlider"></div><img style="z-index: 5; position: absolute; bottom: 5px" src="ui.uni/images/volume.png"></div>' +
+							'<div id="displayoverlaybot">' +
+							'<div id="artwork"><img class="discThumb" src="images/blank_cdart.png" style="display: none; width: 194px; height: 194px; position: absolute; z-index: -1;"><img class="artThumb" src="images/thumbPoster.png"></div>' +
+							'<div id="controls"></div><div class="menucon" style="height: 50px; width: 330px"></div></div>' +//<div class="playingSliderWrapper"><div class="playingSlider"></div></div></div>' +
+							'</div></div>' +
 							'<div id="footer">' +
 							'<div id="simple_controls"></div><div id="infoContainer"></div>' +
 							'<div id="statPlayerContainer"><div id="streamdets"><div class="vFormat" /><div class="aspect" /><div class="vCodec" /><div class="aCodec" /><div class="channels" /><div class="vSubtitles" style="display: none" /></div>' +
@@ -757,6 +771,7 @@ var awxUI = {};
 			$('#contextMenu').mkfPageContextMenu();
 
 			$('#footer #simple_controls').simcontrols();
+			$('#displayoverlaybot .menucon').topcontrols();
 			$('#controls').extraControls();
 			$('#infoContainer').uniFooterStatus();
 			$('#controller').on('click', function() { $('#displayoverlay').toggle() } );

@@ -82,46 +82,119 @@
 		});
 	};
 	
-	$.fn.extraControls = function() {
-		$controls = $('<div id="quick"><div id="quick_row1"><a class="button home" href="" title="' + mkf.lang.get('btn_home') + '"></a><a class="button up" href="" title="' + mkf.lang.get('btn_up') + '"></a><a class="button back" href="" title="' + mkf.lang.get('btn_back') + '"></a></div>' +
+	$.fn.topcontrols = function() {
+		var failed = function() {
+			mkf.messageLog.show(mkf.lang.get('message_failed_send_command'), mkf.messageLog.status.error, 5000);
+		};
+			
+		$inputcontrols = $('<div class="menucontrols"><a class="button input" href=""></a><a class="button audio" href=""></a><a class="button subs" href=""></a></div>' + //<a class="button video" href=""></a> when available
+		'<div id="inputcontrols" style="display: none">' +
+		'<div id="quick_row1"><a class="button home" href="" title="' + mkf.lang.get('btn_home') + '"></a><a class="button up" href="" title="' + mkf.lang.get('btn_up') + '"></a><a class="button back" href="" title="' + mkf.lang.get('btn_back') + '"></a></div>' +
 		'<div id="quick_row2"><a class="button left" href="" title="' + mkf.lang.get('btn_left') + '"></a><a class="button select" href="" title="' + mkf.lang.get('btn_select') + '"></a><a class="button right" href="" title="' + mkf.lang.get('btn_right') + '"></a></div>' +
-		'<div id="quick_row3"><a class="button info" href="" title="' + mkf.lang.get('btn_info') + '"></a><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a><a class="button contextMenu" href="" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div></div>' +
-		'<div id="quick_con"><a class="button prev" href=""></a><a class="button rewind" href=""></a><a class="button fastforward" href=""></a><a class="button next" href=""></a><a class="button shuffle" href="" title="' + mkf.lang.get('label_shuffle') + '"></a><a class="button repeat" href="" title="' + mkf.lang.get('label_repeat') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a></div>');
-		//'<a class="button volup" href="" title="' + mkf.lang.get('label_volup') + '"></a><a class="button voldown" href="" title="' + mkf.lang.get('label_voldown') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a>');
-		$controls.find('.left').click(function() {
+		'<div id="quick_row3"><a class="button info" href="" title="' + mkf.lang.get('btn_info') + '"></a><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a><a class="button contextMenu" href="" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div>' +
+		'</div>' +
+		/*'<div id="videocontrols" style="display: none">' +
+		'<div id="quick_row1"><a class="button home" href="" title="' + mkf.lang.get('btn_home') + '"></a><a class="button up" href="" title="' + mkf.lang.get('btn_up') + '"></a><a class="button back" href="" title="' + mkf.lang.get('btn_back') + '"></a></div>' +
+		'<div id="quick_row2"><a class="button left" href="" title="' + mkf.lang.get('btn_left') + '"></a><a class="button select" href="" title="' + mkf.lang.get('btn_select') + '"></a><a class="button right" href="" title="' + mkf.lang.get('btn_right') + '"></a></div>' +
+		'<div id="quick_row3"><a class="button info" href="" title="' + mkf.lang.get('btn_info') + '"></a><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a><a class="button contextMenu" href="" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div>' +*/
+		'<div id="audiocontrols" style="display: none">' +
+		'<div><a href="" class="bigAudioPrev" title="' + mkf.lang.get('btn_audioStreamPrev') + '"></a>' +
+		'<a href="" class="bigAudioNext" title="' + mkf.lang.get('btn_audioStreamNext') + '"></a></div>' +
+		'</div>' +
+		'<div id="subcontrols" style="display: none">' +
+		'<div><a href="" class="bigSubPrev" title="' + mkf.lang.get('btn_subsPrev') + '"></a>' +
+		'<a href="" class="bigSubOnOff" title="' + mkf.lang.get('btn_subsCycleOnOff') + '"></a>' +
+		'<a href="" class="bigSubNext" title="' + mkf.lang.get('btn_subsNext') + '"></a></div>' +
+		'</div>');
+		/*$inputcontrols.find('.video').click(function() {
+			//xbmc.control({type: 'play'});
+			$('#inputcontrols').hide();
+			$('#videocontrols').toggle();
+			return false;
+		});*/		
+		$inputcontrols.find('.audio').click(function() {
+			$('#inputcontrols').hide();
+			$('#subcontrols').hide();
+			$('#audiocontrols').toggle();
+			return false;
+		});
+		$inputcontrols.find('.subs').click(function() {
+			$('#audiocontrols').hide();
+			$('#inputcontrols').hide();
+			$('#subcontrols').toggle();
+			return false;
+		});
+		$inputcontrols.find('.input').click(function() {
+			$('#audiocontrols').hide();
+			$('#subcontrols').hide();
+			$('#inputcontrols').toggle();
+			return false;
+		});
+		$inputcontrols.find('.left').click(function() {
 			xbmc.input({type: 'Left', onError: 'failed'}); return false;
 		});
-		$controls.find('.right').click(function() {
+		$inputcontrols.find('.right').click(function() {
 			xbmc.input({type: 'Right', onError: 'failed'}); return false;
 		});
-		/*$controls.find('.left').dblclick(function() {
+		/*$inputcontrols.find('.left').dblclick(function() {
 			//xbmc.seekPercentage({percentage: '"bigbackward"', onError: 'failed'}); return false;
 			console.log('dbl left');
-		});*/
-		$controls.find('.right').dblclick(function() {
-			xbmc.seekPercentage({percentage: '"bigforward"', onError: 'failed'}); return false;
 		});
-		$controls.find('.up').click(function() {
+		$inputcontrols.find('.right').dblclick(function() {
+			xbmc.seekPercentage({percentage: '"bigforward"', onError: 'failed'}); return false;
+		});*/
+		$inputcontrols.find('.up').click(function() {
 			xbmc.input({type: 'Up', onError: 'failed'}); return false;
 		});
-		$controls.find('.down').click(function() {
+		$inputcontrols.find('.down').click(function() {
 			xbmc.input({type: 'Down', onError: 'failed'}); return false;
 		});
-		$controls.find('.back').click(function() {
+		$inputcontrols.find('.back').click(function() {
 			xbmc.input({type: 'Back', onError: 'failed'}); return false;
 		});
-		$controls.find('.home').click(function() {
+		$inputcontrols.find('.home').click(function() {
 			xbmc.input({type: 'Home', onError: 'failed'}); return false;
 		});
-		$controls.find('.select').click(function() {
+		$inputcontrols.find('.select').click(function() {
 			xbmc.input({type: 'Select', onError: 'failed'}); return false;
 		});
-		$controls.find('.contextMenu').click(function() {
+		$inputcontrols.find('.contextMenu').click(function() {
 			xbmc.input({type: 'ContextMenu', onError: 'failed'}); return false;
 		});
-		$controls.find('.info').click(function() {
+		$inputcontrols.find('.info').click(function() {
 			xbmc.input({type: 'Info', onError: 'failed'}); return false;
 		});
+		
+		$inputcontrols.find('.bigAudioNext').click(function() {
+			xbmc.setAudioStream({command: 'next', onError: failed}); return false;
+		});
+		$inputcontrols.find('.bigAudioPrev').click(function() {
+			xbmc.setAudioStream({command: 'previous', onError: failed}); return false;
+		});
+		
+		$('.bigSubOnOff').click(function() {
+		xbmc.setSubtitles({command: (xbmc.periodicUpdater.subsenabled? 'off' : 'on'), onError: failed}); return false;
+		});			
+		$('.bigSubNext').click(function() {
+			xbmc.setSubtitles({command: 'next', onError: failed}); return false;
+		});
+		$('.bigSubPrev').click(function() {
+			xbmc.setSubtitles({command: 'previous', onError: failed}); return false;
+		});
+		
+		this.each (function() {
+			$(this).append($inputcontrols.clone(true));
+		});
+	};
+	
+	$.fn.extraControls = function() {
+		$controls = $('<div id="quick">' +
+		//'<div id="quick_row1"><a class="button home" href="" title="' + mkf.lang.get('btn_home') + '"></a><a class="button up" href="" title="' + mkf.lang.get('btn_up') + '"></a><a class="button back" href="" title="' + mkf.lang.get('btn_back') + '"></a></div>' +
+		//'<div id="quick_row2"><a class="button left" href="" title="' + mkf.lang.get('btn_left') + '"></a><a class="button select" href="" title="' + mkf.lang.get('btn_select') + '"></a><a class="button right" href="" title="' + mkf.lang.get('btn_right') + '"></a></div>' +
+		//'<div id="quick_row3"><a class="button info" href="" title="' + mkf.lang.get('btn_info') + '"></a><a class="button down" href="" title="' + mkf.lang.get('btn_down') + '"></a><a class="button contextMenu" href="" title="' + mkf.lang.get('btn_contextMenu') + '"></a></div></div>' +
+		'<div id="quick_con"><a class="button prev" href=""></a><a class="button rewind" href=""></a><a class="button fastforward" href=""></a><a class="button next" href=""></a><a class="button shuffle" href="" title="' + mkf.lang.get('label_shuffle') + '"></a><a class="button repeat" href="" title="' + mkf.lang.get('label_repeat') + '"></a><a class="button voldown" href="" title="' + mkf.lang.get('btn_voldown') + '"></a><a class="button volup" href="" title="' + mkf.lang.get('btn_volup') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a></div>');
+		//'<a class="button volup" href="" title="' + mkf.lang.get('label_volup') + '"></a><a class="button voldown" href="" title="' + mkf.lang.get('label_voldown') + '"></a><a class="button mute" href="" title="' + mkf.lang.get('label_mute') + '"></a>');
+		
 		$controls.find('.play').click(function() {
 			xbmc.control({type: 'play'}); return false;
 		});
@@ -142,6 +215,12 @@
 		});
 		$controls.find('.mute').click(function() {
 			xbmc.setMute(); return false;
+		});	
+		$controls.find('.volup').click(function() {
+			xbmc.setVolumeInc({volume: 'increment'}); return false;
+		});
+		$controls.find('.voldown').click(function() {
+			xbmc.setVolumeInc({volume: 'decrement'}); return false;
 		});
 		var shuffle = function(event) {
 			xbmc.control({type: (event.data.shuffle? 'shuffle': 'unshuffle')}); return false;
@@ -3048,10 +3127,11 @@
 				if (currentFile.thumbnail) {
 					thumbElement.attr('src', xbmc.getThumbUrl(currentFile.thumbnail));
 					if (currentFile.showtitle) {
-						if ($('#displayoverlay').css('width') != '625px') { $('#displayoverlay').css('width','625px') };
-						thumbElement.css('margin-top', '165px');
-						thumbElement.css('width', '200px');
-						thumbElement.css('height', '115px');
+						if ($('#displayoverlay').css('width') != '656px') { $('#displayoverlay').css('width','656px') };
+						thumbElement.css('margin-top', '120px');
+						thumbElement.css('margin-left', '5px');
+						thumbElement.css('width', '255px');
+						thumbElement.css('height', '163px');
 						/*xbmc.getLogo({path: currentFile.file, type: 'logo'}, function(logo) {
 							console.log(currentFile);
 							thumbDiscElement.attr('src', logo);
@@ -3061,14 +3141,15 @@
 						});*/
 					} else if (currentFile.xbmcMediaType == 'audio') {
 						if ($('#displayoverlay').css('width') != '510px') { $('#displayoverlay').css('width','510px') };
-						thumbElement.css('margin-top', '85px');
-						thumbElement.css('height', '195px');
-						thumbElement.css('width', '195px');
-						if (thumbDiscElement.css('width') != '194px') { thumbDiscElement.css('width','194px'); thumbDiscElement.css('height','194px'); };
+						thumbElement.css('margin-top', '57px');
+						thumbElement.css('margin-left', '35px');
+						thumbElement.css('height', '225px');
+						thumbElement.css('width', '225px');
+						if (thumbDiscElement.css('width') != '225px') { thumbDiscElement.css('width','225px'); thumbDiscElement.css('height','225px'); };
 							
 						xbmc.getLogo({path: currentFile.file, type: 'cdart'}, function(cdart) {
 							if (cdart == '') { cdart = 'images/blank_cdart.png' };
-							thumbDiscElement.css('margin-left','0px');
+							thumbDiscElement.css('margin-left','35px');
 							thumbDiscElement.attr('src', cdart);
 							thumbDiscElement.show();
 							
@@ -3084,8 +3165,9 @@
 							
 					} else { //movie
 						thumbElement.css('margin-top', '0px');
+						thumbElement.css('margin-left', '70px');
 						thumbElement.css('height', '280px');
-						thumbElement.css('width', '195px');
+						thumbElement.css('width', '187px');
 						xbmc.getLogo({path: currentFile.file, type: 'disc'}, function(cdart) {
 							if (cdart != '') {
 								$('#displayoverlay').css('width','720px');
@@ -3094,7 +3176,7 @@
 								//.discThumb width: 270px; height: 270px; margin-left: 20px;
 								thumbDiscElement.css('width','270px');
 								thumbDiscElement.css('height','270px');
-								thumbDiscElement.css('margin-left','20px');
+								thumbDiscElement.css('margin-left','-20px');
 								thumbDiscElement.attr('src', cdart);
 								thumbDiscElement.show();
 								
@@ -3154,10 +3236,11 @@
 					timeCurRemainTotal.text('00:00');
 					thumbDiscElement.hide();
 					thumbElement.css('height', '280px');
-					thumbElement.css('width', '195px');
+					thumbElement.css('width', '187px');
 					thumbElement.attr('src', 'images/thumbPoster.png');
 					thumbElement.css('margin-top', '0px');
 					thumbElement.css('margin-right','0px');
+					thumbElement.css('margin-left','70px');
 					
 					thumbDiscElement.attr('src', '');
 					//$footerStatusBox.find('#statusPlayer').hide();
@@ -3210,6 +3293,16 @@
 				//durationElement.text(progress.total);
 				sliderElement.slider("option", "value", 100 * xbmc.getSeconds(progress.time) / xbmc.getSeconds(progress.total));
 			});
+			
+			//auto size progress and volume
+			/*$( window ).resize( xbmc.debouncer( function ( e ) {
+				contentHeight = ($('#main').length? $('#main').height() -65: $('#content').height())-190; //$('#content').height() -5;
+				
+				//$('div.next, div.prev').css('margin-bottom', contentHeight/2.5);
+				$('div.singleView').css('margin-top', contentHeight/2);
+				//$('div.movieName').css('width', $('img.singleThumb').width());
+			
+			} ) );*/
 		
 		});
 	}; // END uniFooterStatus

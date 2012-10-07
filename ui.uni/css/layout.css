@@ -15,8 +15,8 @@ h2 {
 #header {
     /*background: url("../images/logo.png") no-repeat scroll 20px 10px #333333;*/
 	background-color: rgba(0,0,0,0.6);
-	min-width:400px; 
-	!important; width: 400px;
+	min-width: 600px; 
+	!important; width: 600px;
 	position: absolute;
 	width: 100%;
     height: 48px;
@@ -140,8 +140,8 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 #footer {
 	background-color: rgba(0,0,0,0.6);
-	min-width:400px; 
-	!important; width: 400px;
+	min-width: 600px; 
+	!important; width: 600px;
 	position: absolute;
 	bottom: 0;
 	width: 100%;
@@ -149,9 +149,10 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 }
 
 #infoContainer {
-	float: left;
+	/*float: left;
 	min-width: 100px;
-	position: absolute;
+	position: absolute;*/
+	overflow: hidden;
 	margin-left: 96px;
 	z-index: 50;
 }
@@ -186,8 +187,11 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
 	font-weight: bold;
 	/*min-width: 242px;*/
 	height: 48px;
-	float: right;
-	overflow: hidden;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	/*float: right;
+	overflow: hidden;*/
 }
 #footer #remainPlayer {
 	font-size: 16px;
@@ -521,6 +525,7 @@ ul.mkfPageContextMenu li {
 }
 #background {
 	height: 100%;
+	min-width: 600px;
 	background-image: url("");
 	background-repeat: no-repeat;
 	background-attachment: fixed;
@@ -529,6 +534,7 @@ ul.mkfPageContextMenu li {
 #content {
     bottom: 48px;
     left: 0;
+	min-width: 600px;
     overflow: auto;
     /*padding-top: 5px;*/
     position: absolute;
@@ -2012,7 +2018,7 @@ br.clear {
 	height: 48px;
 	width: 96px;
 	float: left;
-	position: absolute;
+	/*position: absolute;*/
 }
 #simple_controls a.button {
 	background: url("../images/simple_controls.png") no-repeat scroll 0 0 transparent;
@@ -2026,111 +2032,259 @@ br.clear {
 #simple_controls a.stop {
 	background-position: -48px 0;
 }
-#displayoverlay {
-	background-color: rgba(25,25,25,0.8);
-	-moz-border-radius: 10px 0px 0 0; -webkit-border-radius: 10px 0px 0 0; border-radius: 10px 0px 0 0;
+#displayoverlaytop {
+	/*background-color: rgba(25,25,25,0.8);*/
+	/*-moz-border-radius: 10px 0px 0 0; -webkit-border-radius: 10px 0px 0 0; border-radius: 10px 0px 0 0;
+	border-top: 1px solid #555555;
+	border-left: 1px solid #555555;*/
+	position: fixed;
+	/*padding: 10px 0px 0px 10px;*/
+	height: 48px;
+	width: 100%;
+	min-width: 600px;
+	top: 48px;
+	float: left;
+	/*right: 20px;*/
+	z-index: 250;
+}
+#displayoverlaybot {
+	/*background-color: rgba(25,25,25,0.8);
+	border-radius: 10px 0px 0 0;
 	border-top: 1px solid #555555;
 	border-left: 1px solid #555555;
+	margin-right: 20px;*/
 	position: fixed;
-	padding: 10px 0px 0px 10px;
-	height: 310px;
-	min-width: 625px;
+	/*padding: 10px 0px 0px 10px;*/
+	height: 110px;
+	width: 100%;
+	min-width: 600px;
 	bottom: 48px;
-	float: right;
-	right: 20px;
+	/*float: right;
+	right: 0px;*/
+	left:	0px;
 	z-index: 250;
 }
 #artwork {
-	/*height: 280px;
-	width: 195px;*/
-	float: left;
-	margin-right: 5px;
-	/*position: fixed;
+	height: 288px;
+	width: 260px;
+	/*float: left;*/
+	margin-right: 20px;
+	margin-top: -179px;
+	/*position: absolute;
 	bottom: 48px;
-	right: 20px;*/
+	right: 0px;*/
+	float: right;
 	z-index: 251;
 }
 #artwork img {
-	width: 195px;
+	width: 187px;
 	height: 280px;
+	margin-left: 70px;
 }
 #controls {
-	height: 280px;
-	width: 385px;
-	float: left;
+	min-width: 600px;
+	position: fixed;
 }
 #controls #quick {
-	background-color: rgba(55,55,55,0.7);
+	background-color: rgba(55,55,55,0.9);
 	border-radius: 5px 5px 5px 5px;
-	height: 225px;
-	width: 264px;
+	height: 48px;
+	margin-top: 55px;
+	/*width: 264px;*/
 	float: left;
 	z-index: 250;
 }
-#controls #quick #quick_row1 {
+#inputcontrols {
+	background-color: rgba(55,55,55,0.9);
+	border-radius: 5px 5px 5px 5px;
+	position: absolute;
+	bottom: 110px;
+	left: 48px;
+	height: 225px;
+	width: 264px;
+	z-index: 250;
+}
+#inputcontrols #quick_row1 {
 	height: 48px;
 	margin: 20px 5px;
 }
-#controls #quick #quick_row2 {
+#inputcontrols #quick_row2 {
 	height: 48px;
 	margin: 20px 5px;
 }
-#controls #quick #quick_row3 {
+#inputcontrols #quick_row3 {
 	height: 48px;
 	margin: 20px 5px;
 }
-#controls #quick a.button {
+/*#videocontrols {
+	background-color: rgba(55,55,55,0.9);
+	border-radius: 5px 5px 5px 5px;
+	position: absolute;
+	bottom: 55px;
+	height: 225px;
+	width: 264px;
+	z-index: 250;
+}
+#videocontrols #quick_row1 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#videocontrols #quick_row2 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#videocontrols #quick_row3 {
+	height: 48px;
+	margin: 20px 5px;
+}*/
+#audiocontrols {
+	background-color: rgba(55,55,55,0.9);
+	border-radius: 5px 5px 5px 5px;
+	position: absolute;
+	bottom: 110px;
+	left: 48px;
+	height: 81px;
+	width: 122px;
+	z-index: 250;
+}
+#audiocontrols #quick_row1 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#audiocontrols #quick_row2 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#audiocontrols #quick_row3 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#subcontrols {
+	background-color: rgba(55,55,55,0.9);
+	border-radius: 5px 5px 5px 5px;
+	position: absolute;
+	bottom: 110px;
+	left: 48px;
+	height: 81px;
+	width: 140px;
+	z-index: 250;
+}
+#subcontrols #quick_row1 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#subcontrols #quick_row2 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#subcontrols #quick_row3 {
+	height: 48px;
+	margin: 20px 5px;
+}
+#displayoverlaybot .menucontrols {
+	background-color: rgba(55, 55, 55, 0.9);
+	border-radius: 5px 5px 5px 5px;
+	position: absolute;
+	height: 48px;
+	left: 48px;
+	bottom: 60px;
+}
+#displayoverlaybot .menucontrols a.button {
+    background: url("../images/menu_top_icons.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 48px;
+    width: 48px;
+	margin-right: 50px;
+}
+#displayoverlaybot .menucontrols a.video {
+    background-position: 0 0;
+}
+#displayoverlaybot .menucontrols a:hover.video {
+    background-position: -48px 0;
+}
+#displayoverlaybot .menucontrols a.subs {
+    background-position: -96px 0;
+	margin-right: 10px;
+}
+#displayoverlaybot .menucontrols a:hover.subs {
+    background-position: -144px 0;
+}
+#displayoverlaybot .menucontrols a.audio {
+    background-position: -192px 0;
+}
+#displayoverlaybot .menucontrols a:hover.audio {
+    background-position: -240px 0;
+}
+#displayoverlaybot .menucontrols a.channels {
+    background-position: -288px 0;
+}
+#displayoverlaybot .menucontrols a:hover.channels {
+    background-position: -336px 0;
+}
+#displayoverlaybot .menucontrols a.epg {
+    background-position: -384px 0;
+}
+#displayoverlaybot .menucontrols a:hover.epg {
+    background-position: -432px 0;
+}
+#displayoverlaybot .menucontrols a.input {
+    background-position: -480px 0;
+	margin-left: 10px;
+}
+/*#displayoverlaybot .menucontrols a:hover.input {
+    background-position: -528px 0;
+}*/
+#inputcontrols a.button {
     background: url("../images/quick_controls.png") no-repeat scroll 0 0 transparent;
     float: left;
     height: 48px;
     width: 48px;
 	margin-right: 50px;
 }
-#controls #quick a.home {
+#inputcontrols a.home {
     background-position: 0 0;
 }
-#controls #quick a.left {
+#inputcontrols a.left {
     background-position: -48px 0;
 }
-#controls #quick a.up {
+#inputcontrols a.up {
     background-position: -96px 0;
 }
-#controls #quick a.right {
+#inputcontrols a.right {
     background-position: -144px 0;
 	margin-right: 0;
 }
-#controls #quick a.down {
+#inputcontrols a.down {
     background-position: -192px 0;
-	/*margin-left: 100px;*/
 }
-#controls #quick a.back {
+#inputcontrols a.back {
     background-position: -240px 0;
 	margin-right: 0;
 }
-#controls #quick a.select {
+#inputcontrols a.select {
     background-position: -288px 0;
 }
-#controls #quick a.info {
+#inputcontrols a.info {
     background-position: -336px 0;
 }
-#controls #quick a.contextMenu {
+#inputcontrols a.contextMenu {
     background-position: -384px 0;
 	margin-right: 0;	
 }
-#controls  #quick_con {
-    /*background: url("../images/volume.png") no-repeat scroll 20px 10px #EAECE6;*/
+#displayoverlaybot #controls  #quick_con {
+    /*background: url("../images/volume.png") no-repeat scroll 20px 10px #EAECE6;
 	background-color: rgba(55,55,55,0.7);
-    /*border: 1px solid #7C7C7C;*/
+    border: 1px solid #7C7C7C;
     border-radius: 5px 5px 5px 5px;
-	/*position: fixed;*/
+	position: fixed;*/
     float: left;
     height: 48px;
 	/*bottom: 48px;
-	right: 252px;*/
+	right: 252px;
     margin-right: 5px;
     margin-top: 7px;
-    /*padding: 0 10px;
     width: 384px;*/
+	padding: 0 5px;
 	z-index: 250;
 }
 #controls #quick_con a.button {
@@ -2138,10 +2292,10 @@ br.clear {
     float: left;
     height: 48px;
     margin-right: 6px;
+	margin-left: 6px;
     width: 48px;
 }
 #controls #quick_con a.unmuted {
-    /*background: url("../images/buttons.png") no-repeat scroll transparent;*/
 	background-position: -384px 0;
     height: 48px;
     width: 48px;
@@ -2150,8 +2304,6 @@ br.clear {
     background: url("../images/muted.png") no-repeat scroll transparent;
     float: left;
     height: 15px;
-    margin-top: 10px;
-	margin-left: 10px;
     width: 16px;
 }
 #controls #quick_con a.play {
@@ -2162,14 +2314,12 @@ br.clear {
 }
 #controls #quick_con a.prev {
     background-position: -192px 0;
-	margin-left: 6px;
 }
 #controls #quick_con a.next {
     background-position: -336px 0;
 }
 #controls #quick_con a.rewind {
     background-position: -240px 0;
-	margin-left: 6px;
 }
 #controls #quick_con a.fastforward {
     background-position: -288px 0;
@@ -2182,27 +2332,21 @@ br.clear {
 }
 #controls #quick_con a.repeat {
     background-position: -48px 0;
-	margin-right: 0px;
 }
 #controls #quick_con a.repeat1 {
     background-position: -96px 0;
-	margin-right: 0px;
 }
 #controls #quick_con a.repeatOff {
     background-position: -144px 0;
-	margin-right: 0px;
 }
 #controls #quick_con a.volup {
     background-position: -480px 0;
-	margin-right: 0px;
 }
 #controls #quick_con a.voldown {
     background-position: -432px 0;
-	margin-right: 0px;
 }
 #controls #quick_con a.mute {
     background-position: -384px 0;
-	margin-right: 0px;
 }
 /*#controls a.play:hover {
     background-position: -90px -30px;
@@ -2234,17 +2378,27 @@ br.clear {
     background-position: -180px -30px;
 	margin-right: 0px;
 }*/
+.playingSliderWrapper {
+   /* margin: 5px 0 0;
+	float: left;
+	position: absolute;
+	top: 48px;*/
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	width: 94%;
+}
 div.ui-slider {
-    background-color: rgba(75,75,75,0.9);
-    /*border: 1px solid #4B4B4B;
-    border-radius: 5px 5px 5px 5px;*/
+    background-color: rgba(150,150,150,0.9);
+    border: 3px solid #4B4B4B;
+    border-radius: 5px 5px 5px 5px;
     position: relative;
 }
 div.ui-slider-horizontal {
-    height: 20px;
+    height: 30px;
 }
 div.ui-slider-vertical {
-    height: 280px;
+    /*height: 375px;*/
     width: 32px;
 }
 div.ui-slider-range {
@@ -2256,7 +2410,7 @@ div.ui-slider-range {
     position: absolute;
 }
 div.ui-slider-horizontal div.ui-slider-range {
-    height: 20px;
+    height: 30px;
 }
 div.ui-slider-vertical div.ui-slider-range {
     bottom: 0;
@@ -2267,7 +2421,7 @@ a.ui-slider-handle {
     position: absolute;
 }
 div.ui-slider-horizontal a.ui-slider-handle {
-    height: 20px;
+    height: 30px;
     margin-left: -3px;
     top: 0;
     width: 6px;
@@ -2282,8 +2436,11 @@ div.ui-slider-vertical a.ui-slider-handle {
     /*margin: 10px 0 10px 40px;
 	position: fixed;
 	right: 215px;
-	bottom: 48px;*/
-	float: left;
+	bottom: 48px;
+	float: left;*/
+	position: absolute;
+	height: 53%;
+	bottom: 40px;
 	z-index: 251;
 }
 #currentlyPlaying {
@@ -2343,14 +2500,6 @@ span.currentlyPlaying {
 .statusRepeat1 {
     background-position: -105px 0px;
     right: 105px;
-}
-.playingSliderWrapper {
-    margin: 5px 0 0;
-	float: left;
-	position: absolute;
-	bottom: 3px;
-	width: 580px;
-	height: 20px;
 }
 .advloader {
 	background: url("../images/advloader.gif") no-repeat scroll left top transparent;
