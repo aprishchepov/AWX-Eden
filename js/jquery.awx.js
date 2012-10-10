@@ -202,10 +202,10 @@
 			xbmc.control({type: 'stop'}); return false;
 		});
 		$controls.find('.next').click(function() {
-			xbmc.control({type: 'next'}); return false;
+			xbmc.playerGoTo({to: 'next'}); return false;
 		});
 		$controls.find('.prev').click(function() {
-			xbmc.control({type: 'prev'}); return false;
+			xbmc.playerGoTo({to: 'previous'}); return false;
 		});
 		$controls.find('.rewind').click(function() {
 			xbmc.controlSpeed({type: 'decrement'}); return false;
@@ -223,24 +223,17 @@
 			xbmc.setVolumeInc({volume: 'decrement'}); return false;
 		});
 		var shuffle = function(event) {
-			xbmc.control({type: (event.data.shuffle? 'shuffle': 'unshuffle')}); return false;
+			xbmc.playerSet({type: 'shuffle', value: 'toggle'}); return false;
 		};
 
-		$controls.find('.shuffle').bind('click', {"shuffle": true}, shuffle);
+		$controls.find('.shuffle').on('click', shuffle);
 
 		var repeat = function(event) {
-			if (event.data.repeat == 'all' && xbmc.periodicUpdater.repeatStatus == 'off') {
-				type = 'all';
-			} else if (event.data.repeat == 'one' && xbmc.periodicUpdater.repeatStatus == 'all') {
-				type = 'one';
-			} else if (event.data.repeat == 'off' && xbmc.periodicUpdater.repeatStatus == 'one') {
-				type = 'off'; 
-			};
-			xbmc.controlRepeat(type);
+			xbmc.playerSet({type: 'repeat', value: 'cycle'});
 			return false;
 		};
 		
-		$controls.find('.repeat').bind('click', {"repeat": 'all' }, repeat);
+		$controls.find('.repeat').on('click', repeat);
 		
 		xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
 			var $shuffleBtn = $('.button.shuffle');
@@ -297,33 +290,27 @@
 			xbmc.control({type: 'stop'}); return false;
 		});
 		$controls.filter('.next').click(function() {
-			xbmc.control({type: 'next'}); return false;
+			xbmc.playerGoTo({type: 'next'}); return false;
 		});
 		$controls.filter('.prev').click(function() {
-			xbmc.control({type: 'prev'}); return false;
+			xbmc.playerGoTo({type: 'previous'}); return false;
 		});
 		$('.mute').click(function() {
 			xbmc.setMute(); return false;
 		});
+
 		var shuffle = function(event) {
-			xbmc.control({type: (event.data.shuffle? 'shuffle': 'unshuffle')}); return false;
+			xbmc.playerSet({type: 'shuffle', value: 'toggle'}); return false;
 		};
 
-		$controls.filter('.shuffle').bind('click', {"shuffle": true}, shuffle);
+		$controls.find('.shuffle').on('click', shuffle);
 
 		var repeat = function(event) {
-			if (event.data.repeat == 'all' && xbmc.periodicUpdater.repeatStatus == 'off') {
-				type = 'all';
-			} else if (event.data.repeat == 'one' && xbmc.periodicUpdater.repeatStatus == 'all') {
-				type = 'one';
-			} else if (event.data.repeat == 'off' && xbmc.periodicUpdater.repeatStatus == 'one') {
-				type = 'off'; 
-			};
-			xbmc.controlRepeat(type);
+			xbmc.playerSet({type: 'repeat', value: 'cycle'});
 			return false;
 		};
 		
-		$controls.filter('.repeat').bind('click', {"repeat": 'all' }, repeat);
+		$controls.find('.repeat').on('click', repeat);
 
 		xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
 			var $muteBtn = $('.mute');
@@ -378,7 +365,7 @@
 			} else if (status == 'one') {
 				$repeatBtn.unbind('click');
 				$repeatBtn.removeClass('repeat1');
-				$repeatBtn.bind('click', {"repeat": 'off'}, repeat);			
+				$repeatBtn.bind('click', {"repeat": 'off'}, repeat);
 				$repeatBtn.addClass('repeatOff');
 				$repeatBtn.attr('title', mkf.lang.get('label_repeatoff'));
 			}
@@ -492,7 +479,7 @@
 			});
 			$('.bigSubOnOff').click(function() {
 				xbmc.setSubtitles({command: (xbmc.periodicUpdater.subsenabled? 'off' : 'on'), onError: failed}); return false;
-			});			
+			});	
 			$('.bigSubNext').click(function() {
 				xbmc.setSubtitles({command: 'next', onError: failed}); return false;
 			});
@@ -532,26 +519,19 @@
 			$('.bigVolUp').click(function() {
 				xbmc.setVolumeInc({volume: 'increment'}); return false;
 			});
-						
+
 			var bigShuffle = function(event) {
-				xbmc.control({type: (event.data.shuffle? 'shuffle': 'unshuffle')}); return false;
+				xbmc.playerSet({type: 'shuffle', value: 'toggle'}); return false;
 			};
-		
-			$('a.bigShuffle').bind('click', {"shuffle": true}, bigShuffle);
+
+			$('a.bigShuffle').on('click', bigShuffle);
 
 			var bigRepeat = function(event) {
-				if (event.data.repeat == 'all' && xbmc.periodicUpdater.repeatStatus == 'off') {
-					type = 'all';
-				} else if (event.data.repeat == 'one' && xbmc.periodicUpdater.repeatStatus == 'all') {
-					type = 'one';
-				} else if (event.data.repeat == 'off' && xbmc.periodicUpdater.repeatStatus == 'one') {
-					type = 'off'; 
-				};
-				xbmc.controlRepeat(type);
+				xbmc.playerSet({type: 'repeat', value: 'cycle'});
 				return false;
 			};
-	
-			$('a.bigRepeat').bind('click', {"repeat": 'all' }, bigRepeat);
+			
+			$('a.bigRepeat').on('click', bigRepeat);
 			
 			xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
 				var $bigShuffleBtn = $('.bigShuffle');
@@ -3062,6 +3042,7 @@
 			
 
 			var titleElement = '';
+			var channelElement = '';
 
 			var artistElement = '';
 			var albumElement = '';
@@ -3090,20 +3071,28 @@
 
 			xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
 				// ALL: AUDIO, VIDEO, PICTURE
-				
 				if (currentFile.title && currentFile.title != '') { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
 
 				if (currentFile.xbmcMediaType == 'audio') {
 					// AUDIO
-					if (currentFile.artist) { artistElement = currentFile.artist; } else { artistElement = mkf.lang.get('label_not_available'); }
-					if (currentFile.album) { albumElement = currentFile.album; } else { albumElement = mkf.lang.get('label_not_available'); }
-					
-					//hack for partymode playlist refresh
-					if (currentFile.partymode) {
-						awxUI.onMusicPlaylistShow();
+					if (currentFile.type == 'channel') {
+						//label = channel, title = program name
+						if (currentFile.title) { titleElement = currentFile.title; } else { titleElement = mkf.lang.get('label_not_available'); }
+						if (currentFile.label) { channelElement = currentFile.label; } else { channelElement = mkf.lang.get('label_not_available'); }
+						
+						nowLabelElement.text(titleElement);
+						nowElement.text(' - ' + channelElement);
+					} else {
+						if (currentFile.artist) { artistElement = currentFile.artist; } else { artistElement = mkf.lang.get('label_not_available'); }
+						if (currentFile.album) { albumElement = currentFile.album; } else { albumElement = mkf.lang.get('label_not_available'); }
+						
+						//hack for partymode playlist refresh - *change to playlist notification*
+						if (currentFile.partymode) {
+							awxUI.onMusicPlaylistShow();
+						};
+						nowLabelElement.text(titleElement);
+						nowElement.text(' - ' + artistElement + ' - ' + albumElement);
 					};
-					nowLabelElement.text(titleElement);
-					nowElement.text(' - ' + artistElement + ' - ' + albumElement);
 				} else {
 					// VIDEO
 
@@ -3118,6 +3107,13 @@
 						nowLabelElement.text(titleElement);
 						nowElement.text(' - ' + tvshowElement + ' - S' + seasonElement + 'E' + episodeElement);
 
+					} else if (currentFile.type == 'channel') {
+						//label = channel, title = program name
+						if (currentFile.title) { titleElement = currentFile.title; } else { titleElement = mkf.lang.get('label_not_available'); }
+						if (currentFile.label) { channelElement = currentFile.label; } else { channelElement = mkf.lang.get('label_not_available'); }
+						
+						nowLabelElement.text(titleElement);
+						nowElement.text(' - ' + channelElement);
 					} else {
 						nowLabelElement.text(titleElement);
 					}
@@ -3163,6 +3159,12 @@
 
 						});
 							
+					} else if (currentFile.type == 'channel') {
+						thumbElement.css('margin-top', '57px');
+						thumbElement.css('margin-left', '35px');
+						thumbElement.css('height', '225px');
+						thumbElement.css('width', '225px');
+						
 					} else { //movie
 						thumbElement.css('margin-top', '0px');
 						thumbElement.css('margin-left', '70px');
@@ -3229,6 +3231,8 @@
 				
 			xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
 				if (status == 'stopped') {
+					xbmc.periodicUpdater.currentlyPlayingFile = '';
+					xbmc.periodicUpdater.nextPlayingFile = '';
 					nowLabelElement.text('');
 					nowElement.text('');
 					nextElement.text('');
