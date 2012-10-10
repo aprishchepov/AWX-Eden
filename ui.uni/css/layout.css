@@ -2411,6 +2411,10 @@ div.ui-slider-range {
 }
 div.ui-slider-horizontal div.ui-slider-range {
     height: 30px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005500', endColorstr='#A0E312', GradientType=1); /* for IE */
+	background: -webkit-gradient(linear, 100% 0%, 0% 0%, from(#A0E312), to(#050)); /* for webkit browsers */
+	background: -moz-linear-gradient(right, #A0E312, #005500); /* for firefox 3.6+ */ 
+	background-image: -o-linear-gradient(right, #A0E312, #005500);
 }
 div.ui-slider-vertical div.ui-slider-range {
     bottom: 0;

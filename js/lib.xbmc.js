@@ -2941,7 +2941,7 @@ var xbmc = {};
 						'{"jsonrpc": "2.0", "method": "JSONRPC.Version",  "id": 1}',
 
 						function (response) {
-							if (response.result.version >= 5) {
+							if (response.result.version >= 5 && navigator.appVersion.indexOf("MSIE") == -1) {
 								if ("WebSocket" in window) {
 									xbmc.wsListener();
 									console.log('Trying websocket');
@@ -3091,7 +3091,7 @@ var xbmc = {};
 						);
 					//}
 
-					// playing state					
+					// playing state
 					// We reached the end my friend... (of the playlist)
 					if ( xbmc.periodicUpdater.playerStatus != 'stopped' && activePlayer == 'none') {
 						xbmc.periodicUpdater.playerStatus = 'stopped';
