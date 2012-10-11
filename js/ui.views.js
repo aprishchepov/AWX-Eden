@@ -168,6 +168,8 @@ var uiviews = {};
 					},
 
 					onSuccess: function(result) {
+						//Stop limiting
+						result.isFiltered = true;
 						$artistContent.defaultArtistsViewer(result, artistPage);
 						$artistContent.removeClass('loading');
 					}

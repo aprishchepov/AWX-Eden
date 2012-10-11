@@ -934,7 +934,7 @@ var xbmc = {};
 			$.extend(settings, options);
 
 			xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"filter": {"genreid": ' + settings.genreid + '}, "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
+				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"filter": {"genreid": ' + settings.genreid + '}, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result);
