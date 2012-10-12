@@ -222,13 +222,13 @@
 		$controls.find('.voldown').click(function() {
 			xbmc.setVolumeInc({volume: 'decrement'}); return false;
 		});
-		var shuffle = function(event) {
+		var shuffle = function() {
 			xbmc.playerSet({type: 'shuffle', value: 'toggle'}); return false;
 		};
 
 		$controls.find('.shuffle').on('click', shuffle);
 
-		var repeat = function(event) {
+		var repeat = function() {
 			xbmc.playerSet({type: 'repeat', value: 'cycle'});
 			return false;
 		};
@@ -239,13 +239,13 @@
 			var $shuffleBtn = $('.button.shuffle');
 			if (status == 'shuffleOn') {
 				$shuffleBtn.unbind('click');
-				$shuffleBtn.bind('click', {"shuffle": false}, shuffle);
+				$shuffleBtn.bind('click', shuffle);
 				$shuffleBtn.addClass('unshuffle');
 				$shuffleBtn.attr('title', mkf.lang.get('label_unshuffle'));
 
 			} else if (status == 'shuffleOff') {
 				$shuffleBtn.unbind('click');
-				$shuffleBtn.bind('click', {"shuffle": true}, shuffle);
+				$shuffleBtn.bind('click', shuffle);
 				$shuffleBtn.removeClass('unshuffle');
 				$shuffleBtn.attr('title', mkf.lang.get('label_shuffle'));
 			}
@@ -334,13 +334,13 @@
 			var $shuffleBtn = $('.button.shuffle');
 			if (status == 'shuffleOn') {
 				$shuffleBtn.unbind('click');
-				$shuffleBtn.bind('click', {"shuffle": false}, shuffle);
+				$shuffleBtn.bind('click', shuffle);
 				$shuffleBtn.addClass('unshuffle');
 				$shuffleBtn.attr('title', mkf.lang.get('label_unshuffle'));
 
 			} else if (status == 'shuffleOff') {
 				$shuffleBtn.unbind('click');
-				$shuffleBtn.bind('click', {"shuffle": true}, shuffle);
+				$shuffleBtn.bind('click', shuffle);
 				$shuffleBtn.removeClass('unshuffle');
 				$shuffleBtn.attr('title', mkf.lang.get('label_shuffle'));
 			}

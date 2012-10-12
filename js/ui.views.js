@@ -767,18 +767,20 @@ var uiviews = {};
 					if (movie.streamdetails) {
 						if (movie.streamdetails.subtitle) { streamdetails.hasSubs = true };
 						if (movie.streamdetails.audio) {
-							streamdetails.channels = movie.streamdetails.audio[0].channels;
-							streamdetails.aStreams = movie.streamdetails.audio.length;
+							if (streamdetails.channels) { streamdetails.channels = movie.streamdetails.audio[0].channels };
+							if (movie.streamdetails.audio.length) { streamdetails.aStreams = movie.streamdetails.audio.length };
 							$.each(movie.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
 							if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
 						};
-					streamdetails.aspect = xbmc.getAspect(movie.streamdetails.video[0].aspect);
-					//Get video standard
-					streamdetails.vFormat = xbmc.getvFormat(movie.streamdetails.video[0].width);
-					//Get video codec
-					streamdetails.vCodec = xbmc.getVcodec(movie.streamdetails.video[0].codec);
-					//Set audio icon
-					streamdetails.aCodec = xbmc.getAcodec(movie.streamdetails.audio[0].codec);
+						if (typeof(movie.streamdetails.video[0]) !== 'undefined' ) {
+							streamdetails.aspect = xbmc.getAspect(movie.streamdetails.video[0].aspect)
+							//Get video standard
+							streamdetails.vFormat = xbmc.getvFormat(movie.streamdetails.video[0].width);
+							//Get video codec
+							streamdetails.vCodec = xbmc.getVcodec(movie.streamdetails.video[0].codec);
+							//Set audio icon
+							streamdetails.aCodec = xbmc.getAcodec(movie.streamdetails.audio[0].codec);
+						};
 					};
 					
 					//Create a youtube link from plugin trailer link provided

@@ -522,7 +522,7 @@ var xbmc = {};
 				onError: null
 			};
 			$.extend(settings, options);
-			console.log(settings);
+
 				if (activePlayerid == 1 || activePlayerid == 0) {
 					xbmc.sendCommand(
 						'{"jsonrpc": "2.0", "method": "Player.Set' + settings.type + '", "params": { "playerid": ' + activePlayerid + ', "' + settings.type + '": "' + settings.value + '" }, "id": 1}',
@@ -4063,6 +4063,37 @@ var xbmc = {};
 						$('#displayoverlay img.discThumb').css('width','194px');*/
 						
 						xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
+					break;
+					case 'Player.OnPropertyChanged':
+						if (typeof(JSONRPCnotification.params.data.property.shuffled) !== 'undefined') {
+							xbmc.periodicUpdater.firePlayerStatusChanged(JSONRPCnotification.params.data.property.shuffled? 'shuffleOn' : 'shuffleOff');
+						} else if (typeof(JSONRPCnotification.params.data.property.repeat) !== 'undefined') {
+							xbmc.periodicUpdater.firePlayerStatusChanged(JSONRPCnotification.params.data.property.repeat);
+						};
+						/*								//shuffle status changed?
+						shuffle = currentPlayer.shuffled;
+						if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
+							xbmc.periodicUpdater.shuffleStatus = shuffle;
+							xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
+						}
+						
+						//repeat off, one, all
+						repeat = currentPlayer.repeat;
+						if (xbmc.periodicUpdater.repeatStatus != repeat) {
+							xbmc.periodicUpdater.repeatStatus = repeat;
+							xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
+						}
+						
+						//subs enabled
+						subs = currentPlayer.subtitleenabled;
+						if (xbmc.periodicUpdater.subsenabled != subs) {
+							xbmc.periodicUpdater.subsenabled = subs;
+						}
+						*/
+					break;
+					case 'Player.Repeat':
+						console.log('Shuffled');
+						//Fire off to Player.GetProperties to retrieve current state.
 					break;
 					case 'Player.OnPause':
 						console.log('paused');
