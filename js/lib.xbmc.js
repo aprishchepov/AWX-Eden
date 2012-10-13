@@ -16,26 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-
-// TODO remove debug function
-function objToStr(obj, indent) {
-	var out = '';
-	for (var e in obj) {
-		if (typeof obj[e] == 'object') {
-			out += indent + e + ":\n" + objToStr(obj[e], indent+'     ') + "\n";
-
-		} else {
-			out += indent + e + ": " + obj[e] + "\n";
-		}
-	}
-	return out;
-};
-
-
-
 var xbmc = {};
-
-
 
 (function($) {
 
@@ -62,11 +43,11 @@ var xbmc = {};
 		   }
 		},
 
+		//Count objects in object
 		objLength: function (obj) {
 		  var result = 0;
 		  for(var prop in obj) {
 			if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-			// or Object.prototype.hasOwnProperty.call(obj, prop)
 			  result++;
 			}
 		  }
@@ -97,6 +78,7 @@ var xbmc = {};
 		},
 
 		//Cinema Experience
+		//Fix: change to use executeaddon
 		cinemaEx: function(options) {
 			var settings = {
 				film: 'Blade Runner',
@@ -106,7 +88,6 @@ var xbmc = {};
 			$.extend(settings, options);
 			
 			xbmc.httpapi(
-				//ExecBuiltIn(RunScript(script.cinema.experience,command<li>movie_title=' + settings.film + ')),
 				'ExecBuiltIn(RunScript(script.cinema.experience,command<li>movie_title=' + settings.film + '))',
 				settings.onSuccess,
 				settings.Error
@@ -464,7 +445,6 @@ var xbmc = {};
 				onSuccess: null,
 				onError: null
 			};
-			//$.extend(settings, options);
 
 			xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "Application.SetMute", "params": { "mute": "toggle" }, "id": 1}',
@@ -559,24 +539,14 @@ var xbmc = {};
 
 			var commands = {play: 'PlayPause', stop: 'Stop' };//, prev: 'GoPrevious', next: 'GoNext', shuffle: 'Shuffle', unshuffle: 'Unshuffle'};
 
-			/*if (commands[settings.type]) {
-				xbmc.sendCommand(
-					'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
+				if (activePlayerid == 1 || activePlayerid == 0) {
+					xbmc.sendCommand(
+						'{"jsonrpc": "2.0", "method": "Player.' + commands[settings.type] + '", "params": { "playerid": ' + activePlayerid + ' }, "id": 1}',
+						settings.onSuccess,
+						settings.onError
+					);
+				}
 
-					function (response) {*/
-
-						if (activePlayerid == 1 || activePlayerid == 0) {
-							xbmc.sendCommand(
-								'{"jsonrpc": "2.0", "method": "Player.' + commands[settings.type] + '", "params": { "playerid": ' + activePlayerid + ' }, "id": 1}',
-								settings.onSuccess,
-								settings.onError
-							);
-						}
-					/*},
-					settings.onError
-				);
-				return true;
-			}*/
 			return false;
 		},
 
@@ -671,37 +641,14 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			/*xbmc.sendCommand(
-				'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
-
-				function (response) {
-					var playerResult = response.result;
-					var player = '';
-
-					if (playerResult[0].type == 'audio') {
-						player = 'Audio';
-
-					} else if (playerResult[0].type == 'video') {
-						player = 'Video';
-
-					} else {
-						// No player is active
-						return;
-					}*/
-
 				if (activePlayerid == 1 || activePlayerid == 0) {
 					xbmc.sendCommand(
-						//'{"jsonrpc": "2.0", "method": "' + player + 'Player.SeekPercentage", "params": ' + settings.percentage + ', "id": 1}',
 						'{"jsonrpc": "2.0", "method": "Player.Seek", "params": {"value": ' + settings.percentage + ', "playerid": ' + activePlayerid + '}, "id": 1}',
 
 						settings.onSuccess,
 						settings.onError
 					);
 				}
-				/*},
-
-				settings.onError
-			);*/
 		},
 
 		getAspect: function(aspect) {
@@ -896,7 +843,6 @@ var xbmc = {};
 
 			xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist", "ignorearticle": true } }, "id": 1}',
-				//'{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result);
@@ -955,7 +901,6 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 			
-			//var order = mkf.cookieSettings.get('albumOrder')=='album'? 'label' : 'artist';
 			settings.sortby = mkf.cookieSettings.get('albumSort', 'label');
 			settings.order = mkf.cookieSettings.get('adesc', 'ascending');
 			
@@ -1055,7 +1000,6 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			//var order = mkf.cookieSettings.get('albumOrder')=='album'? 'label' : 'artist';
 			settings.sortby = mkf.cookieSettings.get('musicVideoSort', 'label');
 			settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
 
@@ -1087,7 +1031,6 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
-			//var order = mkf.cookieSettings.get('albumOrder')=='album'? 'label' : 'artist';
 			settings.sortby = mkf.cookieSettings.get('musicVideoSort', 'label');
 			settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
 
@@ -1264,40 +1207,6 @@ var xbmc = {};
 				});
 			};
 			if (!containsfiles && recurseDir.length == 0) { settings.onError(mkf.lang.get('message_failed_add_files_to_playlist')); };
-			/*xbmc.getDirectory({
-				media: 'Audio',
-				directory: settings.folder.replace(/\\/g, "\\\\"),
-
-				onSuccess: function(result) {
-					var error = false;
-					var files = result.files;
-					if (files) {
-						files.sort(function(a, b) {
-							if (a.file < b.file) return -1;
-							if (a.file > b.file) return 1;
-							return 0;
-						});
-						$.each(files, function(i, file)  {
-							xbmc.addAudioFileToPlaylist({
-								'file': file.file,
-								onError: function() {
-									error = true;
-								},
-								async: false
-							});
-						});
-					}
-					if (error) {
-						settings.onError(mkf.lang.get('message_failed_add_files_to_playlist'));
-					} else {
-						settings.onSuccess();
-					}
-				},
-
-				onError: function() {
-					settings.onError(mkf.lang.get('message_failed_folders_content'));
-				}
-			});*/
 		},
 
 		
@@ -1486,6 +1395,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearAudioPlaylist({
 				onSuccess: function() {
 					xbmc.addAlbumToPlaylist({
@@ -1520,6 +1430,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearAudioPlaylist({
 				onSuccess: function() {
 					xbmc.addGenreToPlaylist({
@@ -1554,6 +1465,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearAudioPlaylist({
 				onSuccess: function() {
 					xbmc.addArtistToPlaylist({
@@ -1588,6 +1500,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearAudioPlaylist({
 				onSuccess: function() {
 					xbmc.addSongToPlaylist({
@@ -1628,7 +1541,6 @@ var xbmc = {};
 					'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid": 0,"properties":["time", "totaltime", "position"] } }',
 
 					function(response) {
-						//settings.onSuccess();
 						var insertAhead = 1;
 						var curtime = (response.result.time.hours * 3600) + (response.result.time.minutes * 60) + response.result.time.seconds;
 						var curruntime = (response.result.totaltime.hours * 3600) + (response.result.totaltime.minutes * 60) + response.result.totaltime.seconds;
@@ -1666,6 +1578,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearAudioPlaylist({
 				onSuccess: function() {
 					xbmc.addAudioFileToPlaylist({
@@ -1702,6 +1615,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearAudioPlaylist({
 				onSuccess: function() {
 					xbmc.addAudioFolderToPlaylist({
@@ -1741,7 +1655,6 @@ var xbmc = {};
 
 			xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "filter": {"albumid": ' + settings.albumid + '}, "properties": ["artist", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating"], "sort": { "method": "' + settings.sortby + '"} }, "id": 1}',
-				//'{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "albumid": ' + settings.albumid + ', "properties": ["artist", "track", "thumbnail"], "sort": { "method": "' + settings.sortby + '"} }, "id": 1}',
 
 				function(response) {
 					settings.onSuccess(response.result);
@@ -1888,41 +1801,6 @@ var xbmc = {};
 				settings.async
 			);
 			
-			/*xbmc.getDirectory({
-				media: 'Video',
-				directory: settings.folder.replace(/\\/g, "\\\\"),
-
-				onSuccess: function(result) {
-					var error = false;
-					var files = result.files;
-					if (files) {
-						files.sort(function(a, b) {
-							if (a.file < b.file) return -1;
-							if (a.file > b.file) return 1;
-							return 0;
-						});
-						alert(objToStr(files,''));
-						$.each(files, function(i, file)  {
-							xbmc.addVideoFileToPlaylist({
-								'file': file.file,
-								onError: function() {
-									error = true;
-								},
-								async: false
-							});
-						});
-					}
-					if (error) {
-						settings.onError(mkf.lang.get('message_failed_add_files_to_playlist'));
-					} else {
-						settings.onSuccess();
-					}
-				},
-
-				onError: function() {
-					settings.onError(mkf.lang.get('message_failed_folders_content'));
-				}
-			});*/
 		},
 
 
@@ -1982,6 +1860,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearVideoPlaylist({
 				onSuccess: function() {
 					xbmc.addMovieToPlaylist({
@@ -2016,6 +1895,7 @@ var xbmc = {};
 			};
 			$.extend(settings, options);
 
+			//Fix: change to use player.open
 			this.clearVideoPlaylist({
 				onSuccess: function() {
 					xbmc.addMusicVideoToPlaylist({
@@ -2056,30 +1936,6 @@ var xbmc = {};
 					settings.onSuccess,
 					settings.onError
 			);
-			/*this.clearVideoPlaylist({
-				onSuccess: function() {
-					xbmc.addVideoFileToPlaylist({
-						file: settings.file,
-
-						onSuccess: function() {
-							xbmc.playVideo({
-								onSuccess: settings.onSuccess,
-								onError: function(errorText) {
-									settings.onError(errorText);
-								}
-							});
-						},
-
-						onError: function() {
-							settings.onError(mkf.lang.get('message_failed_add_file_to_playlist'));
-						}
-					});
-				},
-
-				onError: function() {
-					settings.onError(mkf.lang.get('message_failed_clear_playlist'));
-				}
-			});*/
 		},
 
 
@@ -2136,7 +1992,6 @@ var xbmc = {};
 
 			xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": { "genreid": ' + settings.genreid + '}, "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
-				//'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["genre", "director", "plot", "title", "originaltitle", "runtime", "year", "rating", "thumbnail", "playcount", "file", "tagline", "set"], "sort": { "order": "ascending", "method": "label" } }, "id": 1}',
 				function(response) {
 					if (settings.order == 'descending' && settings.sortby == 'none') {
 						var mresult = $.makeArray(response.result.movies).reverse();
@@ -2168,7 +2023,6 @@ var xbmc = {};
 
 			xbmc.sendCommand(
 				'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
-				//'{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["genre", "director", "plot", "title", "originaltitle", "runtime", "year", "rating", "thumbnail", "playcount", "file", "tagline", "set"], "sort": { "order": "ascending", "method": "label" } }, "id": 1}',
 				function(response) {
 					if (settings.order == 'descending' && settings.sortby == 'none') {
 						var mresult = $.makeArray(response.result.movies).reverse();
@@ -2600,17 +2454,12 @@ var xbmc = {};
 			//temp fix
 			settings.onSuccess = options.onSuccess;
 			settings.onError = options.onError;
-			//console.log(settings);
-			//console.log(options);
-			//console.log(xbmc.objLength(settings.fields));
+
 			var fields = settings.fields;
 			var fieldsLen = xbmc.objLength(fields);
 			var open = 0;
 			var finalClose = true;
-			
-			//console.log(fieldsLen);
-			//Do we have single search term?
-			
+
 			switch (settings.searchType) {
 				case 'movies':
 					properties = '"properties" : ["rating", "thumbnail", "playcount", "file"],';
@@ -2655,35 +2504,25 @@ var xbmc = {};
 				query += '{"field": "' + fields[0].searchFields +'", "operator": "' + fields[0].searchOps + '", "value": "' + fields[0].searchTerms + '"} } }';
 			} else {
 				//Multiple search fields
-				
+
 				//Catch start with openning
 				if (fields[0].searchAndOr != '' && typeof(fields[0].searchFields) === 'undefined') { finalClose = false };
-					
+
 				for (i=0; i<fieldsLen; i++) {
-				
-				
-				//console.log('finalclose: ' + finalClose);
-				//console.log(query);
-					
+
 					if (fields[i].searchAndOr != '' && fields[i].open == 'continue') {
 						query += ' { "' + fields[i].searchAndOr + '": [';
-						//console.log(query);
 					};
-					//console.log(fields[i]);
 					if (fields[i].open == 'continue') {
 						query += ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + (i!=fieldsLen-1? ',' : ' ] }');
-						//console.log(query);						
 					};
 
 					if (fields[i].open == 'open') {
-						//console.log('open - open: ' + open);
 						if (typeof(fields[i].searchFields) === 'undefined') {
 							query += ' { "' + fields[i].searchAndOr + '": [';
-							//console.log(query);
 							open ++;
 						} else {
 							query += ' { "' + fields[i].searchAndOr + '": [' + ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + (i!=fieldsLen-1? ',' : '');
-							//console.log(query);
 						}
 					};
 					
@@ -2697,10 +2536,8 @@ var xbmc = {};
 								query += ' ] }';
 							};
 							open --;
-							//console.log(query);
 						} else {
 							query += ' {"field": "' + fields[i].searchFields +'", "operator": "' + fields[i].searchOps + '", "value": "' + fields[i].searchTerms + '"}' + ' ] },' //+ (open != 0? ',' : '');
-							//console.log(query);
 							if (i==fieldsLen-1) {
 								query = query.substring(0, query.length-1);
 								query += ' ] }';
@@ -2711,69 +2548,7 @@ var xbmc = {};
 				};
 				query += ' } }';
 			}
-			/*if (fieldsLen > 1 ) {
-				//nested
-				//console.log(fields);
-				query = '{"jsonrpc": "2.0", "id": 1, "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "' + fields[1][0].searchAndOr + '": [ ';
-				$.each(fields, function(indent, ifields) {
-					//console.log(indent);
-					//console.log(ifields);
-					var tempQ = '';
-					if (xbmc.objLength(ifields) > 1) {
-						//multiple fields
-						console.log('multi');
-						query += '{ "' + ifields[1].searchAndOr + '": [ ';
-						$.each(ifields, function(i, field) {
-							tempQ += '{"field": "' + field.searchFields +'", "operator": "' + field.searchOps + '", "value": "' + field.searchTerms + '"},';
-							if (i == xbmc.objLength(ifields)-1) {
-								tempQ = tempQ.slice(0, -1);
-								tempQ += ' ] }, ' 
-							};
-							//console.log(field);
-						});
-						//console.log('ident : ' + indent);
-						//console.log(xbmc.objLength(ifields)-1)
-						//tempQ = tempQ.slice(0, -1);
-						if (indent < xbmc.objLength(ifields)-1) {
-							tempQ = tempQ.slice(0, -1);
-							//tempQ += ' ] } ] ';
-						}
-					} else {
-						//single field
-						console.log('single');
-						tempQ += '{"field": "' + ifields[0].searchFields +'", "operator": "' + ifields[0].searchOps + '", "value": "' + ifields[0].searchTerms + '"}, ';
-						console.log(tempQ);
-					};
-					query += tempQ;
-				});
-				//console.log(query.length);
-				//query.slice(0, -2); <-- doesn't work for some reason.
-				query = query.substring(0, query.length - 2)
-				//console.log(query.length);
-				query += ']';
-				for (i=0; i<fieldsLen+1; i++) {
-					query += ' }';
-				}
-				//console.log(query);
-			} else {
-				//not nested - simple (hopefully)
-				var fieldNum = xbmc.objLength(settings.fields[0]);
-				if (fieldNum == 1) {
-					query = '{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "field": "' + fields[0][0].searchFields +'", "operator": "' + fields[0][0].searchOps + '", "value": "' + fields[0][0].searchTerms + '" } }, "id": 1}';
-				} else {
-					var query = '{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { ' + properties + ' "filter": { "' + fields[0][1].searchAndOr + '": [ ';
-					$.each(fields[0], function(i, field) {
-						query += '{"field": "' + fields[0][i].searchFields +'", "operator": "' + fields[0][i].searchOps + '", "value": "' + fields[0][i].searchTerms + '"},';
-					});
-					//remove last comma
-					query = query.slice(0, -1);
-					query += '] } }, "id": 1}';
-					//console.log(query);
-				};
-			};*/
-			
-			//console.log(query);
-			
+
 			xbmc.sendCommand(
 				query,
 				function(response) {
@@ -2783,28 +2558,7 @@ var xbmc = {};
 					settings.onError(response.error);
 				}
 			);
-			
-			/*if (settings.num == 0) {
-				console.log('{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "field": "' + settings[0].searchFields +'", "operator": "' + settings[0].searchOps + '", "value": "' + settings[0].searchTerms + '" } }, "id": 1}');
-			} else {
-				var fieldsets = [];
-				for (i=0; i<=settings.num; i++) {
-					if (i>1) { if (settings[i].searchAndOr != settings[i-1].searchAndOr) fieldsets[i] = ' ] "' + settings[i].searchAndOr + '": [ {"field": "' + settings[i].searchFields + '", "operator": "' + settings[i].searchOps + '", "value": "' + settings[i].searchTerms + '"}';
-					} else { fieldsets[i] = '{"field": "' + settings[i].searchFields + '", "operator": "' + settings[i].searchOps + '", "value": "' + settings[i].searchTerms + '"}' };
-				}
-				console.log(fieldsets);
-				console.log('{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "' + settings[1].searchAndOr + '": [ ' + fieldsets + ' ] } }, "id": 1}');
-			};*/
-			/*xbmc.sendCommand(
-				//{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "filter": { "field": "title", "operator": "startswith", "value": "v" } }, "id": 1}
-				'{"jsonrpc": "2.0", "method": "' + settings.library + 'Library.Get' + settings.searchType +'", "params": { "filter": { "field": "' + settings.searchFields +'", "operator": "' + settings.searchOps + '", "value": "' + settings.searchTerms + '" } }, "id": 1}',
-				function(response) {
-					settings.onSuccess(response.result);
-				},
-				function() {
-					settings.onError;
-				}
-			);*/
+
 		},
 		
 		getPrepDownload: function(options) {
@@ -3034,7 +2788,6 @@ var xbmc = {};
 					if (typeof playerPartyMode === 'undefined') { playerPartyMode = false; }
 
 					xbmc.sendCommand(
-						//'{"jsonrpc": "2.0", "method": "XBMC.GetInfoLabels", "params" : {"labels": ["MusicPlayer.Title", "MusicPlayer.Album", "MusicPlayer.Artist", "Player.Time", "Player.Duration", "Player.Volume", "Playlist.Random", "VideoPlayer.Title", "VideoPlayer.TVShowTitle", "Player.Filenameandpath"]}, "id": 1}',
 						'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
 
 						function (response) {
@@ -3064,7 +2817,6 @@ var xbmc = {};
 					);
 
 					// has volume changed? Or first start?
-					//if (activePlayer != 'none' || xbmc.periodicUpdater.lastVolume == -1) {
 						xbmc.sendCommand(
 							'{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume", "muted" ] }, "id": 1}',
 
@@ -3127,9 +2879,7 @@ var xbmc = {};
 						if (activePlayer == 'audio' || activePlayer == 'video' ) {
 							request = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream", "partymode" ] } }'
 
-						}/* else if (activePlayer == 'video') {
-							request = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["speed", "shuffled", "repeat"] } }'
-						}*/
+						};
 
 						xbmc.sendCommand(
 							request,
@@ -3168,7 +2918,7 @@ var xbmc = {};
 								if (xbmc.periodicUpdater.progress != time) {
 									xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
 									xbmc.periodicUpdater.progress = time;
-								}								
+								}
 								if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
 									// not playing
 									if (xbmc.periodicUpdater.playerStatus != 'stopped') {
@@ -3234,11 +2984,9 @@ var xbmc = {};
 
 						if (activePlayer == 'audio') {
 							request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
-							//requeststate = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":0,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
 
 						} else if (activePlayer == 'video') {
 							request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": 1}';
-							//requeststate = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
 						}
 					
 						// Current file changed?
@@ -3274,8 +3022,6 @@ var xbmc = {};
 										});
 									};
 									xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
-								//};
-								//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
 								var getNext = function() {
 									xbmc.getNextPlaylistItem({
 										'playlistid': activePlayerid,
@@ -3322,8 +3068,6 @@ var xbmc = {};
 												if (currentItem.streamdetails.audio) {
 													streamdetails.channels = currentItem.streamdetails.audio[0].channels;
 													streamdetails.aStreams = currentItem.streamdetails.audio.length;
-													//$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
-													//if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
 												};
 												streamdetails.aspect = xbmc.getAspect(currentItem.streamdetails.video[0].aspect);
 												//Get video standard
@@ -3357,17 +3101,9 @@ var xbmc = {};
 	}); // END xbmc
 	
 	//Not sure on what to do about keeping time yet
-	//Because of broken notifications poll for those too.
+	//Because of broken notifications poll for those too. <-- now remove and use internal counting!
 	$.extend(xbmc, {
 		pollTime: function() {
-						/*var request = '';
-
-						if (activePlayer == 'audio' || activePlayer == 'video' ) {
-							request = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }'
-
-						}/* else if (activePlayer == 'video') {
-							request = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["speed", "shuffled", "repeat"] } }'
-						}*/
 						xbmc.sendCommand(
 							//request,
 							'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
@@ -3532,7 +3268,6 @@ var xbmc = {};
 					setTimeout(function() {
 							//Initial status readings, after rely on notifications.
 							xbmc.sendCommand(
-								//'{"jsonrpc": "2.0", "method": "XBMC.GetInfoLabels", "params" : {"labels": ["MusicPlayer.Title", "MusicPlayer.Album", "MusicPlayer.Artist", "Player.Time", "Player.Duration", "Player.Volume", "Playlist.Random", "VideoPlayer.Title", "VideoPlayer.TVShowTitle", "Player.Filenameandpath"]}, "id": 1}',
 								'{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
 
 								function (response) {
@@ -3651,11 +3386,9 @@ var xbmc = {};
 
 											if (activePlayer == 'audio') {
 												request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
-												//requeststate = '{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":0,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
 
 											} else if (activePlayer == 'video') {
 												request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": 1}';
-												//requeststate = '{"jsonrpc":"2.0","id":4,"method":"Player.GetProperties","params":{ "playerid":1,"properties":["playlistid","position","percentage","totaltime","time","type","speed"] } }'
 											}
 										
 											// Current file changed?
@@ -3808,7 +3541,6 @@ var xbmc = {};
 					console.log(JSONRPCnotification);
 					switch (JSONRPCnotification.method) {
 					case 'Player.OnPlay':
-						console.log('playing');
 						activePlayerid = JSONRPCnotification.params.data.player.playerid;
 						if (activePlayerid == 1) {
 							activePlayer = 'video';
@@ -3853,8 +3585,6 @@ var xbmc = {};
 											xbmcMediaType: activePlayer
 										});
 										xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
-									//};
-									//if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
 										xbmc.getNextPlaylistItem({
 											'playlistid': activePlayerid,
 											'plCurPos': xbmc.periodicUpdater.curPlaylistNum,
@@ -3869,8 +3599,6 @@ var xbmc = {};
 													});
 													xbmc.periodicUpdater.nextPlayingFile = nextItem.file;
 													xbmc.periodicUpdater.fireNextPlayingChanged(nextItem);
-													//console.log(nextItem);
-													//console.log(xbmc.periodicUpdater.currentlyPlayingFile);
 												}
 											},
 											onError: function() {
@@ -3965,44 +3693,11 @@ var xbmc = {};
 											xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
 											xbmc.periodicUpdater.progress = time;
 										}
-										/*if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
-											// not playing
-											if (xbmc.periodicUpdater.playerStatus != 'stopped') {
-												xbmc.periodicUpdater.playerStatus = 'stopped';
-												xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
-											}
 
-										} else if (currentPlayer.speed == 0 && xbmc.periodicUpdater.playerStatus != 'paused') {
-											xbmc.periodicUpdater.playerStatus = 'paused';
-											xbmc.periodicUpdater.firePlayerStatusChanged('paused');
-
-										} else if (currentPlayer.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
-											xbmc.periodicUpdater.playerStatus = 'playing';
-											xbmc.periodicUpdater.firePlayerStatusChanged('playing');
-										}*/
 										if (JSONRPCnotification.params.data.player.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
 											xbmc.periodicUpdater.playerStatus = 'playing';
 											xbmc.periodicUpdater.firePlayerStatusChanged('playing');
 										}
-										/*//shuffle status changed?
-										shuffle = currentPlayer.shuffled;
-										if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
-											xbmc.periodicUpdater.shuffleStatus = shuffle;
-											xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
-										}
-										
-										//repeat off, one, all
-										repeat = currentPlayer.repeat;
-										if (xbmc.periodicUpdater.repeatStatus != repeat) {
-											xbmc.periodicUpdater.repeatStatus = repeat;
-											xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
-										}
-										
-										//subs enabled
-										subs = currentPlayer.subtitleenabled;
-										if (xbmc.periodicUpdater.subsenabled != subs) {
-											xbmc.periodicUpdater.subsenabled = subs;
-										}*/
 
 										//Stream info in footer bar. Uni UI only *Seems this won't work because incorrect details are returned*
 										if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {
@@ -4056,8 +3751,8 @@ var xbmc = {};
 						$('#streamdets .vSubtitles').css('display', 'none');
 						
 						//reset display overlay
-						$('#displayoverlay').css('width','625px');
-						/*$('#displayoverlay img.discThumb').hide();
+						/*$('#displayoverlay').css('width','625px');
+						$('#displayoverlay img.discThumb').hide();
 						$('#displayoverlay img.discThumb').css('margin-left','0px');
 						$('#displayoverlay img.discThumb').css('width','194px');
 						$('#displayoverlay img.discThumb').css('width','194px');*/
@@ -4070,31 +3765,6 @@ var xbmc = {};
 						} else if (typeof(JSONRPCnotification.params.data.property.repeat) !== 'undefined') {
 							xbmc.periodicUpdater.firePlayerStatusChanged(JSONRPCnotification.params.data.property.repeat);
 						};
-						/*								//shuffle status changed?
-						shuffle = currentPlayer.shuffled;
-						if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
-							xbmc.periodicUpdater.shuffleStatus = shuffle;
-							xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
-						}
-						
-						//repeat off, one, all
-						repeat = currentPlayer.repeat;
-						if (xbmc.periodicUpdater.repeatStatus != repeat) {
-							xbmc.periodicUpdater.repeatStatus = repeat;
-							xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
-						}
-						
-						//subs enabled
-						subs = currentPlayer.subtitleenabled;
-						if (xbmc.periodicUpdater.subsenabled != subs) {
-							xbmc.periodicUpdater.subsenabled = subs;
-						}
-						*/
-					break;
-					case 'Player.Repeat':
-						console.log('Shuffled');
-						//Fire off to Player.GetProperties to retrieve current state.
-					break;
 					case 'Player.OnPause':
 						console.log('paused');
 						xbmc.periodicUpdater.playerStatus = 'paused';
@@ -4121,15 +3791,14 @@ var xbmc = {};
 							activePlayer = 'audio';
 						}
 						console.log(activePlayerid);*/
-					break;					
+					break;
 					case 'Application.OnVolumeChanged':
 						if (JSONRPCnotification.params.data.volume != xbmc.periodicUpdater.lastVolume) {
 									xbmc.periodicUpdater.lastVolume = JSONRPCnotification.params.data.volume;
 										$.each(xbmc.periodicUpdater.volumeChangedListener, function(i, listener)  {
 									listener(JSONRPCnotification.params.data.volume);
 									});
-						};
-						if (JSONRPCnotification.params.data.muted != xbmc.periodicUpdater.muteStatus) {
+						} else if (JSONRPCnotification.params.data.muted != xbmc.periodicUpdater.muteStatus) {
 							xbmc.periodicUpdater.muteStatus = JSONRPCnotification.params.data.muted;
 							if (JSONRPCnotification.params.data.muted) {
 								xbmc.periodicUpdater.firePlayerStatusChanged('muteOn');
@@ -4145,7 +3814,7 @@ var xbmc = {};
 						mkf.messageLog.show(mkf.lang.get('message_video_scan_fin'), mkf.messageLog.status.success, 3000);
 					break;
 					case 'Input.OnInputRequested':
-						console.log('Input requested');
+						//Add masking for passwords
 						uiviews.InputSendText(JSONRPCnotification.params.data);
 					break;
 					case 'Input.OnInputFinished':
@@ -4181,7 +3850,6 @@ var xbmc = {};
 				};
 
 		}
-		//wsListener();
 	});
 })(jQuery);
 
