@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------
 
 AWXi uses the JavaScript Library jQuery and jQuery UI. These projects are
-licensed under both MIT and GPL licenses.
+licensed under both MIT license.
 Have a look at
 	http://jquery.com
 	http://jqueryui.com
@@ -17,7 +17,7 @@ Have a look at http://tango.freedesktop.org.
 
 --------------------------------------------------------------------------------
 
-AWXi uses some icons from the Confluence skin.
+AWXi uses some icons from the XBMC Confluence skin.
 
 --------------------------------------------------------------------------------
 
