@@ -3292,21 +3292,11 @@
 			});
 			
 			xbmc.periodicUpdater.addProgressChangedListener(function(progress) {
-				timeCurRemain.text(xbmc.formatTime(xbmc.getSeconds(progress.total) - xbmc.getSeconds(progress.time)));
-				timeCurRemainTotal.text(xbmc.formatTime(xbmc.getSeconds(progress.total)));
+				timeCurRemain.text(xbmc.formatTime(progress.total - progress.time));
+				timeCurRemainTotal.text(xbmc.formatTime(progress.total));
 				//durationElement.text(progress.total);
-				sliderElement.slider("option", "value", 100 * xbmc.getSeconds(progress.time) / xbmc.getSeconds(progress.total));
+				sliderElement.slider("option", "value", 100 * progress.time / progress.total);
 			});
-			
-			//auto size progress and volume
-			/*$( window ).resize( xbmc.debouncer( function ( e ) {
-				contentHeight = ($('#main').length? $('#main').height() -65: $('#content').height())-190; //$('#content').height() -5;
-				
-				//$('div.next, div.prev').css('margin-bottom', contentHeight/2.5);
-				$('div.singleView').css('margin-top', contentHeight/2);
-				//$('div.movieName').css('width', $('img.singleThumb').width());
-			
-			} ) );*/
 		
 		});
 	}; // END uniFooterStatus

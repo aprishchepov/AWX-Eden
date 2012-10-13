@@ -2733,7 +2733,12 @@ var xbmc = {};
 				}				
 				if (typeof xbmc.periodicUpdater.progress === 'undefined') {
 					$.extend(xbmc.periodicUpdater, {
-						progress: ''
+						progress: 0
+					});
+				}
+				if (typeof xbmc.periodicUpdater.progressEnd === 'undefined') {
+					$.extend(xbmc.periodicUpdater, {
+						progressEnd: 0
 					});
 				}
 				if (typeof xbmc.periodicUpdater.playerStatus === 'undefined') {
@@ -3104,87 +3109,57 @@ var xbmc = {};
 	//Because of broken notifications poll for those too. <-- now remove and use internal counting!
 	$.extend(xbmc, {
 		pollTime: function() {
-						xbmc.sendCommand(
-							//request,
-							'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
 
-							function (response) {
-								var currentPlayer = response.result;
-								//var currentTimes = response.result;
-								var curtime;
-								var curruntime;
-								var curPlayItemNum = currentPlayer.position;
-								
-								//Get the number of the currently playing item in the playlist
-								if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
-									//Change highlights rather than reload playlist
-									if (activePlayer == 'audio') {
-										$("div.folderLinkWrapper a.playlistItemCur").removeClass("playlistItemCur");
-										$(".apli"+curPlayItemNum).addClass("playlistItemCur");
-										xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-										//awxUI.onMusicPlaylistShow();
-									} else if (activePlayer == 'video') {
-										$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
-										$("#vpli"+curPlayItemNum).attr("class","playlistItemCur");
-										xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-										//awxUI.onVideoPlaylistShow();
-									}
-										
-								}
-								
-								curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
-								curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
-								var curtimeFormat = xbmc.formatTime(curtime);
-								var curruntimeFormat = xbmc.formatTime(curruntime);
-								time = curtimeFormat;
-								
-								if (xbmc.periodicUpdater.progress != time) {
-									xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
-									xbmc.periodicUpdater.progress = time;
-								}								
-								if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
-									// not playing
-									if (xbmc.periodicUpdater.playerStatus != 'stopped') {
-										xbmc.periodicUpdater.playerStatus = 'stopped';
-										xbmc.periodicUpdater.firePlayerStatusChanged('stopped');
-									}
-
-								} else if (currentPlayer.speed == 0 && xbmc.periodicUpdater.playerStatus != 'paused') {
-									xbmc.periodicUpdater.playerStatus = 'paused';
-									xbmc.periodicUpdater.firePlayerStatusChanged('paused');
-
-								} else if (currentPlayer.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
-									xbmc.periodicUpdater.playerStatus = 'playing';
-									xbmc.periodicUpdater.firePlayerStatusChanged('playing');
-								}
-								
-								//shuffle status changed?
-								shuffle = currentPlayer.shuffled;
-								if (xbmc.periodicUpdater.shuffleStatus != shuffle) {
-									xbmc.periodicUpdater.shuffleStatus = shuffle;
-									xbmc.periodicUpdater.firePlayerStatusChanged(shuffle? 'shuffleOn': 'shuffleOff');
-								}
-								
-								//repeat off, one, all
-								repeat = currentPlayer.repeat;
-								if (xbmc.periodicUpdater.repeatStatus != repeat) {
-									xbmc.periodicUpdater.repeatStatus = repeat;
-									xbmc.periodicUpdater.firePlayerStatusChanged(repeat);
-								}
-								
-								//subs enabled
-								subs = currentPlayer.subtitleenabled;
-								if (xbmc.periodicUpdater.subsenabled != subs) {
-									xbmc.periodicUpdater.subsenabled = subs;
-								}
-							},
-
-							null, null, true // IS async // not async
-						);
-			},//, 1000)
+			++xbmc.periodicUpdater.loopCount;
 			
+			//Initial time grab and checking for time slip every 30 (secs).
+			//if ((xbmc.periodicUpdater.loopCount % 30) == 0 || xbmc.periodicUpdater.loopCount == 1) {
+			//Initial time grab and checking for time slip every 10%.
+			if (xbmc.periodicUpdater.progressEnd != 0) {
+				var proEnd10per = Math.floor((xbmc.periodicUpdater.progressEnd / 100) * 10);
+				if ((xbmc.periodicUpdater.progress % proEnd10per) == 0) {
+					console.log('10%');
+				};
+			} else {
+				//Lost or haven't retrieved progressEnd
+				console.log('no proEnd');
+				var proEnd10per = 0;
+			}
+			if ((xbmc.periodicUpdater.progress % proEnd10per) == 0 || xbmc.periodicUpdater.loopCount == 1) {
+				var curtime = 0;
+				var curruntime = 0;
+				xbmc.sendCommand(
+					//request,
+					//'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
+					'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + activePlayerid + ',"properties":["time", "totaltime"] } }',
+					function (response) {
+						var currentPlayer = response.result;
+						
+						curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds; //time in secs
+						curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
+						
+						console.log('drift: ' + (curtime - xbmc.periodicUpdater.progress));
+						xbmc.periodicUpdater.progress = curtime +1;
+						xbmc.periodicUpdater.progressEnd = curruntime;
+						xbmc.periodicUpdater.fireProgressChanged({"time": curtime, total: curruntime});
+
+						//subs enabled
+						/*subs = currentPlayer.subtitleenabled;
+						if (xbmc.periodicUpdater.subsenabled != subs) {
+							xbmc.periodicUpdater.subsenabled = subs;
+						}*/
+					}
+					//null, null, true // IS async // not async
+				);
+			} else {
+			//Internal counting
+				if (xbmc.periodicUpdater.progress < xbmc.periodicUpdater.progressEnd ) { xbmc.periodicUpdater.progress++ };
+				xbmc.periodicUpdater.fireProgressChanged({"time": xbmc.periodicUpdater.progress, total: xbmc.periodicUpdater.progressEnd});
+			}
+		},
+
 		pollTimeStart: function() {
-			pollTimeRunning = setInterval('xbmc.pollTime()', 2000);
+			pollTimeRunning = setInterval('xbmc.pollTime()', 1000);
 		}
 		
 	});
@@ -3215,7 +3190,12 @@ var xbmc = {};
 				}				
 				if (typeof xbmc.periodicUpdater.progress === 'undefined') {
 					$.extend(xbmc.periodicUpdater, {
-						progress: ''
+						progress: 0
+					});
+				}
+				if (typeof xbmc.periodicUpdater.progressEnd === 'undefined') {
+					$.extend(xbmc.periodicUpdater, {
+						progressEnd: 0
 					});
 				}
 				if (typeof xbmc.periodicUpdater.playerStatus === 'undefined') {
@@ -3247,6 +3227,11 @@ var xbmc = {};
 				}
 				if (typeof pollTimeRunning === 'undefined') {
 					pollTimeRunning = false;
+				}
+				if (typeof xbmc.periodicUpdater.loopCount === 'undefined') {
+					$.extend(xbmc.periodicUpdater, {
+						loopCount: 0
+					});
 				}
 				
 				var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
@@ -3289,8 +3274,8 @@ var xbmc = {};
 													var currentPlayer = response.result;
 													//console.log(currentPlayer);
 													//var currentTimes = response.result;
-													var curtime;
-													var curruntime;
+													var curtime = 0;
+													var curruntime = 0;
 													var curPlayItemNum = currentPlayer.position;
 													
 													//Get the number of the currently playing item in the playlist
@@ -3310,15 +3295,14 @@ var xbmc = {};
 															
 													}
 													
-													curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
+													curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds; //time in secs
 													curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
-													var curtimeFormat = xbmc.formatTime(curtime);
-													var curruntimeFormat = xbmc.formatTime(curruntime);
-													time = curtimeFormat;
 													
-													if (xbmc.periodicUpdater.progress != time) {
-														xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
-														xbmc.periodicUpdater.progress = time;
+													if (xbmc.periodicUpdater.progress != curtime) {
+														console.log(curtime + ' - ' + xbmc.periodicUpdater.progress);
+														xbmc.periodicUpdater.fireProgressChanged({"time": curtime, total: curruntime});
+														xbmc.periodicUpdater.progress = curtime;
+														xbmc.periodicUpdater.progressEnd = curruntime;
 													}
 													if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
 														// not playing
@@ -3547,11 +3531,20 @@ var xbmc = {};
 						} else if (activePlayerid == 0) {
 							activePlayer = 'audio';
 						}
+						
+						//Reset counters to avoid "59:59" when waiting for initial times.
+						xbmc.periodicUpdater.loopCount = 0;
+						xbmc.periodicUpdater.progress = 0;
+						xbmc.periodicUpdater.progressEnd = 0;
+						//xbmc.periodicUpdater.fireProgressChanged({"time": xbmc.periodicUpdater.progress, total: xbmc.periodicUpdater.progressEnd});
+						
 						if (pollTimeRunning === false) { xbmc.pollTimeStart() };
 						
 						//Also activated on item change. Check incase it's slideshow.
 						if (activePlayer != 'none') {
 							var request = '';
+							//var curtime = 0;
+							//var curruntime = 0;
 
 							if (activePlayer == 'audio') {
 								request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": 1}';
@@ -3649,9 +3642,9 @@ var xbmc = {};
 											};
 										}
 									};
-								},
+								}
 
-								null, null, true // IS async // not async
+								//null, null, true // IS async // not async
 							);
 						};
 						
@@ -3663,8 +3656,6 @@ var xbmc = {};
 
 									function (response) {
 										var currentPlayer = response.result;
-										var curtime;
-										var curruntime;
 										var curPlayItemNum = currentPlayer.position;
 										
 										//Get the number of the currently playing item in the playlist
@@ -3684,20 +3675,20 @@ var xbmc = {};
 										
 										}
 										
-										curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
+										/*curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds; //time in secs
 										curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
-										var curtimeFormat = xbmc.formatTime(curtime);
-										var curruntimeFormat = xbmc.formatTime(curruntime);
-										time = curtimeFormat;
-										if (xbmc.periodicUpdater.progress != time) {
-											xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
-											xbmc.periodicUpdater.progress = time;
+										
+										if (xbmc.periodicUpdater.progress != curtime) {
+											console.log(curtime + ' - ' + xbmc.periodicUpdater.progress);
+											xbmc.periodicUpdater.fireProgressChanged({"time": curtime, total: curruntime});
+											xbmc.periodicUpdater.progress = curtime;
+											xbmc.periodicUpdater.progressEnd = curruntime;
 										}
 
 										if (JSONRPCnotification.params.data.player.speed == 1 && xbmc.periodicUpdater.playerStatus != 'playing') {
 											xbmc.periodicUpdater.playerStatus = 'playing';
 											xbmc.periodicUpdater.firePlayerStatusChanged('playing');
-										}
+										}*/
 
 										//Stream info in footer bar. Uni UI only *Seems this won't work because incorrect details are returned*
 										if (activePlayer == 'audio' && ui == 'uni' && showInfoTags) {

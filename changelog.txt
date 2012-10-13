@@ -1,12 +1,14 @@
 0.6.0
  - Initial build for Frodo.
  - Websockets - near instant responce to notifications.
+ - New control overlay.
  - Limiting on library items.
  - Info and context buttons.
  - All available controls in large overlay.
  - Popup when entering text is required.
  - Advanced search.
  - Video genres.
+ - jQuery 1.8.2.
 
 0.5.4
  - Added Music Videos page.
