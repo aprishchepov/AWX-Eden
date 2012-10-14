@@ -249,9 +249,6 @@
 				$shuffleBtn.removeClass('unshuffle');
 				$shuffleBtn.attr('title', mkf.lang.get('label_shuffle'));
 			}
-			//No idea if we're in Audio or Video playlist; refresh both..
-			awxUI.onMusicPlaylistShow();
-			awxUI.onVideoPlaylistShow();
 		});
 
 		xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
@@ -344,7 +341,7 @@
 				$shuffleBtn.removeClass('unshuffle');
 				$shuffleBtn.attr('title', mkf.lang.get('label_shuffle'));
 			}
-			//No idea if we're in Audio or Video playlist; refresh both..
+			//No idea if we're in Audio or Video playlist; refresh both.. <-- fix: notification gives playerid
 			awxUI.onMusicPlaylistShow();
 			awxUI.onVideoPlaylistShow();
 		});
@@ -3233,6 +3230,8 @@
 				if (status == 'stopped') {
 					xbmc.periodicUpdater.currentlyPlayingFile = '';
 					xbmc.periodicUpdater.nextPlayingFile = '';
+					xbmc.musicPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
+					xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
 					nowLabelElement.text('');
 					nowElement.text('');
 					nextElement.text('');

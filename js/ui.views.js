@@ -2860,7 +2860,7 @@ var uiviews = {};
 						runtime += duration;
 						playlistItemCur = 'playlistItem';
 						
-						if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped') {
+						if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped' && activePlayerid == 0) {
 							playlistItemCur = 'playlistItemCur';
 							//$('#content').scrollTop($('.playlistItemCur').position().top);
 						} else {
@@ -2926,12 +2926,12 @@ var uiviews = {};
 						};
 
 						//initial marking of currently playing item. After periodic sets.
-						if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped') {
+						if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped' && activePlayerid == 1) {
 							playlistItemCur = 'playlistItemCur';
 							//$('#content').scrollTop($('.fileList li:nth-child(' + i + ')').position().top);
 						} else {
 							playlistItemCur = 'playlistItem';
-						};			
+						};
 						$item = $('<li class="' + playlistItemClass + '" id="vpli' + i + '"><div class="folderLinkWrapper playlistItem' + i + '">' + 
 							'<a class="button remove" href="" title="' + mkf.lang.get('btn_remove') +  '"><span class="miniIcon remove" /></a><a class="button playlistmove" href="" title="' + mkf.lang.get('btn_swap') +  '"><span class="miniIcon playlistmove" /></a>' +
 							'<a class="' + playlistItemCur  + ' vpli' + i + ' play" href="">' + (i+1) + '. ' +

@@ -843,6 +843,10 @@ var awxUI = {};
 			});*/
 			
 			$('.' + mkf.cookieSettings.get('startPage', 'recentTV') + ' a').click();
+			
+			xbmc.musicPlaylist = $('div.musicPlaylist');
+			xbmc.videoPlaylist = $('div.videoPlaylist');
+
 			//show mfkPages root video or music to allow height 100%
 			/*if ($(this).hasClass('.videos')) {
 				
