@@ -3654,7 +3654,7 @@ var xbmc = {};
 										curPlayItemNum = currentPlayer.position;
 										
 										//Get the number of the currently playing item in the playlist
-										if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
+										if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum || curPlayItemNum == 0) {
 											//Change highlights rather than reload playlist
 											if (activePlayer == 'audio') {
 												xbmc.musicPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
