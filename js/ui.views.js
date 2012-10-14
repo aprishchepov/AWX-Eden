@@ -473,9 +473,9 @@ var uiviews = {};
 						$('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(mv.fanart) + '")');
 					};
 					
-					if (mv.streamdetails) {
-						if (mv.streamdetails.subtitle) { streamdetails.hasSubs = true };
-						if (mv.streamdetails.audio) {
+					if (typeof(mv.streamdetails.video[0]) != 'undefined') {
+						if (typeof(mv.streamdetails.subtitle[0]) != 'undefined') { streamdetails.hasSubs = true };
+						if (typeof(mv.streamdetails.audio[0].channels) != 'undefined') {
 							streamdetails.channels = mv.streamdetails.audio[0].channels;
 							streamdetails.aStreams = mv.streamdetails.audio.length;
 							$.each(mv.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
@@ -502,7 +502,7 @@ var uiviews = {};
 						'<div class="movieinfo filelink"><span class="label">' + mkf.lang.get('label_file') + '</span><span class="value">' + '<a href="' + fileDownload + '">' + mv.file + '</a>' + '</span></div></div>' +
 						'<br /><div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /></div>');
 
-					if (mv.streamdetails) {
+					if (typeof(mv.streamdetails.video[0]) != 'undefined') {
 						dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
 						'<div class="aspect' + streamdetails.aspect + '" />' +
 						'<div class="vCodec' + streamdetails.vCodec + '" />' +
@@ -657,7 +657,7 @@ var uiviews = {};
 							$(dialogContent).find('a.beginning').on('click', playStart);
 							$(dialogContent).find('a.resume').on('click', playResume);
 							
-							mkf.dialog.setContent(dialogHandle, dialogContent);						
+							mkf.dialog.setContent(dialogHandle, dialogContent);
 						} else {
 							playStart();
 						};
@@ -752,7 +752,7 @@ var uiviews = {};
 						vFormat: 'SD',
 						vCodec: 'Unknown',
 						aCodec: 'Unknown',
-						channels: 0,
+						channels: -1,
 						aStreams: 0,
 						hasSubs: false,
 						aLang: '',
@@ -764,11 +764,11 @@ var uiviews = {};
 						$('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(movie.fanart) + '")');
 					};
 					
-					if (movie.streamdetails) {
-						if (movie.streamdetails.subtitle) { streamdetails.hasSubs = true };
-						if (movie.streamdetails.audio) {
-							if (streamdetails.channels) { streamdetails.channels = movie.streamdetails.audio[0].channels };
-							if (movie.streamdetails.audio.length) { streamdetails.aStreams = movie.streamdetails.audio.length };
+					if (typeof(movie.streamdetails.video[0]) != 'undefined') {
+						if (typeof(movie.streamdetails.subtitle[0]) != 'undefined') { streamdetails.hasSubs = true };
+						if (typeof(movie.streamdetails.audio[0].channels) != 'undefined') {
+							streamdetails.channels = movie.streamdetails.audio[0].channels;
+							streamdetails.aStreams = movie.streamdetails.audio.length;
 							$.each(movie.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
 							if ( streamdetails.aLang == ' ' ) { streamdetails.aLang = mkf.lang.get('label_not_available') };
 						};
@@ -815,7 +815,7 @@ var uiviews = {};
 						'<p class="plot">' + movie.plot + '</p>' +
 						'<div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /></div>');
 
-					if (movie.streamdetails) {
+					if (typeof(movie.streamdetails.video[0]) != 'undefined') {
 						dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
 						'<div class="aspect' + streamdetails.aspect + '" />' +
 						'<div class="vCodec' + streamdetails.vCodec + '" />' +
@@ -873,9 +873,9 @@ var uiviews = {};
 						vwidth: 0
 					};
 					
-					if (movie.streamdetails) {
-						if (movie.streamdetails.subtitle) { streamdetails.hasSubs = true };
-						if (movie.streamdetails.audio) {
+					if (typeof(movie.streamdetails.video[0]) != 'undefined') {
+						if (typeof(movie.streamdetails.subtitle[0]) != 'undefined') { streamdetails.hasSubs = true };
+						if (typeof(movie.streamdetails.audio[0].channels) != 'undefined') {
 							streamdetails.channels = movie.streamdetails.audio[0].channels;
 							streamdetails.aStreams = movie.streamdetails.audio.length;
 							$.each(movie.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
@@ -918,7 +918,7 @@ var uiviews = {};
 						'<p class="plot">' + movie.plot + '</p>' +
 						'<div class="movietags" style="display: inline-block; width: auto"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /></div>');
 
-					if (movie.streamdetails) {
+					if (typeof(movie.streamdetails.video[0]) != 'undefined') {
 						dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
 						'<div class="aspect' + streamdetails.aspect + '" />' +
 						'<div class="vCodec' + streamdetails.vCodec + '" />' +
@@ -1226,9 +1226,9 @@ var uiviews = {};
 						vwidth: 0
 					};
 
-					if (ep.streamdetails) {
-						if (ep.streamdetails.subtitle) { streamdetails.hasSubs = true };
-						if (ep.streamdetails.audio) {
+					if (typeof(ep.streamdetails.video[0]) != 'undefined' ) {
+						if (typeof(ep.streamdetails.subtitle[0]) != 'undefined') { streamdetails.hasSubs = true };
+						if (typeof(ep.streamdetails.audio[0].channels) != 'undefined') {
 							streamdetails.channels = ep.streamdetails.audio[0].channels;
 							streamdetails.aStreams = ep.streamdetails.audio.length;
 							$.each(ep.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
@@ -1264,7 +1264,7 @@ var uiviews = {};
 						'<p class="plot">' + ep.plot + '</p>' +
 						'<div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('btn_enqueue') + '" /><span class="infoplay" title="' + mkf.lang.get('btn_play') + '" /></div>');
 
-					if (ep.streamdetails) {
+					if (typeof(ep.streamdetails.video[0]) != 'undefined') {
 						dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
 						'<div class="aspect' + streamdetails.aspect + '" />' +
 						'<div class="vCodec' + streamdetails.vCodec + '" />' +

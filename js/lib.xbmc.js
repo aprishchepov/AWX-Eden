@@ -2904,8 +2904,8 @@ var xbmc = {};
 							function (response) {
 								var currentPlayer = response.result;
 								//var currentTimes = response.result;
-								var curtime;
-								var curruntime;
+								var curtime = 0;
+								var curruntime = 0;
 								var curPlayItemNum = currentPlayer.position;
 								playerPartyMode = currentPlayer.partymode;
 								
@@ -2925,17 +2925,15 @@ var xbmc = {};
 									}
 										
 								}
-								
-								curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds;
+
+								curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds; //time in secs
 								curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
-								var curtimeFormat = xbmc.formatTime(curtime);
-								var curruntimeFormat = xbmc.formatTime(curruntime);
-								time = curtimeFormat;
 								
-								if (xbmc.periodicUpdater.progress != time) {
-									xbmc.periodicUpdater.fireProgressChanged({"time": time, total: curruntimeFormat});
-									xbmc.periodicUpdater.progress = time;
-								}
+								//console.log('drift: ' + (curtime - xbmc.periodicUpdater.progress));
+								xbmc.periodicUpdater.progress = curtime +1;
+								xbmc.periodicUpdater.progressEnd = curruntime;
+								xbmc.periodicUpdater.fireProgressChanged({"time": curtime, total: curruntime});
+								
 								if (currentPlayer.speed != 0 && currentPlayer.speed != 1 ) {
 									// not playing
 									if (xbmc.periodicUpdater.playerStatus != 'stopped') {
@@ -3046,7 +3044,7 @@ var xbmc = {};
 										onSuccess: function(nextItem) {
 											if (typeof nextItem === 'undefined') {
 												xbmc.periodicUpdater.nextPlayingFile = '';
-												xbmc.periodicUpdater.fireNextPlayingChanged('');												
+												xbmc.periodicUpdater.fireNextPlayingChanged('');
 											} else {
 												if (nextItem.file == xbmc.periodicUpdater.currentlyPlayingFile) { getNext(); return };
 												$.extend(nextItem, {
