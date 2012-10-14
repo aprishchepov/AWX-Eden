@@ -3300,8 +3300,6 @@ var xbmc = {};
 															$("#vpli"+curPlayItemNum).attr("class","playlistItemCur");*/
 															xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
 															xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum).addClass('playlistItemCur');
-															console.log(xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum));
-															console.log('a.vpli' + curPlayItemNum);
 															xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
 															//awxUI.onVideoPlaylistShow();
 														}
@@ -3747,24 +3745,17 @@ var xbmc = {};
 						pollTimeRunning = false;
 					break;
 					case 'Player.OnSeek':
-						/*console.log('playing');
-						activePlayerid = JSONRPCnotification.params.data.player.playerid;
-						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
-							activePlayer = 'video';
-						} else if (JSONRPCnotification.params.data.item.type == 'song') {
-							activePlayer = 'audio';
-						}
-						console.log(activePlayerid);*/
+						//Anything to do?
 					break;
 					case 'Player.OnSpeedChanged':
-						/*console.log('playing');
-						activePlayerid = JSONRPCnotification.params.data.player.playerid;
-						if (JSONRPCnotification.params.data.item.type == 'episode' || JSONRPCnotification.params.data.item.type == 'movie') {
-							activePlayer = 'video';
-						} else if (JSONRPCnotification.params.data.item.type == 'song') {
-							activePlayer = 'audio';
+						//Notify footer?
+					break;
+					case 'Playlist.OnAdd':
+						if (JSONRPCnotification.params.data.playlistid == 0) {
+							awxUI.onMusicPlaylistShow();
+						} else if (JSONRPCnotification.params.data.playlistid == 1) {
+							awxUI.onVideoPlaylistShow();
 						}
-						console.log(activePlayerid);*/
 					break;
 					case 'Application.OnVolumeChanged':
 						if (JSONRPCnotification.params.data.volume != xbmc.periodicUpdater.lastVolume) {
