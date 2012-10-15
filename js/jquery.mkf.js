@@ -308,8 +308,6 @@ var mkf = {};
 
 				// hide all pages
 				$('.pageContent').hide();
-				/*if (page.parentPage.className == 'videos' || page.parentPage.className == 'music' ) { $('.mkfPage').hide() };
-				if (page.parentPage.className == 'videos' || page.parentPage.className == 'music' ) { $('.subPages').hide() };*/
 
 				var toShow = page;
 
@@ -553,8 +551,6 @@ var mkf = {};
 				$newMenuItem.children('a').click(function() {
 						mkf.pages.showPage(sp, settings.autoKill);
 						$('#navigation ul.mkfMenu ul, ul.systemMenu ul').hide();
-						/*if ($newMenuItem.hasClass('music')) { $('div.mfkPage, div.music').show(); $('div.mfkPage, div.videos').hide() }
-						if ($newMenuItem.hasClass('videos')) { $('div.mfkPage, div.videos').show(); $('div.mfkPage, div.music').hide() }*/
 						return false;
 					});
 
@@ -665,6 +661,11 @@ var mkf = {};
 					}
 					, wait
 				);
+				
+				//Close on click
+				 $('.mkfMessage'+messageHandle).click( function() {
+					$(this).fadeOut('fast', function() { $(this).remove() } );
+				});
 			},
 
 			appendTextAndHide: function(messageHandle, text, wait, status) {
