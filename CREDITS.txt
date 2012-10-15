@@ -6,8 +6,8 @@
 AWXi uses the JavaScript Library jQuery and jQuery UI. These projects are
 licensed under both MIT license.
 Have a look at
-	http://jquery.com
-	http://jqueryui.com
+    http://jquery.com
+    http://jqueryui.com
 
 --------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ http://openiconlibrary.sourceforge.net/
 
 AWXi uses a modified version of the "Lazy Load"-jQuery-plugin by Mika Tuupola.
 It is licensed under the MIT license:
-	http://www.opensource.org/licenses/mit-license.php
+    http://www.opensource.org/licenses/mit-license.php
 Have a look at http://www.appelsiini.net/projects/lazyload.
 
 --------------------------------------------------------------------------------
