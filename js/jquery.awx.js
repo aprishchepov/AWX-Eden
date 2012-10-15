@@ -3068,6 +3068,7 @@
 
       xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
         // ALL: AUDIO, VIDEO, PICTURE
+        console.log(currentFile);
         if (currentFile.title && currentFile.title != '') { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
 
         if (currentFile.xbmcMediaType == 'audio') {
@@ -3090,12 +3091,10 @@
             nowLabelElement.text(titleElement);
             nowElement.text(' - ' + artistElement + ' - ' + albumElement);
           };
-        } else {
+        } else if (currentFile.xbmcMediaType == 'video') {
           // VIDEO
 
-          if (currentFile.season &&
-            currentFile.episode &&
-            currentFile.showtitle) {
+          if (currentFile.type == 'episode') {
 
             tvshowElement = currentFile.showtitle;
             seasonElement = currentFile.season;
@@ -3111,6 +3110,16 @@
             
             nowLabelElement.text(titleElement);
             nowElement.text(' - ' + channelElement);
+          } else if (currentFile.type == 'musicvideo') {
+            if (currentFile.artist) { artistElement = currentFile.artist; } else { artistElement = mkf.lang.get('label_not_available'); }
+            if (currentFile.album) { albumElement = currentFile.album; } else { albumElement = mkf.lang.get('label_not_available'); }
+            
+            //hack for partymode playlist refresh - *change to playlist notification*
+            if (currentFile.partymode) {
+              awxUI.onMusicPlaylistShow();
+            };
+            nowLabelElement.text(titleElement);
+            nowElement.text(' - ' + artistElement + ' - ' + albumElement);
           } else {
             nowLabelElement.text(titleElement);
           }
@@ -3119,7 +3128,7 @@
         thumbElement.attr('src', 'images/thumbPoster.png');
         if (currentFile.thumbnail) {
           thumbElement.attr('src', xbmc.getThumbUrl(currentFile.thumbnail));
-          if (currentFile.showtitle) {
+          if (currentFile.type == 'episode') {
             if ($('#displayoverlay').css('width') != '656px') { $('#displayoverlay').css('width','656px') };
             thumbElement.css('margin-top', '120px');
             thumbElement.css('margin-left', '5px');
@@ -3162,7 +3171,7 @@
             thumbElement.css('height', '225px');
             thumbElement.css('width', '225px');
             
-          } else { //movie
+          } else if (currentFile.type == 'movie') {
             thumbElement.css('margin-top', '0px');
             thumbElement.css('margin-left', '70px');
             thumbElement.css('height', '280px');
@@ -3189,7 +3198,12 @@
               }
             });
             
-          }
+          } else if (currentFile.type == 'musicvideo') {
+            thumbElement.css('margin-top', '57px');
+            thumbElement.css('margin-left', '35px');
+            thumbElement.css('height', '225px');
+            thumbElement.css('width', '225px');
+          };
 
         }
       });

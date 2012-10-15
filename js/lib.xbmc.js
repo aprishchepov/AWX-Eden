@@ -3375,7 +3375,7 @@ var xbmc = {};
                         request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "OPGetItem"}';
 
                       } else if (activePlayer == 'video') {
-                        request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OPGetItem"}';
+                        request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OPGetItem"}';
                       }
                     
                       // Current file changed?
@@ -3545,7 +3545,7 @@ var xbmc = {};
                 request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "OnPlayGetItem"}';
 
               } else if (activePlayer == 'video') {
-                request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OnPlayGetItem"}';
+                request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OnPlayGetItem"}';
               }
             
               // Current file changed?
@@ -3661,12 +3661,9 @@ var xbmc = {};
                         xbmc.musicPlaylist.find('a.apli' + curPlayItemNum).addClass('playlistItemCur');
                         xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
                       } else if (activePlayer == 'video') {
-                        /*$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
-                        $("#vpli"+curPlayItemNum).attr("class","playlistItemCur");*/
                         xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
                         xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum).addClass('playlistItemCur');
                         xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-                        //awxUI.onVideoPlaylistShow();
                       }
                     
                     }
