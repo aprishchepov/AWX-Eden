@@ -1243,7 +1243,7 @@
   \* ########################### */
   $.fn.defaultMusicPlaylistsViewer = function(MusicPlaylistsResult, parentPage) {
     var onMusicPlaylistsClick = function(e) {
-    
+
       if (e.data.strType !='song') {
         // open new page to show playlist or album
         var $MusicPlaylistsContent = $('<div class="pageContentWrapper"></div>');
@@ -1271,8 +1271,15 @@
           isPlaylist: e.data.isPlaylist,
 
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
-            $MusicPlaylistsContent.removeClass('loading');
+            //Check default party mode playlist has been created else link wiki.
+            if (e.data.strFile == 'special://profile/PartyMode.xsp') {
+              $MusicPlaylistsContent.removeClass('loading');
+              $MusicPlaylistsContent.append(mkf.lang.get('message_partymode_playlist'));
+            } else {
+              mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+              $MusicPlaylistsContent.removeClass('loading');
+              mkf.pages.closeTempPage(MusicPlaylistsPage);
+            };
           },
 
           onSuccess: function(result) {
@@ -1296,6 +1303,20 @@
       };
       return false;
     }; // END onMusicPlaylistsClick
+    
+    var onPlaylistsPMPlayClick = function(e) {
+      xbmc.playerOpen({
+        item: e.data.item,
+        itemStr: e.data.pl.file,
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+        },
+        onSuccess: function() {
+          mkf.messageLog.show(mkf.lang.get('message_playing_item'), mkf.messageLog.status.success, 2000);
+        }
+      });
+      return false;
+    };
     
     var onPlaylistsPlayClick = function(e) {
       xbmc.clearAudioPlaylist({
@@ -1439,46 +1460,57 @@
       return false;
     };
     
-    // no artists?
-    if (!MusicPlaylistsResult || !MusicPlaylistsResult.files) {
-      return;
+    //Add default partymode playlist.
+    var defaultPartymode = {
+      file: 'special://profile/PartyMode.xsp',
+      filetype: 'directory',
+      label: 'Party mode playlist',
+      type: 'default'
     };
+    
+    //Only add default if in root menu.
+    if (MusicPlaylistsResult.limits.total == 0 && parentPage.parentPage.className == 'music') {
+      MusicPlaylistsResult.files = new Array(defaultPartymode);
+    } else if (parentPage.parentPage.className == 'music') {
+      MusicPlaylistsResult.files.unshift(defaultPartymode);
+    }
 
-    //console.log(MusicPlaylistsResult);
     this.each (function() {
       var MusicPlaylistsList = $('<ul class="fileList"></ul>').appendTo($(this));
 
-      if (MusicPlaylistsResult.limits.total > 0) {
-        $.each(MusicPlaylistsResult.files, function(i, playlist)  {
-          //is it a playlist or a directory? .pls .m3u m3u8 .cue .xsp .strm
-          var playlistExt = playlist.file.split('.').pop().toLowerCase();
-          var isPlaylist = false;
-          if (playlistExt == 'pls' || playlistExt == 'm3u' || playlistExt == 'm3u8' || playlistExt == 'cue' || playlistExt == 'xsp' || playlistExt == 'strm') {
-            isPlaylist = true;
-            if (playlistExt == 'xsp') { playlist.realtype = 'Smart Playlist'; };
-            if (playlistExt == 'cue') { playlist.realtype = 'Cue Sheet'; playlist.label = playlist.label.substring(0, playlist.label.lastIndexOf(".")); };
-            if (playlistExt == 'strm') { playlist.realtype = 'Internet stream'; playlist.label = playlist.label.substring(0, playlist.label.lastIndexOf(".")); };
-            if (playlistExt == 'pls' || playlistExt == 'm3u' || playlistExt == 'm3u8') { playlist.label = playlist.label.substring(0, playlist.label.lastIndexOf(".")); };
-          } else if (playlist.filetype == 'directory' && playlist.type == 'unknown') {
-            playlist.type = 'Directory';
-          };
-          MusicPlaylistsList.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
+      $.each(MusicPlaylistsResult.files, function(i, playlist)  {
+        console.log(playlist);
+        //is it a playlist or a directory? .pls .m3u m3u8 .cue .xsp .strm
+        var playlistExt = playlist.file.split('.').pop().toLowerCase();
+        var isPlaylist = false;
+        if (playlistExt == 'pls' || playlistExt == 'm3u' || playlistExt == 'm3u8' || playlistExt == 'cue' || playlistExt == 'xsp' || playlistExt == 'strm') {
+          isPlaylist = true;
+          if (playlistExt == 'xsp') { playlist.realtype = 'Smart Playlist'; };
+          if (playlistExt == 'cue') { playlist.realtype = 'Cue Sheet'; playlist.label = playlist.label.substring(0, playlist.label.lastIndexOf(".")); };
+          if (playlistExt == 'strm') { playlist.realtype = 'Internet stream'; playlist.label = playlist.label.substring(0, playlist.label.lastIndexOf(".")); };
+          if (playlistExt == 'pls' || playlistExt == 'm3u' || playlistExt == 'm3u8') { playlist.label = playlist.label.substring(0, playlist.label.lastIndexOf(".")); };
+        } else if (playlist.filetype == 'directory' && playlist.type == 'unknown') {
+          playlist.type = 'Directory';
+        };
+        MusicPlaylistsList.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
+                  (playlist.type == 'default'? '<a href="" class="button partymode' + i + '" title="' + mkf.lang.get('btn_partymode') + '"><span class="miniIcon partymode" /></a>' :
                     (playlist.type != 'Directory'? '<a href="" class="button playlistinfo' + i +'" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' : '' ) +
-                    (playlist.type != 'Directory'? '<a href="" class="button play' + i + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>' : '' ) +
-                    '<a href="" class="playlist' + i + '">' + playlist.label +
-                    (playlist.artist? ' - Artist: ' + playlist.artist : '') +
-                    (playlist.album && playlist.label != playlist.album? ' - Album: ' + playlist.album : '') +
-                    ' - Type: ' + 
-                    (!isPlaylist? playlist.type : (!playlist.realtype && isPlaylist? 'Playlist' : playlist.realtype)) + '<div class="findKeywords">' + playlist.label.toLowerCase() + '</div>' +
-                    '</a></div></li>');
+                    (playlist.type != 'Directory'? '<a href="" class="button play' + i + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>' : '' )
+                  ) +
+                  '<a href="" class="playlist' + i + '">' + playlist.label +
+                  (playlist.artist? ' - Artist: ' + playlist.artist : '') +
+                  (playlist.album && playlist.label != playlist.album? ' - Album: ' + playlist.album : '') +
+                  ' - Type: ' + 
+                  (!isPlaylist? playlist.type : (!playlist.realtype && isPlaylist? 'Playlist' : playlist.realtype)) + '<div class="findKeywords">' + playlist.label.toLowerCase() + '</div>' +
+                  '</a></div></li>');
 
-          if (playlist.type != 'Directory') {          
-            MusicPlaylistsList.find('.playlistinfo' + i).bind('click', {playlistinfo: playlist}, onAddPlaylistToPlaylistClick);
-            MusicPlaylistsList.find('.play' + i).bind('click', {playlistinfo: playlist}, onPlaylistsPlayClick);
-          };
-          MusicPlaylistsList.find('.playlist' + i).on('click',{id: playlist.id,strFile: playlist.file,strLabel: playlist.label,strType: playlist.type,isPlaylist: isPlaylist}, onMusicPlaylistsClick);
-        });
-      }
+        if (playlist.type != 'Directory') {
+          MusicPlaylistsList.find('.playlistinfo' + i).bind('click', {playlistinfo: playlist}, onAddPlaylistToPlaylistClick);
+          MusicPlaylistsList.find('.play' + i).bind('click', {playlistinfo: playlist}, onPlaylistsPlayClick);
+        };
+        MusicPlaylistsList.find('.playlist' + i).on('click',{id: playlist.id,strFile: playlist.file,strLabel: playlist.label,strType: playlist.type,isPlaylist: isPlaylist}, onMusicPlaylistsClick);
+        MusicPlaylistsList.find('.partymode' + i).bind('click', {pl: playlist, item: 'partymode'}, onPlaylistsPMPlayClick);
+      });
     });
   }; // END defaultMusicPlaylistsViewer
 
@@ -2175,7 +2207,6 @@
   \* ########################### */
   $.fn.defaultVideoPlaylistsViewer = function(VideoPlaylistsResult, parentPage) {
     var onVideoPlaylistsClick = function(e) {
-    
       if (e.data.strType =='episode') {
         var dialogHandle = mkf.dialog.show();
         var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
@@ -2300,9 +2331,16 @@
           isPlaylist: true,
           media: 'video',
 
-          onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
-            $VideoPlaylistsContent.removeClass('loading');
+          onError: function(response) {
+            //Check default party mode playlist has been created else link wiki.
+            if (e.data.strFile == 'special://profile/PartyMode-Video.xsp') {
+              $VideoPlaylistsContent.removeClass('loading');
+              $VideoPlaylistsContent.append(mkf.lang.get('message_partymode_playlist'));
+            } else {
+              mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+              $VideoPlaylistsContent.removeClass('loading');
+              mkf.pages.closeTempPage(VideoPlaylistsPage);
+            };
           },
 
           onSuccess: function(result) {
@@ -2313,6 +2351,20 @@
       };
       return false;
     }; // END onVideoPlaylistsClick
+    
+    var onPlaylistsPMPlayClick = function(e) {
+      xbmc.playerOpen({
+        item: e.data.item,
+        itemStr: e.data.pl.file,
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+        },
+        onSuccess: function() {
+          mkf.messageLog.show(mkf.lang.get('message_playing_item'), mkf.messageLog.status.success, 2000);
+        }
+      });
+      return false;
+    };
     
     var onPlaylistsPlayClick = function(e) {
       xbmc.clearVideoPlaylist({
@@ -2616,39 +2668,49 @@
       return false;
     };
     
-    // Empty?
-    if (!VideoPlaylistsResult || !VideoPlaylistsResult.files) {
-      return;
+    //Add default partymode playlist.
+    var defaultPartymode = {
+      file: 'special://profile/PartyMode-Video.xsp',
+      filetype: 'directory',
+      label: 'Party mode playlist',
+      type: 'default'
     };
+    
+    //Only add default if in root menu.
+    if (VideoPlaylistsResult.limits.total == 0 && parentPage.parentPage.className == 'videos') {
+      VideoPlaylistsResult.files = new Array(defaultPartymode);
+    } else if (parentPage.parentPage.className == 'videos') {
+      VideoPlaylistsResult.files.unshift(defaultPartymode);
+    }
 
     this.each (function() {
       var VideoPlaylistsList = $('<ul class="fileList"></ul>').appendTo($(this));
 
-      if (VideoPlaylistsResult.limits.total > 0) {
-        $.each(VideoPlaylistsResult.files, function(i, playlist)  {
-          if (playlist.label.search('extrafanart') != -1) { return; };
-          VideoPlaylistsList.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
-                    '<a href="" class="button playlistinfo' + i +'" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
-                    '<a href="" class="button play' + i + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>' +
-                    '<a href="" class="playlist' + i + '">' + playlist.label +
-                    (playlist.showtitle && playlist.showtitle != playlist.label? ' - Show: ' + playlist.showtitle : '') + ' ' +
-                    (playlist.season != -1 && playlist.season? ' - Season: ' + playlist.season : '') +
-                    (playlist.episode != -1 && playlist.episode? ' - Episode: ' + playlist.episode : '') + ' - Type: ' + 
-                    (playlist.type == 'unknown' ? 'Playlist' : playlist.type) + '<div class="findKeywords">' + playlist.label.toLowerCase() + '</div>' +
-                    '</a></div></li>');
-          VideoPlaylistsList.find('.playlist' + i)
-            .bind('click',
-              {
-                id: playlist.id,
-                strFile: playlist.file,
-                strLabel: playlist.label,
-                strType: playlist.type
-              },
-              onVideoPlaylistsClick);
-          VideoPlaylistsList.find('.playlistinfo' + i).bind('click', {playlistinfo: playlist}, onAddPlaylistToPlaylistClick);
-          VideoPlaylistsList.find('.play' + i).bind('click', {playlistinfo: playlist}, onPlaylistsPlayClick);
-        });
-      }
+      $.each(VideoPlaylistsResult.files, function(i, playlist)  {
+        if (playlist.label.search('extrafanart') != -1) { return; };
+        VideoPlaylistsList.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
+                  (playlist.type == 'default'? '<a href="" class="button partymode' + i + '" title="' + mkf.lang.get('btn_partymode') + '"><span class="miniIcon partymode" /></a>' : 
+                  '<a href="" class="button playlistinfo' + i +'" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
+                  '<a href="" class="button play' + i + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>') +
+                  '<a href="" class="playlist' + i + '">' + playlist.label +
+                  (playlist.showtitle && playlist.showtitle != playlist.label? ' - Show: ' + playlist.showtitle : '') + ' ' +
+                  (playlist.season != -1 && playlist.season? ' - Season: ' + playlist.season : '') +
+                  (playlist.episode != -1 && playlist.episode? ' - Episode: ' + playlist.episode : '') + ' - Type: ' + 
+                  (playlist.type == 'unknown' ? 'Playlist' : playlist.type) + '<div class="findKeywords">' + playlist.label.toLowerCase() + '</div>' +
+                  '</a></div></li>');
+        VideoPlaylistsList.find('.playlist' + i)
+          .bind('click',
+            {
+              id: playlist.id,
+              strFile: playlist.file,
+              strLabel: playlist.label,
+              strType: playlist.type
+            },
+            onVideoPlaylistsClick);
+        VideoPlaylistsList.find('.playlistinfo' + i).bind('click', {playlistinfo: playlist}, onAddPlaylistToPlaylistClick);
+        VideoPlaylistsList.find('.play' + i).bind('click', {playlistinfo: playlist}, onPlaylistsPlayClick);
+        VideoPlaylistsList.find('.partymode' + i).bind('click', {pl: playlist, item: 'partymode'}, onPlaylistsPMPlayClick);
+      });
     });
   }; // END defaultVideoPlaylistsViewer
 

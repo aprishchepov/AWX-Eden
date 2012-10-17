@@ -1604,6 +1604,9 @@ span.miniIcon {
 span.playnext {
   background-position: -336px top;
 }
+span.partymode {
+  background-position: -384px top;
+}
 span.playlistmove {
   float: left;
   /*margin: 10px 5px;*/
@@ -1626,6 +1629,9 @@ span.unwatched {
 }
 span.all {
   background-position: -288px 0;
+}
+div.folderLinkWrapper a.button:hover span.partymode {
+  background-position: -384px bottom;
 }
 div.recentTVenq a.button:hover span.enqueue {
   background-position: left bottom;

@@ -146,6 +146,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
   'message_video_scan':        'Started Video Library Scan',
   'message_video_clean':        'Started Video Library Clean',
   'message_video_export':        'Started Video Library Export',
+  'message_partymode_playlist':                 '<div style="font-size: 2em; text-align: center; margin-top: 10px">Please create a <a style="color: #ddd" href="http://wiki.xbmc.org/index.php?title=Music_Library#Party_Mode">Party mode playlist</a>.</div>',
 
   'title_system_control':       'System Control',
   'title_settings':           'AWX Settings',
@@ -177,6 +178,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
   'btn_fastforward':          'Fast Forward',
   'btn_mute':              'Mute On/Off',
   'btn_playnext':            'Play Next',
+  'btn_partymode':          'Play in party mode',
   'btn_enqueue':             'Enqueue',
   'btn_swap':              'Swap',
   'btn_all':              'All Albums',

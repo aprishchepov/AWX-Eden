@@ -223,7 +223,17 @@ var uiviews = {};
     /*------*/
     AlbumPlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_album'));
-      xbmc.playAlbum({
+      xbmc.playerOpen({
+        item: 'albumid',
+        itemId: e.data.idAlbum,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function(errorText) {
+          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        }
+      });
+      /*xbmc.playAlbum({
         albumid: e.data.idAlbum,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -231,14 +241,24 @@ var uiviews = {};
         onError: function(errorText) {
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
-      });
+      });*/
       return false;
     },
 
     /*-----------*/
     MusicGenrePlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_genre'));
-      xbmc.playMusicGenre({
+      xbmc.playerOpen({
+        item: 'genreid',
+        itemId: e.data.idGenre,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function(errorText) {
+          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        }
+      });
+      /*xbmc.playMusicGenre({
         genreid: e.data.idGenre,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -246,15 +266,16 @@ var uiviews = {};
         onError: function(errorText) {
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
-      });
+      });*/
       return false;
     },
     
     /*-----------*/
     ArtistPlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_playing_artist'));
-      xbmc.playArtist({
-        artistid: e.data.idArtist,
+      xbmc.playerOpen({
+        item: 'artistid',
+        itemId: e.data.idArtist,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
@@ -262,6 +283,15 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
+      /*xbmc.playArtist({
+        artistid: e.data.idArtist,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function(errorText) {
+          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        }
+      });*/
       return false;
     },
     
@@ -355,8 +385,9 @@ var uiviews = {};
     /*-----*/
     SongPlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_song'));
-      xbmc.playSong({
-        songid: e.data.idSong,
+      xbmc.playerOpen({
+        item: 'songid',
+        itemId: e.data.idSong,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
@@ -364,6 +395,15 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
+      /*xbmc.playSong({
+        songid: e.data.idSong,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function(errorText) {
+          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        }
+      });*/
       return false;
     },
 
@@ -417,9 +457,9 @@ var uiviews = {};
     /*------*/
     MusicVideoPlay: function(event) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_musicvideo'));
-
-      xbmc.playMusicVideo({
-        musicvideoid: event.data.idMusicVideo,
+      xbmc.playerOpen({
+        item: 'musicvideoid',
+        itemId: e.data.idMusicVideo,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
@@ -427,6 +467,15 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
+      /*xbmc.playMusicVideo({
+        musicvideoid: event.data.idMusicVideo,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function(errorText) {
+          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        }
+      });*/
 
       return false;
     },
@@ -593,7 +642,17 @@ var uiviews = {};
           var playStart = function() {
             var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_movie'));
 
-            xbmc.playMovie({
+            xbmc.playerOpen({
+              item: 'movieid',
+              itemId: movieID,
+              onSuccess: function() {
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              },
+              onError: function(errorText) {
+                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+              }
+            });
+            /*xbmc.playMovie({
               movieid: movieID,
               onSuccess: function() {
                 mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -602,7 +661,7 @@ var uiviews = {};
               onError: function(errorText) {
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
-            });
+            });*/
           return false;
           };
           
@@ -610,7 +669,18 @@ var uiviews = {};
           var playResume = function() {
             var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_movie'));
 
-            xbmc.resumeMovie({
+            xbmc.playerOpen({
+              item: 'movieid',
+              itemId: movieID,
+              resume: true,
+              onSuccess: function() {
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              },
+              onError: function(errorText) {
+                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+              }
+            });
+            /*xbmc.resumeMovie({
               movieid: movieID,
               onSuccess: function() {
                 mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -619,7 +689,7 @@ var uiviews = {};
               onError: function(errorText) {
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
-            });
+            });*/
           return false;
           };
           //has resume point?
@@ -674,8 +744,9 @@ var uiviews = {};
     FilePlay: function(event) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_file'));
 
-      xbmc.playVideoFile({
-        file: event.data.file,
+      xbmc.playerOpen({
+        item: 'file',
+        itemStr: e.data.file,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
@@ -683,6 +754,15 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
+      /*xbmc.playVideoFile({
+        file: event.data.file,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function(errorText) {
+          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        }
+      });*/
 
       return false;
     },
@@ -1049,7 +1129,17 @@ var uiviews = {};
           var playStart = function() {
             var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_episode'));
 
-            xbmc.playEpisode({
+            xbmc.playerOpen({
+              item: 'episodeid',
+              itemId: epID,
+              onSuccess: function() {
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              },
+              onError: function(errorText) {
+                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+              }
+            });
+            /*xbmc.playEpisode({
               episodeid: epID,
               onSuccess: function() {
                 mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -1058,7 +1148,7 @@ var uiviews = {};
               onError: function(errorText) {
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
-            });
+            });*/
           return false;
           };
           
@@ -1066,7 +1156,18 @@ var uiviews = {};
           var playResume = function() {
             var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_episode'));
 
-            xbmc.resumeEpisode({
+            xbmc.playerOpen({
+              item: 'episodeid',
+              itemId: epID,
+              resume: true,
+              onSuccess: function() {
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              },
+              onError: function(errorText) {
+                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+              }
+            });
+            /*xbmc.resumeEpisode({
               episodeid: epID,
               onSuccess: function() {
                 mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -1075,7 +1176,7 @@ var uiviews = {};
               onError: function(errorText) {
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
-            });
+            });*/
           return false;
           };
           //has resume point?
@@ -1575,7 +1676,7 @@ var uiviews = {};
     
     /*--------*/
     adFilterList: function(result) {
-      // open new page to show movieGenre
+      // open new page to show 
       var $adFilterContent = $('<div class="pageContentWrapper"></div>');
       var adFilterPage = mkf.pages.createTempPage(result.objParentPage, {
         title: 'adFilter',

@@ -227,7 +227,10 @@ var xbmc = {};
       return  result + (mm<10 ? '0' : '') + mm + ':' + (ss<10 ? '0' : '') + ss ;
     },
 
-
+    timeToSec: function(time) {
+      //Expects time in JSON format: time.hours, time.minutes, time.seconds. Millisecs are ignored.
+      return (time.hours * 3600) + (time.minutes * 60) + time.seconds; //time in secs
+    },
 
     getSeconds: function (time) {
       var seconds = 0;
@@ -529,6 +532,29 @@ var xbmc = {};
         );
       }
     },
+    
+    playerOpen: function(options) {
+      var settings = {
+        item: 'albumid',
+        itemId: -1,
+        itemStr: '',
+        resume: false,
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      //Example partymode playlist
+      //"item": { "partymode": "special://profile/playlists/video/PartyMode-Video.xsp" } // xsp or "music"/"video"
+      xbmc.sendCommand(
+          '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "' + settings.item + '": ' + (settings.itemId == -1? '"' + settings.itemStr + '"': settings.itemId) + ' } ' + (settings.resume? ', "options": { "resume": true }' : '') + ' }, "id": "libPlayerOpen"}',
+          settings.onSuccess,
+          function(response) {
+            settings.onError(mkf.lang.get('message_failed_play'));
+          }
+      );
+    },
+    
     control: function(options) {
       var settings = {
         type: 'play',
@@ -1324,7 +1350,7 @@ var xbmc = {};
       );
     },
 
-    
+    //Rename to playlist play audio or similar
     playAudio: function(options) {
       var settings = {
         item: 0,
@@ -1387,7 +1413,7 @@ var xbmc = {};
     },
 
 
-    playAlbum: function(options) {
+    /*playAlbum: function(options) {
       var settings = {
         albumid: 0,
         onSuccess: null,
@@ -1525,7 +1551,7 @@ var xbmc = {};
           settings.onError(mkf.lang.get('message_failed_clear_playlist'));
         }
       });
-    },
+    },*/
 
     playSongNext: function(options) {
       var settings = {
@@ -1822,7 +1848,7 @@ var xbmc = {};
       );
     },
 
-    resumeMovie: function(options) {
+    /*resumeMovie: function(options) {
       var settings = {
         movieid: 0,
         onSuccess: null,
@@ -1835,7 +1861,7 @@ var xbmc = {};
         settings.onSuccess,
         settings.onError
       );
-    },
+    },*/
 
     addMusicVideoToPlaylist: function(options) {
       var settings = {
@@ -1852,7 +1878,7 @@ var xbmc = {};
       );
     },
 
-    playMovie: function(options) {
+    /*playMovie: function(options) {
       var settings = {
         movieid: 0,
         onSuccess: null,
@@ -1920,7 +1946,7 @@ var xbmc = {};
           settings.onError(mkf.lang.get('message_failed_clear_playlist'));
         }
       });
-    },
+    },*/
 
     playVideoFile: function(options) {
       var settings = {
@@ -2117,7 +2143,7 @@ var xbmc = {};
 
 
 
-    playEpisode: function(options) {
+    /*playEpisode: function(options) {
       var settings = {
         episodeid: 0,
         onSuccess: null,
@@ -2164,7 +2190,7 @@ var xbmc = {};
           settings.onSuccess,
           settings.onError
       );
-    },
+    },*/
 
     getTvShows: function(options) {
       var settings = {
@@ -3142,8 +3168,8 @@ var xbmc = {};
           function (response) {
             var currentPlayer = response.result;
             
-            curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds; //time in secs
-            curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
+            curtime = xbmc.timeToSec(currentPlayer.time);
+            curruntime = xbmc.timeToSec(currentPlayer.totaltime);
             
             //console.log('drift: ' + (curtime - xbmc.periodicUpdater.progress));
             xbmc.periodicUpdater.progress = curtime +1;
@@ -3256,7 +3282,7 @@ var xbmc = {};
           if (typeof activePlayer === 'undefined') { activePlayer = 'none'; }
           if (typeof activePlayerid === 'undefined') { activePlayerid = -1; }
           if (typeof inErrorState === 'undefined') { inErrorState = 0; }
-
+          if (typeof playerPartyMode === 'undefined') { playerPartyMode = false; }
           //Wait for window to draw - FF mostly.
           setTimeout(function() {
               //Initial status readings, after rely on notifications.
@@ -3304,8 +3330,8 @@ var xbmc = {};
                               
                           //}
                           
-                          curtime = (currentPlayer.time.hours * 3600) + (currentPlayer.time.minutes * 60) + currentPlayer.time.seconds; //time in secs
-                          curruntime = (currentPlayer.totaltime.hours * 3600) + (currentPlayer.totaltime.minutes * 60) + currentPlayer.totaltime.seconds;
+                          curtime = xbmc.timeToSec(currentPlayer.time);
+                          curruntime = xbmc.timeToSec(currentPlayer.totaltime);
                           
                           if (xbmc.periodicUpdater.progress != curtime) {
                             xbmc.periodicUpdater.fireProgressChanged({"time": curtime, total: curruntime});
@@ -3732,15 +3758,20 @@ var xbmc = {};
               xbmc.periodicUpdater.firePlayerStatusChanged(JSONRPCnotification.params.data.property.shuffled? 'shuffleOn' : 'shuffleOff');
             } else if (typeof(JSONRPCnotification.params.data.property.repeat) !== 'undefined') {
               xbmc.periodicUpdater.firePlayerStatusChanged(JSONRPCnotification.params.data.property.repeat);
-            };
+            } else if (typeof(JSONRPCnotification.params.data.property.partymode) !== 'undefined') {
+              playerPartyMode = JSONRPCnotification.params.data.property.partymode;
+            }
+          break;
           case 'Player.OnPause':
+            console.log('paused');
             xbmc.periodicUpdater.playerStatus = 'paused';
             xbmc.periodicUpdater.firePlayerStatusChanged('paused');
             clearInterval(pollTimeRunning);
             pollTimeRunning = false;
           break;
           case 'Player.OnSeek':
-            //Anything to do?
+            xbmc.periodicUpdater.progress = xbmc.timeToSec(JSONRPCnotification.params.data.player.time);
+            xbmc.periodicUpdater.fireProgressChanged({"time": xbmc.periodicUpdater.progress, total: xbmc.periodicUpdater.progressEnd});
           break;
           case 'Player.OnSpeedChanged':
             //Notify footer?

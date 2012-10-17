@@ -146,6 +146,7 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
   'message_video_scan':        '开始视频资料库扫描',
   'message_video_clean':        '开始视频资料库清理',
   'message_video_export':        '开始视频资料库导出',
+  'message_partymode_playlist':                 '<div style="font-size: 2em; text-align: center; margin-top: 10px">Please create a <a style="color: #ddd" href="http://wiki.xbmc.org/index.php?title=Music_Library#Party_Mode">Party mode playlist</a>.</div>',
 
   'title_system_control':       '系统控制',
   'title_settings':           'AWX设置',
@@ -175,6 +176,7 @@ mkf.lang.add({language: 'Chinese', short: 'zh', author: 'Taxigps', values: {
   'btn_fastforward':          'Fast Forward',
   'btn_mute':              'Mute On/Off',
   'btn_playnext':            '播放下一项',
+  'btn_partymode':          'Play in party mode',
   'btn_enqueue':             '加入队列',
   'btn_swap':              '交换',
   'btn_all':              '所有专辑',
