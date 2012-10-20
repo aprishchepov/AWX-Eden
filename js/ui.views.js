@@ -1062,6 +1062,57 @@ var uiviews = {};
       return false;
     },
     
+        /*--------*/
+    PVRtvChannels: function(e) {
+      // open new page to show channels
+      var $pvrtvChanContent = $('<div class="pageContentWrapper"></div>');
+      var pvrtvChanPage = mkf.pages.createTempPage(e.data.objParentPage, {
+        title: e.data.strChannel,
+        content: $pvrtvChanContent
+      });
+      var fillPage = function() {
+        $pvrtvChanContent.addClass('loading');
+        xbmc.pvrGetChannels({
+          channelgroupid: e.data.idChannelGroup,
+
+          onError: function() {
+            //mkf.messageLog.show(mkf.lang.get('message_failed_pvr_genre'), mkf.messageLog.status.error, 5000);
+            $pvrtvChanContent.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $pvrtvChanContent.defaultChannelViewer(result, pvrtvChanPage);
+            $pvrtvChanContent.removeClass('loading');
+          }
+        });
+      }
+      pvrtvChanPage.setContextMenu(
+        [
+          {
+            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+            function() {
+              mkf.pages.closeTempPage(pvrtvChanPage);
+              return false;
+            }
+          },
+          {
+            'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+              function(){
+                $pvrtvChanContent.empty();
+                fillPage();
+                return false;
+              }
+          }
+        ]
+      );
+      mkf.pages.showTempPage(pvrtvChanPage);
+
+      // pvr tv Chan
+      fillPage();
+
+      return false;
+    },
+    
     /*--------*/
     movieGenreList: function(e) {
       // open new page to show movieGenre
@@ -1597,6 +1648,29 @@ var uiviews = {};
       // tvshowGenre
       fillPage();
 
+      return false;
+    },
+    
+    /*---------*/
+    pvrSwitchChannel: function(e) {
+      xbmc.playerOpen({
+        item: 'channelid',
+        itemId: e.data.idChannel,
+        onSuccess: function() { mkf.messageLog.show(mkf.lang.get('message_pvr_changechannel'), mkf.messageLog.status.success, 5000); },
+        onError: function() { mkf.messageLog.show(mkf.lang.get('message_failed_pvr_changechannel'), mkf.messageLog.status.error, 5000); }
+      });
+      
+      return false;
+    },
+    
+    /*---------*/
+    pvrRecordChannel: function(e) {
+      xbmc.pvrRecord({
+        channel: e.data.idChannel,
+        onSuccess: function() { mkf.messageLog.show(mkf.lang.get('message_pvr_recchannel'), mkf.messageLog.status.success, 5000); },
+        onError: function() { mkf.messageLog.show(mkf.lang.get('message_failed_pvr_rec'), mkf.messageLog.status.error, 5000); }
+      });
+      
       return false;
     },
     
@@ -2802,6 +2876,50 @@ var uiviews = {};
         });
 
       return $seasonsList;
+    },
+
+    /*----PVR list----*/
+    PVRViewList: function(pvrchans, parentPage) {
+      var $pvrlist = $('<ul class="fileList"></ul>');
+
+        $.each(pvrchans.channelgroups, function(i, changrp)  {
+          //console.log(changrp);
+          //var watched = false;
+          //var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+          //var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+          
+          //if (season.playcount > 0 && !filterShowWatched) { watched = true; }
+          //if (filterWatched && watched) { return; }
+          
+          var $changrp = $('<li' + (i%2==0? ' class="even"': '') + '><div class="linkWrapper"> <a href="" class="pvrchan' + i +
+          '">' + changrp.label + '</a></div></li>').appendTo($pvrlist);
+          $changrp.find('a').on('click',{idChannelGroup: changrp.channelgroupid, strChannel: changrp.label, objParentPage: parentPage}, uiviews.PVRtvChannels);
+        });
+
+      return $pvrlist;
+    },
+
+    /*----PVR channel list----*/
+    PVRchanViewList: function(pvrchan, parentPage) {
+      var $pvrchan = $('<ul class="fileList"></ul>');
+
+        $.each(pvrchan.channels, function(i, chan)  {
+          //console.log(chan);
+          //var watched = false;
+          //var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+          //var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+          
+          //if (season.playcount > 0 && !filterShowWatched) { watched = true; }
+          //if (filterWatched && watched) { return; }
+          
+          var $chan = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper"><a href="" class="button rec recoff" title="' + mkf.lang.get('btn_record') +
+          '"><span class="miniIcon recoff" /></a> <a href="" class="pvrchan' + i +
+          '">' + chan.label + '</a></div></li>').appendTo($pvrchan);
+          $chan.find('a.rec').on('click',{idChannel: chan.channelid}, uiviews.pvrRecordChannel);
+          $chan.find('a.pvrchan' + i).on('click',{idChannel: chan.channelid, strChannel: chan.label, objParentPage: parentPage}, uiviews.pvrSwitchChannel);
+        });
+
+      return $pvrchan;
     },
     
     /*----TV episodes list----*/

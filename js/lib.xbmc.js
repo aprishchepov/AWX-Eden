@@ -157,6 +157,9 @@ var xbmc = {};
         case 'aplaylist':
           return '.folderLinkWrapper';
           break;
+        case 'channel':
+          return '.folderLinkWrapper';
+          break;
         case 'movies':
         if (mkf.cookieSettings.get('filmView', 'poster') == 'poster') {
           return '.thumbWrapper';
@@ -329,6 +332,151 @@ var xbmc = {};
       );
     },
 
+    getInfoBooleans: function(options) {
+      var settings = {
+        bool: ['System.HasPVR'],
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      var bools = '';
+      for (i=0; i<settings.bool.length; i++) {
+        if (i == settings.bool.length -1) {
+          bools += '"' + settings.bool[i] + '"';
+        } else {
+          bools += '"' + settings.bool[i] + '",';
+        };
+      };
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0", "method": "XBMC.GetInfoBooleans", "params": { "booleans": [ ' + bools + ' ] }, "id": "libBools"}',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(mkf.lang.get('message_failed_play'));
+        }
+      );
+    },
+    
+    //PVR
+    pvrGetProperties: function(options) {
+      var settings = {
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0", "method": "PVR.GetProperties", "params": { "properties": [ "available", "recording", "scanning" ] }, "id": "libPVRProp"}',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(reponse.error);
+        }
+      );
+    },
+    
+    pvrRecord: function(options) {
+      var settings = {
+        record: 'toggle',
+        channel: -1, //Even though "current" is accepted. It's easier to always use channelid
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0", "method": "PVR.Record", "params": { "record": "toggle", "channel": ' + settings.channel + ' }, "id": "pvrRecord"}',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(mkf.lang.get('message_failed_pvr_record'));
+        }
+      );
+    },
+    
+    pvrGetChannelGroups: function(options) {
+      var settings = {
+        group: 'tv', //or radio
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0" , "id": "libpvrChanGrp", "method": "PVR.GetChannelGroups" , "params": { "channeltype": "' + settings.group + '" } }',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(mkf.lang.get('message_failed_pvr_changrp'));
+        }
+      );
+    },
+    
+    pvrGetChannelGroupDetails: function(options) {
+      var settings = {
+        channelgroupid: -1,
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0" , "id": "libpvrChanGrpDets", "method": "PVR.GetChannelGroupDetails", "params": { "channelgroupid": ' + settings.channelgroupid + ', "channels": { "properties": [ "thumbnail", "locked", "hidden", "channel", "lastplayed" ] } } }',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(mkf.lang.get('message_failed_pvr_changrpdets'));
+        }
+      );
+    },
+    
+    //What does this give us extra than GetChannelGroupDetails?
+    pvrGetChannels: function(options) {
+      var settings = {
+        channelgroupid: -1,
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0", "method": "PVR.GetChannels", "params": { "channelgroupid": ' + settings.channelgroupid + ', "properties": [ "thumbnail", "locked", "hidden", "channel", "lastplayed" ] }, "id": 1}',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(mkf.lang.get('message_failed_pvr_chans'));
+        }
+      );
+    },
+    
+    pvrGetChannelDetails: function(options) {
+      var settings = {
+        channelid: -1,
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0", "method": "PVR.GetChannelDetails", "params": { "channelid": ' + settings.channelid + ', "properties": [ "thumbnail", "locked", "hidden", "channel", "lastplayed" ] }, "id": 1}',
+        function(reponse) {
+          settings.onSuccess(reponse.result);
+        },
+        function(response) {
+          settings.onError(mkf.lang.get('message_failed_pvr_chansdets'));
+        }
+      );
+    },
+    
+    //End PVR
     scanVideoLibrary: function(options) {
       var settings = {
         onSuccess: null,
@@ -3156,7 +3304,7 @@ var xbmc = {};
       } else {
         //Lost or haven't retrieved progressEnd
         //console.log('no proEnd');
-        var proEnd10per = 0;
+        var proEnd10per = 10;
       }
       if ((xbmc.periodicUpdater.progress % proEnd10per) == 0 || xbmc.periodicUpdater.loopCount == 1) {
         var curtime = 0;
@@ -3615,7 +3763,7 @@ var xbmc = {};
                         }
                       },
                       onError: function() {
-                        xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
+                        xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get('message_failed');
                       }
                     });
 
@@ -3776,7 +3924,16 @@ var xbmc = {};
           case 'Player.OnSpeedChanged':
             //Notify footer?
           break;
+          case 'Playlist.OnClear':
+            //TODO: Remove next
+            if (JSONRPCnotification.params.data.playlistid == 0) {
+              awxUI.onMusicPlaylistShow();
+            } else if (JSONRPCnotification.params.data.playlistid == 1) {
+              awxUI.onVideoPlaylistShow();
+            }
+          break;
           case 'Playlist.OnAdd':
+            //TODO: Update next
             if (JSONRPCnotification.params.data.playlistid == 0) {
               awxUI.onMusicPlaylistShow();
             } else if (JSONRPCnotification.params.data.playlistid == 1) {

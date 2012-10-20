@@ -264,6 +264,37 @@ var awxUI = {};
       });
       //end recent albums
       
+      // PVR radio
+      this.$pvrradioContent = $('<div class="pageContentWrapper"></div>');
+      var pvrradioContextMenu = $.extend(true, [], standardMusicContextMenu);
+      pvrradioContextMenu.push({
+        'id':'findArtistsButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findRadioButton').offset();
+            awxUI.$artistsContent
+              .defaultFindBox({id:'radioFindBox', searchItems: xbmc.getSearchTerm('channels'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      pvrradioContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$pvrradioContent.empty();
+            awxUI.onPVRRadioShow();
+
+            return false;
+          }
+      });
+      
+      this.pvrradioPage = musicPage.addPage({
+        title: mkf.lang.get('page_title_pvr_radio'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_pvr_radio'),
+        content: this.$pvrradioContent,
+        contextMenu: pvrradioContextMenu,
+        onShow: $.proxy(this, "onPVRRadioShow"),
+        className: 'pvrradio'
+      });
+      
       //Music Files
       this.$musicFilesContent = $('<div class="pageContentWrapper"></div>');
       var musicFilesContextMenu = $.extend(true, [], standardMusicContextMenu);
@@ -594,6 +625,37 @@ var awxUI = {};
         className: 'musicVideos'
       });
       //end Music Videos
+      
+      // PVR TV
+      this.$pvrtvContent = $('<div class="pageContentWrapper"></div>');
+      var pvrtvContextMenu = $.extend(true, [], standardVideosContextMenu);
+      pvrtvContextMenu.push({
+        'id':'findPVRtvButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findPVRtvButton').offset();
+            awxUI.$pvrtvContent
+              .defaultFindBox({id:'pvrtvFindBox', searchItems: xbmc.getSearchTerm('channels'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      pvrtvContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$pvrtvContent.empty();
+            awxUI.onPVRtvShow();
+
+            return false;
+          }
+      });
+      
+      this.pvrtvPage = videosPage.addPage({
+        title: mkf.lang.get('page_title_pvr_tv'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_pvr_tv'),
+        content: this.$pvrtvContent,
+        contextMenu: pvrtvContextMenu,
+        onShow: $.proxy(this, "onPVRtvShow"),
+        className: 'pvrtv'
+      });
       
       //Video genres
       this.$videoGenresContent = $('<div class="pageContentWrapper"></div>');
@@ -1044,6 +1106,30 @@ var awxUI = {};
       }
     },
     
+    /*********************************************
+     * Called when PVR Radio Page is shown.    *
+     *********************************************/
+    onPVRRadioShow: function() {
+      if (this.$pvrradioContent.html() == '') {
+        var pvrradioPage = this.pvrradioPage;
+        var $contentBox = this.$pvrradioContent;
+        $contentBox.addClass('loading');
+
+        xbmc.pvrGetChannelGroups({
+          group: 'radio',
+          onError: function() {
+            //mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultPVRViewer(result, pvrradioPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
     /**************************************
      * Called when Video Genres -Page is shown. *
      **************************************/
@@ -1290,7 +1376,29 @@ var awxUI = {};
       }
     },
     
+    /*********************************************
+     * Called when PVR TV Page is shown.    *
+     *********************************************/
+    onPVRtvShow: function() {
+      if (this.$pvrtvContent.html() == '') {
+        var pvrtvPage = this.pvrtvPage;
+        var $contentBox = this.$pvrtvContent;
+        $contentBox.addClass('loading');
 
+        xbmc.pvrGetChannelGroups({
+          onError: function() {
+            //mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultPVRViewer(result, pvrtvPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
     /*********************************************
      * Called when Video-Files-Page is shown.    *
      *********************************************/
@@ -1299,8 +1407,6 @@ var awxUI = {};
         this.$videoFilesContent.defaultFilesystemViewer('Video', this.videoFilesPage);
       }
     },
-
-
 
     /*********************************************
      * Called when Video-Playlist-Page is shown. *

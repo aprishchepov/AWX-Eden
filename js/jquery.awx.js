@@ -1984,7 +1984,32 @@
     
   }; // END defaultSeasonsViewer
 
+  /* ########################### *\
+   |  Show PVR
+   |
+   |  @param pvrResult
+  \* ########################### */
+  $.fn.defaultPVRViewer = function(pvrResult, parentPage) {
 
+    if (!pvrResult.limits.total > 0) { return };
+    
+    uiviews.PVRViewList(pvrResult, parentPage).appendTo($(this));
+    
+  }; // END PVRtvViewer
+  
+  /* ########################### *\
+   |  Show PVR TV channel
+   |
+   |  @param pvrchanResult
+  \* ########################### */
+  $.fn.defaultChannelViewer = function(pvrchanResult, parentPage) {
+
+    if (!pvrchanResult.limits.total > 0) { return };
+    
+    uiviews.PVRchanViewList(pvrchanResult, parentPage).appendTo($(this));
+    
+  }; // END PVRchanViewer
+  
   /* ########################### *\
    |  Video Scan
    |

@@ -125,6 +125,9 @@ ul.systemMenu > li {
 #navigation ul.mkfMenu > li.mouseover > a .videos, #navigation ul.mkfMenu > li.activeMenuItem > a .videos {
   background-position: -48px 0px;
 }
+#navigation ul.mkfMenu > li.mouseover > a .pvr, #navigation ul.mkfMenu > li.activeMenuItem > a .pvr {
+  background-position: -48px 0px;
+}
 ul.systemMenu > li > a span.settings {
   background-position: -96px 0;
 }
@@ -1607,6 +1610,12 @@ span.playnext {
 span.partymode {
   background-position: -384px top;
 }
+span.recoff {
+  background-position: -432px top;
+}
+span.recon {
+  background-position: -480px top;
+}
 span.playlistmove {
   float: left;
   /*margin: 10px 5px;*/
@@ -1632,6 +1641,12 @@ span.all {
 }
 div.folderLinkWrapper a.button:hover span.partymode {
   background-position: -384px bottom;
+}
+div.folderLinkWrapper a.button:hover span.recon {
+  background-position: -432px bottom;
+}
+div.folderLinkWrapper a.button:hover span.recoff {
+  background-position: -480px bottom;
 }
 div.recentTVenq a.button:hover span.enqueue {
   background-position: left bottom;
