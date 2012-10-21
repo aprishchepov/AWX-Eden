@@ -46,18 +46,18 @@ var awx = {};
         step2 : function() {
           $('#loadingAWXHint').text(mkf.lang.get('message_setup_ui'));
 
-          var ui = mkf.cookieSettings.get('ui');
+          //var ui = mkf.cookieSettings.get('ui');
           var uiScript = '';
 
-          if (ui == 'light') {
+          /*if (ui == 'light') {
             uiScript = 'ui.light/ui.light.js';
           } else if (ui == 'default') {
             uiScript = 'ui.default/ui.default.js';
           } else if (ui == 'lightDark') {
             uiScript = 'ui.lightDark/ui.lightDark.js';
-          } else {
+          } else {*/
             uiScript = 'ui.uni/ui.uni.js';
-          }
+          //}
 
           mkf.scriptLoader.load({
             script: uiScript,
