@@ -467,15 +467,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.playMusicVideo({
-        musicvideoid: event.data.idMusicVideo,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
 
       return false;
     },
@@ -652,16 +643,7 @@ var uiviews = {};
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
             });
-            /*xbmc.playMovie({
-              movieid: movieID,
-              onSuccess: function() {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                $('.dialog a.close').click();
-              },
-              onError: function(errorText) {
-                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-              }
-            });*/
+
           return false;
           };
           
@@ -680,16 +662,7 @@ var uiviews = {};
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
             });
-            /*xbmc.resumeMovie({
-              movieid: movieID,
-              onSuccess: function() {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                $('.dialog a.close').click();
-              },
-              onError: function(errorText) {
-                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-              }
-            });*/
+
           return false;
           };
           //has resume point?
@@ -754,15 +727,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.playVideoFile({
-        file: event.data.file,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
 
       return false;
     },
@@ -1190,16 +1154,7 @@ var uiviews = {};
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
             });
-            /*xbmc.playEpisode({
-              episodeid: epID,
-              onSuccess: function() {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                $('.dialog a.close').click();
-              },
-              onError: function(errorText) {
-                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-              }
-            });*/
+
           return false;
           };
           
@@ -1218,16 +1173,7 @@ var uiviews = {};
                 mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
               }
             });
-            /*xbmc.resumeEpisode({
-              episodeid: epID,
-              onSuccess: function() {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                $('.dialog a.close').click();
-              },
-              onError: function(errorText) {
-                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-              }
-            });*/
+
           return false;
           };
           //has resume point?
@@ -1749,7 +1695,7 @@ var uiviews = {};
     },
     
     /*--------*/
-    adFilterList: function(result) {
+    /*adFilterList: function(result) {
       // open new page to show 
       var $adFilterContent = $('<div class="pageContentWrapper"></div>');
       var adFilterPage = mkf.pages.createTempPage(result.objParentPage, {
@@ -1760,20 +1706,7 @@ var uiviews = {};
         $adFilterContent.addClass('loading');
         //pipe result to type default viewer
         if (result.Type == 'movies') { $adFilterContent.defaultMovieViewer(result.movies); };
-        /*xbmc.getGenreMovie({
-          genreid: e.data.idGenre,
 
-          onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_movie_genre'), mkf.messageLog.status.error, 5000);
-            $movieGenreContent.removeClass('loading');
-          },
-
-          onSuccess: function(result) {
-            result.isSet = true;
-            $movieGenreContent.defaultMovieViewer(result);
-            $movieGenreContent.removeClass('loading');
-          }
-        });*/
       }
       adFilterPage.setContextMenu(
         [
@@ -1800,7 +1733,7 @@ var uiviews = {};
       fillPage();
 
       return false;
-    },
+    },*/
     
 /*----------*/
 /* UI Views */
@@ -3440,16 +3373,20 @@ var uiviews = {};
                       case 'movies':
                         result.isSet = true;
                         $vadFilterRContent.defaultMovieViewer(result, vadFilterRPage);
+                        $vadFilterRContent.removeClass('loading');
                       break;
                       case 'tvshows':
                         result.isFiltered = true;
                         $vadFilterRContent.defaultTvShowViewer(result, vadFilterRPage);
+                        $vadFilterRContent.removeClass('loading');
                       break;
                       case 'episodes':
                         $vadFilterRContent.defaultEpisodesViewer(result, vadFilterRPage);
+                        $vadFilterRContent.removeClass('loading');
                       break;
                       case 'musicvideos':
                         $vadFilterRContent.defaultMusicVideosViewer(result, vadFilterRPage);
+                        $vadFilterRContent.removeClass('loading');
                       break;
                     }
                     
@@ -3613,18 +3550,18 @@ var uiviews = {};
                       case 'artists':
                         result.isFiltered = true;
                         $aadFilterRContent.defaultArtistsViewer(result, aadFilterRPage);
+                        $aadFilterRContent.removeClass('loading');
                       break;
                       case 'albums':
                         result.isArtist = true;
                         $aadFilterRContent.defaultAlbumViewer(result, aadFilterRPage);
+                        $aadFilterRContent.removeClass('loading');
                       break;
                       case 'songs':
                         result.isFiltered = true;
                         $aadFilterRContent.defaultSonglistViewer(result, aadFilterRPage);
+                        $aadFilterRContent.removeClass('loading');
                       break;
-                      /*case 'musicvideos':
-                        $aadFilterRContent.defaultMusicVideosViewer(result);
-                      break;*/
                     }                    
 
                   }

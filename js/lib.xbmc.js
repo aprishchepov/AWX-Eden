@@ -2664,6 +2664,9 @@ var xbmc = {};
         break;
         case 'musicvideos':
           properties = '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ],';
+          //No music sort order yet. Set a default.
+          settings.sortby = 'label';
+          settings.order = 'ascending';
         break;
         case 'artists':
           properties = '"properties" : ["thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre"],';
