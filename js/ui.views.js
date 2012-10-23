@@ -299,7 +299,18 @@ var uiviews = {};
     /*---------------*/
     AddAlbumToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-      xbmc.addAlbumToPlaylist({
+      xbmc.playlistAdd({
+        playlistid: 0,
+        item: 'albumid',
+        itemId: e.data.idAlbum,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
+        }
+      });
+      /*xbmc.addAlbumToPlaylist({
         albumid: e.data.idAlbum,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -307,37 +318,59 @@ var uiviews = {};
         onError: function(errorText) {
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
-      });
+      });*/
       return false;
     },
 
     /*---------------*/
     AddGenreToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_genre_to_playlist'));
-      xbmc.addGenreToPlaylist({
+      xbmc.playlistAdd({
+        playlistid: 0,
+        item: 'genreid',
+        itemId: e.data.idGenre,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
+        }
+      });
+      /*xbmc.addGenreToPlaylist({
         genreid: e.data.idGenre,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        onError: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
-      });
+      });*/
       return false;
     },
     
     /*---------------*/
     AddArtistToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_artist_to_playlist'));
-      xbmc.addArtistToPlaylist({
+      xbmc.playlistAdd({
+        playlistid: 0,
+        item: 'artistid',
+        itemId: e.data.idArtist,
+        onSuccess: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+        },
+        onError: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
+        }
+      });
+      /*xbmc.addArtistToPlaylist({
         artistid: e.data.idArtist,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+        onError: function() {
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
-      });
+      });*/
       return false;
     },
     
@@ -410,13 +443,15 @@ var uiviews = {};
     /*--------------*/
     AddSongToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_song_to_playlist'));
-      xbmc.addSongToPlaylist({
-        songid: e.data.idSong,
+      xbmc.playlistAdd({
+        playlistid: 0,
+        item: 'songid',
+        itemId: e.data.idSong,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
         onError: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 8000, mkf.messageLog.status.error);
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
       return false;
@@ -440,14 +475,15 @@ var uiviews = {};
     /*--------------------*/
     AddMusicVideoToPlaylist: function(event) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_musicvid_to_playlist'));
-
-      xbmc.addMusicVideoToPlaylist({
-        musicvideoid: event.data.idMusicVideo,
+      xbmc.playlistAdd({
+        playlistid: 0,
+        item: 'musicvideoid',
+        itemId: e.data.idMusicVideo,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
         onError: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 8000, mkf.messageLog.status.error);
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
 
@@ -749,16 +785,17 @@ var uiviews = {};
     },
     
     /*---------------*/
-    AddMovieToPlaylist: function(event) {
+    AddMovieToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_movie_to_playlist'));
-
-      xbmc.addMovieToPlaylist({
-        movieid: event.data.idMovie,
+      xbmc.playlistAdd({
+        playlistid: 1,
+        item: 'movieid',
+        itemId: e.data.idMovie,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
         onError: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 8000, mkf.messageLog.status.error);
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
 
@@ -1226,13 +1263,15 @@ var uiviews = {};
     AddEpisodeToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_episode_to_playlist'));
 
-      xbmc.addEpisodeToPlaylist({
-        episodeid: e.data.idEpisode,
+      xbmc.playlistAdd({
+        playlistid: 1,
+        item: 'episodeid',
+        itemId: e.data.idEpisode,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
         onError: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 8000, mkf.messageLog.status.error);
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
 
@@ -1646,13 +1685,14 @@ var uiviews = {};
     PlaylistAudioItemPlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_item'));
 
-      xbmc.playAudio({
+      xbmc.playlistPlay({
         item: e.data.itemNum,
+        playlistid: 0,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
         onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
 
@@ -1681,13 +1721,14 @@ var uiviews = {};
     PlaylistVideoItemPlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_item'));
 
-      xbmc.playVideo({
+      xbmc.playlistPlay({
         item: e.data.itemNum,
+        playlistid: 1,
         onSuccess: function() {
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
         },
         onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
 

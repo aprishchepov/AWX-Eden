@@ -703,6 +703,24 @@ var xbmc = {};
       );
     },
     
+    playlistAdd: function(options) {
+      var settings = {
+        playlistid: 0,
+        item: 'file',
+        itemId: -1,
+        itemStr: '',
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      xbmc.sendCommand(
+          '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "' + settings.item + '": ' + (settings.itemId == -1? '"' + settings.itemStr + '"': settings.itemId) + ' }, "playlistid": ' + settings.playlistid + ' }, "id": "libPlaylistAdd"}',
+          settings.onSuccess,
+          settings.onError
+      );
+    },
+    
     control: function(options) {
       var settings = {
         type: 'play',
@@ -1280,7 +1298,7 @@ var xbmc = {};
     },
     
     
-    addSongToPlaylist: function(options) {
+    /*addSongToPlaylist: function(options) {
       var settings = {
         songid: 0,
         onSuccess: null,
@@ -1296,7 +1314,7 @@ var xbmc = {};
         null,
         settings.async
       );
-    },
+    },*/
 
 
 
@@ -1384,7 +1402,7 @@ var xbmc = {};
     },
 
     
-    addAlbumToPlaylist: function(options) {
+    /*addAlbumToPlaylist: function(options) {
       var settings = {
         albumid: 0,
         onSuccess: null,
@@ -1448,7 +1466,7 @@ var xbmc = {};
           settings.onError(mkf.lang.get('message_failed_artists_albums'));
         }
       );      
-    },
+    },*/
     
     clearAudioPlaylist: function(options) {
       var settings = {
@@ -1498,30 +1516,26 @@ var xbmc = {};
       );
     },
 
-    //Rename to playlist play audio or similar
-    playAudio: function(options) {
+    playlistPlay: function(options) {
       var settings = {
         item: 0,
+        playlistid: 0,
         onSuccess: null,
         onError: null
       };
       $.extend(settings, options);
 
-      if (activePlayerid == 0) {
+      if (activePlayerid == settings.playlistid) {
         xbmc.sendCommand(
-          '{"jsonrpc": "2.0", "method": "Player.GoTo", "params" : { "playerid" : 0, "to": ' + settings.item + ' }, "id": 1}',
+          '{"jsonrpc": "2.0", "method": "Player.GoTo", "params" : { "playerid" : ' + settings.playlistid + ', "to": ' + settings.item + ' }, "id": 1}',
           settings.onSuccess,
-          function(response) {
-            settings.onError(mkf.lang.get('message_failed_play'));
-          }
+          settings.onError
         );
       } else {
         xbmc.sendCommand(
-          '{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : 0, "position": ' + settings.item + ' } }, "id": 1}',
+          '{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : ' + settings.playlistid + ', "position": ' + settings.item + ' } }, "id": 1}',
           settings.onSuccess,
-          function(response) {
-            settings.onError(mkf.lang.get('message_failed_play' + 'settings.item'));
-          }
+          settings.onError
         );
       }
     },
@@ -1910,7 +1924,7 @@ var xbmc = {};
 
 
 
-    playVideo: function(options) {
+    /*playVideo: function(options) {
       var settings = {
         item: 0,
         onSuccess: null,
@@ -1935,7 +1949,7 @@ var xbmc = {};
           }
         );
       }
-    },
+    },*/
 
 
 
@@ -1979,7 +1993,7 @@ var xbmc = {};
 
 
 
-    addMovieToPlaylist: function(options) {
+    /*addMovieToPlaylist: function(options) {
       var settings = {
         movieid: 0,
         onSuccess: null,
@@ -1994,7 +2008,7 @@ var xbmc = {};
         null,
         settings.async
       );
-    },
+    },*/
 
     /*resumeMovie: function(options) {
       var settings = {
@@ -2011,7 +2025,7 @@ var xbmc = {};
       );
     },*/
 
-    addMusicVideoToPlaylist: function(options) {
+    /*addMusicVideoToPlaylist: function(options) {
       var settings = {
         musicvideoid: 0,
         onSuccess: null,
@@ -2024,7 +2038,7 @@ var xbmc = {};
         settings.onSuccess,
         settings.onError
       );
-    },
+    },*/
 
     /*playMovie: function(options) {
       var settings = {
@@ -2272,7 +2286,7 @@ var xbmc = {};
       );
     },
     
-    addEpisodeToPlaylist: function(options) {
+    /*addEpisodeToPlaylist: function(options) {
       var settings = {
         episodeid: 0,
         onSuccess: null,
@@ -2287,7 +2301,7 @@ var xbmc = {};
         null,
         settings.async
       );
-    },
+    },*/
 
 
 

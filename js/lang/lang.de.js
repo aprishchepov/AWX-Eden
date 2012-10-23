@@ -107,6 +107,7 @@ mkf.lang.add({language: 'Deutsch', short: 'de', author: 'MKay', values: {
   'message_xbmc_has_quit':                      'XBMC wurde beendet. Sie k%F6nnen das Fenster nun schlie%DFen.',
   'message_playing_album':                      'Spiele Album ab ... ',
   'message_playing_genre':                      'Playing genre ... ',
+  'message_add_playlist':                       'Adding to playlist...',
   'messsage_add_album_to_playlist':             'F%FCge Album zur Playlist hinzu ... ',
   'messsage_add_genre_to_playlist':             'Adding genre to playlist ... ',
   'messsage_add_artist_to_playlist':            'Adding artist to playlist ... ',
