@@ -1291,8 +1291,10 @@
       
       if (e.data.strType == 'song') {
         var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_song'));
-        xbmc.playSong({
-          songid: e.data.id,
+        xbmc.playerOpen({
+          playlistid: 0,
+          item: 'songid',
+          itemId: e.data.id,
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
           },
@@ -1324,15 +1326,22 @@
           mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
         },
         onSuccess: function() {
-          onAddPlaylistToPlaylistClick(e);
-          xbmc.playAudio({
-            onError: function() {
-              mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
-            },
-            onSuccess: function() {
-              mkf.messageLog.show(mkf.lang.get('message_playing_item'), mkf.messageLog.status.success, 2000);
-            }
-          });
+          onAddPlaylistToPlaylistClick(e)
+          //Wait because of AE bug? Change to callback?
+          setTimeout(function() {
+            console.log('Play');
+            xbmc.playerOpen({
+              item: 'playlistid',
+              itemId: 0,
+              position: 0,
+              onError: function() {
+                mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+              },
+              onSuccess: function() {
+                mkf.messageLog.show(mkf.lang.get('message_playing_item'), mkf.messageLog.status.success, 2000);
+              }
+            });
+          }, 1000);
         }
       });
       return false;
@@ -1353,48 +1362,33 @@
           },
 
           onSuccess: function(result) {
-            //parse playlist
-            //console.log(result);
-            Sn = 1;
-            An = 1;
+            var sendBatch = [];
+            var messageHandle = mkf.messageLog.show(mkf.lang.get('message_add_playlist'));
+            
             $.each(result.files, function(i, file) {
               if (file.type == 'album') {
                 //add to playlist by albumid, returned as id
-                if (An == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist')); };
-                An ++;
-                xbmc.addAlbumToPlaylist({
-                  albumid: file.id,
-                  async: true,
-                  
-                  onSuccess: function() {
-                    mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                  },
-                  onError: function(errorText) {
-                    mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                  }
-                });
+                sendBatch[i] = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "albumid": ' + file.id + ' }, "playlistid": 0 }, "id": "batchAPL"}';
+
               } else if (file.type == 'song') {
                 //add to playlist by songid, returned as id
-                
-                //console.log(n);
-                if (Sn == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_song_to_playlist')); };
-                Sn ++;
-                xbmc.addSongToPlaylist({
-                  songid: file.id,
-                  // async required to add in playlist order
-                  async: true,
-                  
-                  onSuccess: function() {
-                    mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                  },
-                  onError: function(errorText) {
-                    mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                  }
-                });
+                sendBatch[i] = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "songid": ' + file.id + ' }, "playlistid": 0 }, "id": "batchAPL"}';
+
               } else {
                 //it's not any of those, error
                 mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
               };
+            });
+            //Send batch command
+            xbmc.sendBatch({
+              batch: sendBatch,
+              onSuccess: function() {
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              },
+              onError: function() {
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+                console.log('batch err');
+              }
             });
           }
         });
@@ -1403,8 +1397,10 @@
       //should be normal playlist. m3u only? Can use playlist.add directory addAudioFolderToPlaylist
       if (!isSmart && e.data.playlistinfo.type == 'unknown' && e.data.playlistinfo.filetype == 'directory') {
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-        xbmc.addAudioFolderToPlaylist({
-          folder: e.data.playlistinfo.file,
+        xbmc.playlistAdd({
+          playlistid: 0,
+          item: 'directory',
+          itemStr: e.data.playlistinfo.file,
           
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -1418,8 +1414,10 @@
       //Might be a stream playlist or other type Files.GetDirectory can't handle.
       if (!isSmart && e.data.playlistinfo.type == 'unknown' && e.data.playlistinfo.filetype == 'file') {
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_file_to_playlist'));
-        xbmc.addAudioFileToPlaylist({
-          file: e.data.playlistinfo.file,
+        xbmc.playlistAdd({
+          playlistid: 0,
+          item: 'file',
+          itemStr: e.data.playlistinfo.file,
           
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -1432,8 +1430,11 @@
       
       if (!isSmart && e.data.playlistinfo.type == 'album') {
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-        xbmc.addAlbumToPlaylist({
-          albumid: e.data.playlistinfo.id,
+        xbmc.playlistAdd({
+          playlistid: 0,
+          item: 'albumid',
+          itemId: e.data.playlistinfo.id,
+          
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
           },
@@ -1445,9 +1446,10 @@
       
       if (!isSmart && e.data.playlistinfo.type == 'song') {
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_song_to_playlist'));
-        xbmc.addSongToPlaylist({
-          songid: e.data.playlistinfo.id,
-          async: true,
+        xbmc.playlistAdd({
+          playlistid: 0,
+          item: 'songid',
+          itemId: e.data.playlistinfo.id,
           
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -2451,107 +2453,43 @@
 
           onSuccess: function(result) {
             //parse playlist
-            Sn = 1;
+            sendBatch = [];
+            /*Sn = 1;
             An = 1;
             Mn = 1;
-            Tn = 1;
+            Tn = 1;*/
+            
+            var messageHandle = mkf.messageLog.show(mkf.lang.get('message_add_playlist'));
             $.each(result.files, function(i, file) {
-              if (file.type == 'album') {
-                //add to playlist by albumid, returned as id
-                if (An == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist')); };
-                An ++;
-                xbmc.addAlbumToPlaylist({
-                  albumid: file.id,
-                  async: true,
-                  
-                  onSuccess: function() {
-                    mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                  },
-                  onError: function(errorText) {
-                    mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                  }
-                });
-              } else if (file.type == 'song') {
-                //add to playlist by songid, returned as id
-                
-                if (Sn == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_song_to_playlist')); };
-                Sn ++;
-                xbmc.addSongToPlaylist({
-                  songid: file.id,
-                  // async false required to add in playlist order
-                  async: true,
-                  
-                  onSuccess: function() {
-                    mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                  },
-                  onError: function(errorText) {
-                    mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                  }
-                });
-              } else if (file.type == 'movie') {
+              //Make a batch command to send. Keep things in order.
+              if (file.type == 'movie') {
                 //add to playlist by movieid, returned as id
-                if (Mn == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_movie_to_playlist')); };
-                Mn ++;
-                xbmc.addMovieToPlaylist({
-                  movieid: file.id,
-                  async: true,
-                  
-                  onSuccess: function() {
-                    mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                  },
-                  onError: function(errorText) {
-                    mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                  }
-                });
+                sendBatch[i] = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "movieid": ' + file.id + ' }, "playlistid": 1 }, "id": "batchPL"}';
+
               } else if (file.type == 'episode') {
                 //add to playlist by movieid, returned as id
-                if (Tn == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_episode_to_playlist')); };
-                Tn ++;
-                xbmc.addEpisodeToPlaylist({
-                  episodeid: file.id,
-                  async: true,
-                  
-                  onSuccess: function() {
-                    mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                  },
-                  onError: function(errorText) {
-                    mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                  }
-                });
+                sendBatch[i] = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "episodeid": ' + file.id + ' }, "playlistid": 1 }, "id": "batchPL"}';
+
+              } else if (file.type == 'musicvideo') {
+                sendBatch[i] = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "musicvideoid": ' + file.id + ' }, "playlistid": 1 }, "id": "batchPL"}';
+                console.log(sendBatch);
               } else if (file.filetype == 'directory') {
                 //assume TV show and descend to add episodes
-                // async false required to add in playlist order
-                if (Tn == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_episode_to_playlist')); };
-                Tn ++;
                 xbmc.getDirectory({
                   directory: file.file,
                   isPlaylist: true,
                   media: 'video',
                   
                   onError: function() {
-                    mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
-                    $VideoPlaylistsContent.removeClass('loading');
+                    //mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+                    //$VideoPlaylistsContent.removeClass('loading');
                   },
 
                   onSuccess: function(result) {
                     //var Dn = 1;
                     $.each(result.files, function(i, dirfile) {
                       if (dirfile.type != 'episode') { return; };
-                      xbmc.addEpisodeToPlaylist({
-                        episodeid: dirfile.id,
-                        async: false,
-                        
-                        onSuccess: function() {
-                          /*console.log(Dn);
-                          if (Dn == 1) {
-                            mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-                            Dn ++;
-                          }*/
-                        },
-                        onError: function(errorText) {
-                          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-                        }
-                      });
+                      sendBatch[i] == '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "episodeid": ' + file.id + ' }, "playlistid": 1 }, "id": "batchPL"}';
                     });                  
                   }
                 });
@@ -2561,47 +2499,29 @@
                 mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
               };
             });
-          }
-        });
-      };
-      
-      /*if (file.type == 'directory') {
-        //assume TV show and descend to add episodes
-        console.log('isDir');
-        if (Tn == 1) { var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_episode_to_playlist')); };
-        Tn ++;
-        xbmc.getDirectory({
-          directory: file.directory,
-          isPlaylist: true,
-          media: 'video',
-          
-          onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
-            $VideoPlaylistsContent.removeClass('loading');
-          },
-
-          onSuccess: function(result) {
-            console.log(result);
-            xbmc.addEpisodeToPlaylist({
-              episodeid: result.,
-              async: false,
-              
+            //Send batch command
+            xbmc.sendBatch({
+              batch: sendBatch,
               onSuccess: function() {
                 mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
               },
-              onError: function(errorText) {
-                mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+              onError: function() {
+                mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+                console.log('batch err');
               }
             });
           }
         });
-      };*/
+      };
       
+      /*------------ Single items ---------------*/
       //should be normal playlist. m3u only? Can use playlist.add directory addAudioFolderToPlaylist
       if (!isSmart && e.data.playlistinfo.type == 'unknown') {
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-        xbmc.addVideoFolderToPlaylist({
-          folder: e.data.playlistinfo.file,
+        xbmc.playlistAdd({
+          playlistid: 1,
+          item: 'directory',
+          itemStr: e.data.playlistinfo.file,
           
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -2610,42 +2530,15 @@
             mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
           }
         });
-      };
-      
-      if (!isSmart && e.data.playlistinfo.type == 'album') {
-        var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-        xbmc.addAlbumToPlaylist({
-          albumid: e.data.playlistinfo.id,
-          onSuccess: function() {
-            mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-          },
-          onError: function(errorText) {
-            mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-          }
-        });
-      };
-      
-      if (!isSmart && e.data.playlistinfo.type == 'song') {
-        var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_song_to_playlist'));
-        xbmc.addSongToPlaylist({
-          songid: e.data.playlistinfo.id,
-          async: true,
-          
-          onSuccess: function() {
-            mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-          },
-          onError: function(errorText) {
-            mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-          }
-        });      
       };
       
       if (!isSmart && e.data.playlistinfo.type == 'movie') {
         //add to playlist by movieid, returned as id
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_movie_to_playlist'));
-        xbmc.addMovieToPlaylist({
-          movieid: e.data.playlistinfo.id,
-          async: true,
+        xbmc.playlistAdd({
+          playlistid: 1,
+          item: 'movieid',
+          itemId: e.data.playlistinfo.id,
           
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -2659,9 +2552,10 @@
       if (!isSmart && e.data.playlistinfo.type == 'episode') {
         //add to playlist by episodeid, returned as id
         var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_episode_to_playlist'));
-        xbmc.addEpisodeToPlaylist({
-          episodeid: e.data.playlistinfo.id,
-          async: true,
+        xbmc.playlistAdd({
+          playlistid: 1,
+          item: 'episodeid',
+          itemId: e.data.playlistinfo.id,
           
           onSuccess: function() {
             mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
@@ -2671,46 +2565,22 @@
           }
         });
       };
-      //is an album? Throw to addAlbumToPlaylist
-        /*if (e.data.playlistinfo.type == 'video') {
-          var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-          xbmc.addAVideoToPlaylist({
-            videoid: e.data.playlistinfo.id,
-            onSuccess: function() {
-              mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-            },
-            onError: function(errorText) {
-              mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-            }
-          });
-        };
-        
-        if (e.data.playlistinfo.type == 'song') {
-          //add to playlist by songid, returned as id
-          var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_song_to_playlist'));
-          xbmc.addSongToPlaylist({
-            songid: e.data.playlistinfo.id,
-            async: true,
-            
-            onSuccess: function() {
-              mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-            },
-            onError: function(errorText) {
-              mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-            }
-          });
-        };*/
       
-      /*var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_album_to_playlist'));
-      xbmc.addAlbumToPlaylist({
-        albumid: event.data.idAlbum,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
+      if (!isSmart && e.data.playlistinfo.type == 'musicvideo') {
+        var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_episode_to_playlist'));
+        xbmc.playlistAdd({
+          playlistid: 1,
+          item: 'musicvideoid',
+          itemId: e.data.playlistinfo.id,
+          
+          onSuccess: function() {
+            mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+          },
+          onError: function(errorText) {
+            mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
+          }
+        });
+      };
       return false;
     };
     
@@ -3210,7 +3080,6 @@
 
       xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
         // ALL: AUDIO, VIDEO, PICTURE
-        console.log(currentFile);
         if (currentFile.title && currentFile.title != '') { titleElement=currentFile.title; } else { titleElement = (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ; }
 
         if (currentFile.xbmcMediaType == 'audio') {

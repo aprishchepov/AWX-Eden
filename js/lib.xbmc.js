@@ -332,6 +332,31 @@ var xbmc = {};
       );
     },
 
+    sendBatch: function(batch) {
+      var settings = {
+        batch: [],
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, batch);
+      
+      var batchCommand = '[';
+      
+      for (i=0; i<settings.batch.length; i++) {
+        if (i == settings.batch.length -1) {
+          batchCommand += settings.batch[i] + ']';
+        } else {
+          batchCommand += settings.batch[i] + ', ';
+        };
+      }
+      
+      xbmc.sendCommand(
+        batchCommand,
+        settings.onSuccess,
+        settings.onError
+      );
+    },
+    
     getInfoBooleans: function(options) {
       var settings = {
         bool: ['System.HasPVR'],
@@ -686,6 +711,7 @@ var xbmc = {};
         item: 'albumid',
         itemId: -1,
         itemStr: '',
+        position: -1,
         resume: false,
         onSuccess: null,
         onError: null
@@ -695,7 +721,7 @@ var xbmc = {};
       //Example partymode playlist
       //"item": { "partymode": "special://profile/playlists/video/PartyMode-Video.xsp" } // xsp or "music"/"video"
       xbmc.sendCommand(
-          '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "' + settings.item + '": ' + (settings.itemId == -1? '"' + settings.itemStr + '"': settings.itemId) + ' } ' + (settings.resume? ', "options": { "resume": true }' : '') + ' }, "id": "libPlayerOpen"}',
+          '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "' + settings.item + '": ' + (settings.itemId == -1? '"' + settings.itemStr + '"': settings.itemId) + (settings.position != -1? ', "position": ' + settings.position : '') + ' } ' + (settings.resume? ', "options": { "resume": true }' : '') + ' }, "id": "libPlayerOpen"}',
           settings.onSuccess,
           function(response) {
             settings.onError(mkf.lang.get('message_failed_play'));

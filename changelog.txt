@@ -8,7 +8,11 @@
  - Popup when entering text is required.
  - Advanced search.
  - Video genres.
+ - Party mode support.
  - jQuery 1.8.2.
+ - Playlists sends batch (one big send instead of lots of singles).
+ - Remove old UIs.
+ - Clean up/reduce/merge functions.
 
 0.5.4
  - Added Music Videos page.
