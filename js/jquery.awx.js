@@ -3127,7 +3127,7 @@
             
             //hack for partymode playlist refresh - *change to playlist notification*
             if (currentFile.partymode) {
-              awxUI.onMusicPlaylistShow();
+              awxUI.onVideoPlaylistShow();
             };
             nowLabelElement.text(titleElement);
             nowElement.text(' - ' + artistElement + ' - ' + albumElement);

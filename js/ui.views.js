@@ -3053,7 +3053,7 @@ var uiviews = {};
             runtime += duration;
             playlistItemCur = 'playlistItem';
             
-            if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped' && activePlayerid == 0) {
+            if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped' && xbmc.activePlayerid == 0) {
               playlistItemCur = 'playlistItemCur';
               //$('#content').scrollTop($('.playlistItemCur').position().top);
             } else {
@@ -3119,7 +3119,7 @@ var uiviews = {};
             };
 
             //initial marking of currently playing item. After periodic sets.
-            if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped' && activePlayerid == 1) {
+            if (i == xbmc.periodicUpdater.curPlaylistNum && xbmc.periodicUpdater.playerStatus != 'stopped' && xbmc.activePlayerid == 1) {
               playlistItemCur = 'playlistItemCur';
               //$('#content').scrollTop($('.fileList li:nth-child(' + i + ')').position().top);
             } else {
