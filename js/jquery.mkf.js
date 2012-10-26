@@ -677,10 +677,19 @@ var mkf = {};
         $('.mkfMessage' + messageHandle + ' .text').text(text);
       },
 
+      replaceTextAndHide: function(messageHandle, text, wait, status) {
+        this.replaceText(messageHandle, text);
+        this.hide(messageHandle, wait, status);
+      },
+      
       appendText: function(messageHandle, text) {
         $('.mkfMessage' + messageHandle + ' .text').append(text);
       },
 
+      replaceText: function(messageHandle, text) {
+        $('.mkfMessage' + messageHandle + ' .text').text(text);
+      },
+      
       getStatusFromEnum: function(status) {
         if (status == this.status.loading) return 'loading';
         else if (status == this.status.success) return 'success';

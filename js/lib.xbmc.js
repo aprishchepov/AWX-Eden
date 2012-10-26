@@ -4046,7 +4046,7 @@ var xbmc = {};
           break;
           case 'VideoLibrary.OnScanFinished':
             if (xbmc.vidOnScanStartedMsgId != -1) {
-              mkf.messageLog.appendTextAndHide(xbmc.vidOnScanStartedMsgId, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              mkf.messageLog.replaceTextAndHide(xbmc.vidOnScanStartedMsgId, mkf.lang.get('message_video_scan_fin'), 2000, mkf.messageLog.status.success);
               //Reset
               xbmc.vidOnScanStartedMsgId = -1;
             } else {
@@ -4059,7 +4059,7 @@ var xbmc = {};
           break;
           case 'AudioLibrary.OnScanFinished':
             if (xbmc.audOnScanStartedMsgId != -1) {
-              mkf.messageLog.appendTextAndHide(xbmc.audOnScanStartedMsgId, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
+              mkf.messageLog.replaceTextAndHide(xbmc.audOnScanStartedMsgId, mkf.lang.get('message_music_scan_fin'), 2000, mkf.messageLog.status.success);
               //Reset
               xbmc.audOnScanStartedMsgId = -1;
             } else {
