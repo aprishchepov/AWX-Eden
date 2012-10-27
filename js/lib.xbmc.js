@@ -2556,7 +2556,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "properties": [ "runtime", "showtitle", "season", "title" ], "playlistid": 1}, "id": 1}',
+        '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "properties": [ "runtime", "showtitle", "season", "title", "artist" ], "playlistid": 1}, "id": 1}',
 
         function(response) {
           settings.onSuccess(response.result);
@@ -3118,13 +3118,13 @@ var xbmc = {};
             xbmc.periodicUpdater.playerStatus = 'stopped';
             if ( xbmc.$backgroundFanart != '' && useFanart ) {
               xbmc.$backgroundFanart = '';
-              if ( ui == 'default') {
-                $('#main').css('background-image', 'url("")');
-              } else if ( ui == 'uni' ) {
+              //if ( ui == 'default') {
+                //$('#main').css('background-image', 'url("")');
+              //} else if ( ui == 'uni' ) {
                 $('#background').css('background-image', 'url("")');
-              } else {
-                $('#content').css('background-image', 'url("")');
-              }
+              //} else {
+                //$('#content').css('background-image', 'url("")');
+              //}
             };
             $('#streamdets .vFormat').removeClass().addClass('vFormat');
             $('#streamdets .aspect').removeClass().addClass('aspect');
@@ -3269,13 +3269,13 @@ var xbmc = {};
                 
                 if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
                   xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-                  if ( ui == 'default') {
-                    $('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                  } else if ( ui == 'uni' ) {
+                  //if ( ui == 'default') {
+                    //$('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
+                  //} else if ( ui == 'uni' ) {
                     $('#background').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                  } else {
-                    $('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                  }
+                  //} else {
+                    //$('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
+                  //}
                 };
                 if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
                   xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
@@ -3648,13 +3648,13 @@ var xbmc = {};
                           if (currentItem.type == 'channel') { currentItem.file = currentItem.title };
                           if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
                             xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-                            if ( ui == 'default') {
-                              $('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                            } else if ( ui == 'uni' ) {
+                            //if ( ui == 'default') {
+                              //$('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
+                            //} else if ( ui == 'uni' ) {
                               $('#background').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                            } else {
-                              $('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                            }
+                            //} else {
+                              //$('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
+                            //}
                           };
                           if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
                             xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
@@ -3818,13 +3818,13 @@ var xbmc = {};
                   if (currentItem.type == 'channel') { currentItem.file = currentItem.title };
                   if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
                     xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-                    if ( ui == 'default') {
-                      $('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                    } else if ( ui == 'uni' ) {
+                    //if ( ui == 'default') {
+                      //$('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
+                    //} else if ( ui == 'uni' ) {
                       $('#background').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                    } else {
-                      $('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                    }
+                    //} else {
+                      //$('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
+                    //}
                   };
                   if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
                     xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
@@ -3962,13 +3962,13 @@ var xbmc = {};
             
             if ( xbmc.$backgroundFanart != '' && useFanart ) {
               xbmc.$backgroundFanart = '';
-              if ( ui == 'default') {
-                $('#main').css('background-image', 'url("")');
-              } else if ( ui == 'uni' ) {
+              //if ( ui == 'default') {
+                //$('#main').css('background-image', 'url("")');
+              //} else if ( ui == 'uni' ) {
                 $('#background').css('background-image', 'url("")');
-              } else {
-                $('#content').css('background-image', 'url("")');
-              }
+              //} else {
+                //$('#content').css('background-image', 'url("")');
+              //}
             };
             $('#streamdets .vFormat').removeClass().addClass('vFormat');
             $('#streamdets .aspect').removeClass().addClass('aspect');

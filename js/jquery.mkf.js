@@ -738,7 +738,7 @@ var mkf = {};
 
         $('body').append(
           '<div id="mkfDialog' + dialogHandle +
-          '" class="mkfOverlay">' +
+          '" class="mkfOverlay" style="height: ' + document.height + 'px">' +
             '<div class="dialog ' + settings.classname + '">' + 
             (settings.closeButton?
               '<a href="" class="close">' +

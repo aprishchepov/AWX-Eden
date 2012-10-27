@@ -473,10 +473,10 @@ var uiviews = {};
     },
     
     /*--------------------*/
-    AddMusicVideoToPlaylist: function(event) {
+    AddMusicVideoToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_musicvid_to_playlist'));
       xbmc.playlistAdd({
-        playlistid: 0,
+        playlistid: 1,
         item: 'musicvideoid',
         itemId: e.data.idMusicVideo,
         onSuccess: function() {
@@ -3128,7 +3128,7 @@ var uiviews = {};
             $item = $('<li class="' + playlistItemClass + '" id="vpli' + i + '"><div class="folderLinkWrapper playlistItem' + i + '">' + 
               '<a class="button remove" href="" title="' + mkf.lang.get('btn_remove') +  '"><span class="miniIcon remove" /></a><a class="button playlistmove" href="" title="' + mkf.lang.get('btn_swap') +  '"><span class="miniIcon playlistmove" /></a>' +
               '<a class="' + playlistItemCur  + ' vpli' + i + ' play" href="">' + (i+1) + '. ' +
-              (item.type=='episode'? showtitle + ' - Season ' + season + ' - ' + title : title) + '&nbsp;&nbsp;&nbsp;&nbsp;' + xbmc.formatTime(duration) +
+              (item.type=='episode'? showtitle + ' - Season ' + season + ' - ' + title : title) + (item.type=='musicvideo'? (item.artist != ''? ' - ' + item.artist[0] : '') : '') + '&nbsp;&nbsp;&nbsp;&nbsp;' + xbmc.formatTime(duration) +
               '</a></div></li>').appendTo($itemList);
 
             $item.find('a.play').bind('click', {itemNum: i}, uiviews.PlaylistVideoItemPlay);

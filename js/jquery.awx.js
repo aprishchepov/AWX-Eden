@@ -29,7 +29,7 @@
   /* ########################### *\
    |  Input-Controls
   \* ########################### */
-  $.fn.inputControls = function() {
+  /*$.fn.inputControls = function() {
     $controls = $('<a class="button up" href=""></a><a class="button down" href=""></a><a class="button left" href=""></a><a class="button right" href=""></a><a class="button select" href=""></a><a class="button home" href=""></a><a class="button back" href=""></a>');
     
     $controls.filter('.up').click(function() {
@@ -63,7 +63,7 @@
     this.each (function() {
       $(this).append($controls.clone(true));
     });
-  }; // END inputControls
+  }; */// END inputControls
   
   /* ########################### *\
    |  XBMC-Controls
@@ -3130,7 +3130,7 @@
               awxUI.onVideoPlaylistShow();
             };
             nowLabelElement.text(titleElement);
-            nowElement.text(' - ' + artistElement + ' - ' + albumElement);
+            nowElement.text(' - ' + artistElement);
           } else {
             nowLabelElement.text(titleElement);
           }
@@ -3329,7 +3329,7 @@
   /* ########################### *\
    |  "Currently Playing"-Box
   \* ########################### */
-  $.fn.defaultCurrentlyPlaying = function(options) {
+  /*$.fn.defaultCurrentlyPlaying = function(options) {
     var settings = {
       effect: 'slide'
     };
@@ -3480,7 +3480,7 @@
         sliderElement.slider("option", "value", 100 * xbmc.getSeconds(progress.time) / xbmc.getSeconds(progress.total));
       });
     });
-  }; // END defaultCurrentlyPlaying
+  };*/ // END defaultCurrentlyPlaying
 
 
 
