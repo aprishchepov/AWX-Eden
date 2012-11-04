@@ -116,28 +116,10 @@ var awxUI = {};
               return false;
             }
           }];
-
-      // Artists
+          
+      // Artists root
       this.$artistsContent = $('<div class="pageContentWrapper"></div>');
       var artistsContextMenu = $.extend(true, [], standardMusicContextMenu);
-      artistsContextMenu.push({
-        'id':'findArtistsButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findArtistsButton').offset();
-            awxUI.$artistsContent
-              .defaultFindBox({id:'artistsFindBox', searchItems: xbmc.getSearchTerm('artists'), top: pos.top, left: pos.left});
-            return false;
-          }
-      });
-      artistsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
-          function(){
-            awxUI.$artistsContent.empty();
-            awxUI.onArtistsShow();
-
-            return false;
-          }
-      });
       
       this.artistsPage = musicPage.addPage({
         title: mkf.lang.get('page_title_artist'),
@@ -148,9 +130,57 @@ var awxUI = {};
         className: 'artists'
       });
       
-      // Music Genres
+      //Enable it to be passed to mkf.pages.showPage
+      var artistsPage = this.artistsPage;
+      
+      // Artists Title
+      this.$artistsTitleContent = $('<div class="pageContentWrapper"></div>');
+      var artistsTitleContextMenu = $.extend(true, [], standardMusicContextMenu);
+      artistsTitleContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(artistsPage);
+            return false;
+          }
+      });
+      artistsTitleContextMenu.push({
+        'id':'findArtistsTitleButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findArtistsTitleButton').offset();
+            awxUI.$artistsTitleContent
+              .defaultFindBox({id:'artistsTitleFindBox', searchItems: xbmc.getSearchTerm('artists'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      artistsTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$artistsTitleContent.empty();
+            awxUI.onArtistsTitleShow();
+
+            return false;
+          }
+      });
+      
+      this.artistsTitlePage = this.artistsPage.addPage({
+        title: mkf.lang.get('page_title_title'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        content: this.$artistsTitleContent,
+        contextMenu: artistsTitleContextMenu,
+        onShow: $.proxy(this, "onArtistsTitleShow"),
+        className: 'artistsTitle'
+      });
+      
+      // Artists Genres
       this.$artistsGenresContent = $('<div class="pageContentWrapper"></div>');
       var artistsGenresContextMenu = $.extend(true, [], standardMusicContextMenu);
+      artistsGenresContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_title'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(artistsPage);
+            return false;
+          }
+      });
       artistsGenresContextMenu.push({
         'id':'findArtistsGenresButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
@@ -170,7 +200,7 @@ var awxUI = {};
           }
       });  
       
-      this.artistsGenresPage = musicPage.addPage({
+      this.artistsGenresPage = this.artistsPage.addPage({
         title: mkf.lang.get('page_title_genres'),
         menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_genre'),
         content: this.$artistsGenresContent,
@@ -178,7 +208,7 @@ var awxUI = {};
         onShow: $.proxy(this, "onArtistsGenresShow"),
         className: 'artistsGenres'
       });
-
+     
       //playlists m3u smart etc.
       this.$MusicPlaylistsContent = $('<div class="pageContentWrapper"></div>');
       var MusicPlaylistsContextMenu = $.extend(true, [], standardMusicContextMenu);
@@ -209,28 +239,10 @@ var awxUI = {};
         onShow: $.proxy(this, "onMusicPlaylistsShow"),
         className: 'MusicPlaylists'
       });
-      
-      // Albums
+
+      // Albums page
       this.$albumsContent = $('<div class="pageContentWrapper"></div>');
       var musicAlbumsContextMenu = $.extend(true, [], standardMusicContextMenu);
-      musicAlbumsContextMenu.push({
-        'id':'findAlbumButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findAlbumButton').offset();
-            awxUI.$albumsContent
-              .defaultFindBox({id:'albumsFindBox', searchItems: xbmc.getSearchTerm('albums'), top: pos.top, left: pos.left});
-            return false;
-          }
-      });
-      musicAlbumsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
-          function(){
-            awxUI.$albumsContent.empty();
-            awxUI.onAlbumsShow();
-
-            return false;
-          }
-      });
       
       this.albumsPage = musicPage.addPage({
         title: mkf.lang.get('page_title_albums'),
@@ -240,10 +252,58 @@ var awxUI = {};
         onShow: $.proxy(this, "onAlbumsShow"),
         className: 'albums'
       });
+      
+      //Enable it to be passed to mkf.pages.showPage
+      var albumsPage = this.albumsPage;
+      
+      // Albums -> Albums title
+      this.$albumsTitleContent = $('<div class="pageContentWrapper"></div>');
+      var musicAlbumsTitleContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicAlbumsTitleContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(albumsPage);
+            return false;
+          }
+      });
+      musicAlbumsTitleContextMenu.push({
+        'id':'findAlbumTitleButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findAlbumTitleButton').offset();
+            awxUI.$albumsTitleContent
+              .defaultFindBox({id:'albumsTitleFindBox', searchItems: xbmc.getSearchTerm('albums'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      musicAlbumsTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$albumsTitleContent.empty();
+            awxUI.onAlbumsTitleShow();
+
+            return false;
+          }
+      });
+      
+      this.albumsTitlePage = this.albumsPage.addPage({
+        title: mkf.lang.get('page_title_title'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        content: this.$albumsTitleContent,
+        contextMenu: musicAlbumsTitleContextMenu,
+        onShow: $.proxy(this, "onAlbumsTitleShow"),
+        className: 'albumsTitle'
+      });
 
       //recent albums
       this.$albumsRecentContent = $('<div class="pageContentWrapper"></div>');
       var musicAlbumsRecentContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicAlbumsRecentContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(albumsPage);
+            return false;
+          }
+      });
       musicAlbumsRecentContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
           function(){
@@ -254,15 +314,316 @@ var awxUI = {};
           }
       });
 
-      this.albumsRecentPage = musicPage.addPage({
+      this.albumsRecentPage = this.albumsPage.addPage({
         title: mkf.lang.get('page_title_album_recent'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_album_recent'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recent'),
         content: this.$albumsRecentContent,
         contextMenu: musicAlbumsRecentContextMenu,
         onShow: $.proxy(this, "onAlbumsRecentShow"),
         className: 'recentAlbums'
       });
       //end recent albums
+      
+      //recent played albums
+      this.$albumsRecentPlayedContent = $('<div class="pageContentWrapper"></div>');
+      var musicAlbumsRecentPlayedContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicAlbumsRecentPlayedContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(albumsPage);
+            return false;
+          }
+      });
+      musicAlbumsRecentPlayedContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$albumsRecentPlayedContent.empty();
+            awxUI.onAlbumsRecentPlayedShow();
+
+            return false;
+          }
+      });
+
+      this.albumsRecentPlayedPage = this.albumsPage.addPage({
+        title: mkf.lang.get('page_title_album_recent'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recentplayed'),
+        content: this.$albumsRecentPlayedContent,
+        contextMenu: musicAlbumsRecentPlayedContextMenu,
+        onShow: $.proxy(this, "onAlbumsRecentPlayedShow"),
+        className: 'recentAlbumsPlayed'
+      });
+      //end recent played albums
+      
+      //Years albums
+      this.$albumsYearsContent = $('<div class="pageContentWrapper"></div>');
+      var musicAlbumsYearsContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicAlbumsYearsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(albumsPage);
+            return false;
+          }
+      });
+      musicAlbumsYearsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$albumsYearsContent.empty();
+            awxUI.onAlbumsYearsShow();
+
+            return false;
+          }
+      });
+
+      this.albumsYearsPage = this.albumsPage.addPage({
+        title: mkf.lang.get('page_title_years'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_years'),
+        content: this.$albumsYearsContent,
+        contextMenu: musicAlbumsYearsContextMenu,
+        onShow: $.proxy(this, "onAlbumsYearsShow"),
+        className: 'albumsYears'
+      });
+      //end Years albums
+      
+      // Album Genres
+      this.$albumGenresContent = $('<div class="pageContentWrapper"></div>');
+      var albumGenresContextMenu = $.extend(true, [], standardMusicContextMenu);
+      albumGenresContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(albumsPage);
+            return false;
+          }
+      });
+      albumGenresContextMenu.push({
+        'id':'findArtistsGenresButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findAlbumGenresButton').offset();
+            awxUI.$artistsGenresContent
+              .defaultFindBox({id:'albumGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      albumGenresContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$albumGenresContent.empty();
+            awxUI.onAlbumGenresShow();
+
+            return false;
+          }
+      });  
+      
+      this.albumGenresPage = this.albumsPage.addPage({
+        title: mkf.lang.get('page_title_genres'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_genre'),
+        content: this.$albumGenresContent,
+        contextMenu: albumGenresContextMenu,
+        onShow: $.proxy(this, "onAlbumGenresShow"),
+        className: 'albumGenres'
+      });
+
+      // Songs root
+      this.$songsContent = $('<div class="pageContentWrapper"></div>');
+      var songsContextMenu = $.extend(true, [], standardMusicContextMenu);
+      
+      this.songsPage = musicPage.addPage({
+        title: mkf.lang.get('page_title_songs'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_songs'),
+        content: this.$songsContent,
+        contextMenu: songsContextMenu,
+        onShow: $.proxy(this, "onSongsShow"),
+        className: 'songs'
+      });
+      
+      var songsPage = this.songsPage;
+      
+      //Songs Titles
+      this.$songsTitleContent = $('<div class="pageContentWrapper"></div>');
+      var songsTitleContextMenu = $.extend(true, [], standardMusicContextMenu);
+      songsTitleContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(songsPage);
+            return false;
+          }
+      });
+      songsTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$songsTitleContent.empty();
+            awxUI.onSongsTitleShow();
+
+            return false;
+          }
+      });
+
+      this.songsTitlePage = this.songsPage.addPage({
+        title: mkf.lang.get('page_title_title'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        content: this.$songsTitleContent,
+        contextMenu: songsTitleContextMenu,
+        onShow: $.proxy(this, "onSongsTitleShow"),
+        className: 'songsTitle'
+      });
+      //end songs title
+      
+      //recent songs
+      this.$songsRecentContent = $('<div class="pageContentWrapper"></div>');
+      var musicSongsRecentContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicSongsRecentContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(songsPage);
+            return false;
+          }
+      });
+      musicSongsRecentContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$songsRecentContent.empty();
+            awxUI.onSongsRecentShow();
+
+            return false;
+          }
+      });
+
+      this.songsRecentPage = this.songsPage.addPage({
+        title: mkf.lang.get('page_title_recent'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recent'),
+        content: this.$songsRecentContent,
+        contextMenu: musicSongsRecentContextMenu,
+        onShow: $.proxy(this, "onSongsRecentShow"),
+        className: 'recentSongs'
+      });
+      //end recent songs
+      
+      //recent played songs
+      this.$songsRecentPlayedContent = $('<div class="pageContentWrapper"></div>');
+      var musicSongsRecentPlayedContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicSongsRecentPlayedContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(songsPage);
+            return false;
+          }
+      });
+      musicSongsRecentPlayedContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$songsRecentPlayedContent.empty();
+            awxUI.onSongsRecentPlayedShow();
+
+            return false;
+          }
+      });
+
+      this.songsRecentPlayedPage = this.songsPage.addPage({
+        title: mkf.lang.get('page_title_recent'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recentplayed'),
+        content: this.$songsRecentPlayedContent,
+        contextMenu: musicSongsRecentPlayedContextMenu,
+        onShow: $.proxy(this, "onSongsRecentPlayedShow"),
+        className: 'recentPlayedSongs'
+      });
+      //end recent played songs
+      
+      //Songs Artists
+      this.$songsArtistsContent = $('<div class="pageContentWrapper"></div>');
+      var songsArtistsContextMenu = $.extend(true, [], standardMusicContextMenu);
+      songsArtistsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(songsPage);
+            return false;
+          }
+      });
+      songsTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$songsArtistsContent.empty();
+            awxUI.onSongsArtistsShow();
+
+            return false;
+          }
+      });
+
+      this.songsArtistsPage = this.songsPage.addPage({
+        title: mkf.lang.get('page_title_artists'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_artist'),
+        content: this.$songsArtistsContent,
+        contextMenu: songsArtistsContextMenu,
+        onShow: $.proxy(this, "onSongsArtistsShow"),
+        className: 'songsArtists'
+      });
+      //end songs artists
+      
+      //Years songs
+      this.$songsYearsContent = $('<div class="pageContentWrapper"></div>');
+      var musicSongsYearsContextMenu = $.extend(true, [], standardMusicContextMenu);
+      musicSongsYearsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(songsPage);
+            return false;
+          }
+      });
+      musicSongsYearsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$songsYearsContent.empty();
+            awxUI.onSongsYearsShow();
+
+            return false;
+          }
+      });
+
+      this.songsYearsPage = this.songsPage.addPage({
+        title: mkf.lang.get('page_title_years'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_years'),
+        content: this.$songsYearsContent,
+        contextMenu: musicSongsYearsContextMenu,
+        onShow: $.proxy(this, "onSongsYearsShow"),
+        className: 'songsYears'
+      });
+      //end Years songs
+      
+      // Song Genres
+      this.$songGenresContent = $('<div class="pageContentWrapper"></div>');
+      var songGenresContextMenu = $.extend(true, [], standardMusicContextMenu);
+      songGenresContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(songsPage);
+            return false;
+          }
+      });
+      songGenresContextMenu.push({
+        'id':'findSongGenresButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findSongGenresButton').offset();
+            awxUI.$songGenresContent
+              .defaultFindBox({id:'songGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      songGenresContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$artistsGenresContent.empty();
+            awxUI.onSongGenresShow();
+
+            return false;
+          }
+      });  
+      
+      this.songGenresPage = this.songsPage.addPage({
+        title: mkf.lang.get('page_title_genres'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_genre'),
+        content: this.$songGenresContent,
+        contextMenu: songGenresContextMenu,
+        onShow: $.proxy(this, "onSongGenresShow"),
+        className: 'songGenres'
+      });
       
       // PVR radio
       this.$pvrradioContent = $('<div class="pageContentWrapper"></div>');
@@ -420,28 +781,10 @@ var awxUI = {};
               return false;
             }
           }];
-
+          
       //Movies
       this.$moviesContent = $('<div class="pageContentWrapper"></div>');
       var videoMoviesContextMenu = $.extend(true, [], standardVideosContextMenu);
-      videoMoviesContextMenu.push({
-        'id':'findMovieButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findMovieButton').offset();
-            awxUI.$moviesContent
-              .defaultFindBox({id:'moviesFindBox', searchItems: xbmc.getSearchTerm('movies'), top: pos.top, left: pos.left});
-            return false;
-          }
-      });
-      videoMoviesContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
-          function(){
-            awxUI.$moviesContent.empty();
-            awxUI.onMoviesShow();
-
-            return false;
-          }
-      });
       
       this.moviesPage = videosPage.addPage({
         title: mkf.lang.get('page_title_movies'),
@@ -452,10 +795,58 @@ var awxUI = {};
         className: 'movies'
       });
       
+      //Required to use mkf.pages.showPage
+      var moviesPage = this.moviesPage;
+      
+      //Sub Movies title
+      this.$moviesTitleContent = $('<div class="pageContentWrapper"></div>');
+      var videoMoviesTitleContextMenu = $.extend(true, [], standardVideosContextMenu);
+      videoMoviesTitleContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(moviesPage);
+            return false;
+          }
+      });
+      videoMoviesTitleContextMenu.push({
+        'id':'findMovieButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findMovieTitleButton').offset();
+            awxUI.$moviesTitleContent
+              .defaultFindBox({id:'moviesTitleFindBox', searchItems: xbmc.getSearchTerm('movies'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      videoMoviesTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$moviesTitleContent.empty();
+            awxUI.onMoviesTitleShow();
 
-      //Movie sets
+            return false;
+          }
+      });
+      
+      this.moviesTitlePage = this.moviesPage.addPage({
+        title: mkf.lang.get('page_title_title'),
+        content: this.$moviesTitleContent,
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        contextMenu: videoMoviesTitleContextMenu,
+        onShow: $.proxy(this, "onMoviesTitleShow"),
+        className: 'moviesTitle'
+      });
+      
+
+      //Sub Movie sets
       this.$movieSetsContent = $('<div class="pageContentWrapper"></div>');
       var videoMovieSetsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      videoMovieSetsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(moviesPage);
+            return false;
+          }
+      });
       videoMovieSetsContextMenu.push({
         'id':'findMovieSetsButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
@@ -475,7 +866,7 @@ var awxUI = {};
           }
       });
       
-      this.movieSetsPage = videosPage.addPage({
+      this.movieSetsPage = this.moviesPage.addPage({
         title: mkf.lang.get('page_title_moviesets'),
         content: this.$movieSetsContent,
         menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_moviesets'),
@@ -517,9 +908,16 @@ var awxUI = {};
       });
 
       
-      //Recent movies
+      //Sub Recent movies
       this.$moviesRecentContent = $('<div class="pageContentWrapper"></div>');
       var videoMoviesRecentContextMenu = $.extend(true, [], standardVideosContextMenu);
+      videoMoviesRecentContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(moviesPage);
+            return false;
+          }
+      });
       videoMoviesRecentContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
           function(){
@@ -530,7 +928,7 @@ var awxUI = {};
           }
       });
 
-      this.moviesRecentPage = videosPage.addPage({
+      this.moviesRecentPage = this.moviesPage.addPage({
         title: mkf.lang.get('page_title_movies_recentlyadded'),
         content: this.$moviesRecentContent,
         menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_movies_recentlyadded'),
@@ -540,27 +938,99 @@ var awxUI = {};
       });
       //end recent movies
       
-      //TV Shows
-      this.$tvShowsContent = $('<div class="pageContentWrapper"></div>');
-      var videoTvShowsContextMenu = $.extend(true, [], standardVideosContextMenu);
-      videoTvShowsContextMenu.push({
-        'id':'findTVShowButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findTVShowButton').offset();
-            awxUI.$tvShowsContent
-              .defaultFindBox({id:'tvShowFindBox', searchItems: xbmc.getSearchTerm('tvshows'), top: pos.top, left: pos.left});
+      //Movie genres
+      this.$movieGenresContent = $('<div class="pageContentWrapper"></div>');
+      var movieGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
+      movieGenresContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(moviesPage);
             return false;
           }
       });
-      videoTvShowsContextMenu.push({
+      movieGenresContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
           function(){
-            awxUI.$tvShowsContent.empty();
-            awxUI.onTvShowsShow();
+            awxUI.$movieGenresContent.empty();
+            awxUI.onMovieGenresShow();
 
             return false;
           }
       });
+
+      this.movieGenresPage = this.moviesPage.addPage({
+        title: mkf.lang.get('page_title_genres'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        content: this.$movieGenresContent,
+        contextMenu: movieGenresContextMenu,
+        onShow: $.proxy(this, "onMovieGenresShow"),
+        className: 'movieGenres'
+      });
+      //end Movie genres
+      
+      //Years
+      this.$movieYearsContent = $('<div class="pageContentWrapper"></div>');
+      var movieYearsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      movieYearsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(moviesPage);
+            return false;
+          }
+      });
+      movieYearsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$movieYearsContent.empty();
+            awxUI.onMovieYearsShow();
+
+            return false;
+          }
+      });
+
+      this.movieYearsPage = this.moviesPage.addPage({
+        title: mkf.lang.get('page_title_years'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_years'),
+        content: this.$movieYearsContent,
+        contextMenu: movieYearsContextMenu,
+        onShow: $.proxy(this, "onMovieYearsShow"),
+        className: 'movieYears'
+      });
+      //end Years
+      
+      //Tags
+      this.$movieTagsContent = $('<div class="pageContentWrapper"></div>');
+      var movieTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      movieTagsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(moviesPage);
+            return false;
+          }
+      });
+      movieTagsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$movieTagsContent.empty();
+            awxUI.onMovieTagsShow();
+
+            return false;
+          }
+      });
+
+      this.movieTagsPage = this.moviesPage.addPage({
+        title: mkf.lang.get('page_title_tags'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_tags'),
+        content: this.$movieTagsContent,
+        contextMenu: movieTagsContextMenu,
+        onShow: $.proxy(this, "onMovieTagsShow"),
+        className: 'movieTags'
+      });
+      //end Tags genres
+      
+      //TV Shows
+      this.$tvShowsContent = $('<div class="pageContentWrapper"></div>');
+      var videoTvShowsContextMenu = $.extend(true, [], standardVideosContextMenu);
       
       this.tvShowsPage = videosPage.addPage({
         title: mkf.lang.get('page_title_tvshows'),
@@ -570,10 +1040,57 @@ var awxUI = {};
         onShow: $.proxy(this, "onTvShowsShow"),
         className: 'tv'
       });
+      
+      var tvShowsPage = this.tvShowsPage;
+      
+      //Sub TV Shows title
+      this.$tvShowsTitleContent = $('<div class="pageContentWrapper"></div>');
+      var videoTvShowsTitleContextMenu = $.extend(true, [], standardVideosContextMenu);
+      videoTvShowsTitleContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(tvShowsPage);
+            return false;
+          }
+      });
+      videoTvShowsTitleContextMenu.push({
+        'id':'findTVShowTitleButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findTVShowButton').offset();
+            awxUI.$tvShowsContent
+              .defaultFindBox({id:'tvShowFindBox', searchItems: xbmc.getSearchTerm('tvshows'), top: pos.top, left: pos.left});
+            return false;
+          }
+      });
+      videoTvShowsTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$tvShowsTitleContent.empty();
+            awxUI.onTvShowsTitleShow();
+
+            return false;
+          }
+      });
+      
+      this.tvShowsTitlePage = this.tvShowsPage.addPage({
+        title: mkf.lang.get('page_title_title'),
+        content: this.$tvShowsTitleContent,
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        contextMenu: videoTvShowsTitleContextMenu,
+        onShow: $.proxy(this, "onTvShowsTitleShow"),
+        className: 'tvTitle'
+      });
 
       //For recently added eps
       this.$tvShowsRecentlyAddedContent = $('<div class="pageContentWrapper"></div>');
       var videoTvShowsRecentlyAddedContextMenu = $.extend(true, [], standardVideosContextMenu);
+      videoTvShowsRecentlyAddedContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(tvShowsPage);
+            return false;
+          }
+      });
       videoTvShowsRecentlyAddedContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
           function(){
@@ -593,7 +1110,7 @@ var awxUI = {};
           }
       });*/
       
-      this.tvShowsRecentlyAddedPage = videosPage.addPage({
+      this.tvShowsRecentlyAddedPage = this.tvShowsPage.addPage({
         title: mkf.lang.get('page_title_tv_recentlyadded'),
         content: this.$tvShowsRecentlyAddedContent,
         menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_tv_recentlyadded'),
@@ -602,19 +1119,70 @@ var awxUI = {};
         className: 'recentTV'
       });
       // end recently added eps
-            
-      //Music Videos
-      this.$musicVideosContent = $('<div class="pageContentWrapper"></div>');
-      var musicVideosContextMenu = $.extend(true, [], standardVideosContextMenu);
-      musicVideosContextMenu.push({
+      
+      //TV genres
+      this.$tvShowsGenresContent = $('<div class="pageContentWrapper"></div>');
+      var tvShowsGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
+      tvShowsGenresContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(tvShowsPage);
+            return false;
+          }
+      });
+      tvShowsGenresContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
           function(){
-            awxUI.$musicVideosContent.empty();
-            awxUI.onMusicVideosShow();
+            awxUI.$tvShowsGenresContent.empty();
+            awxUI.onTvShowsGenresShow();
 
             return false;
           }
       });
+
+      this.tvShowsGenresPage = this.tvShowsPage.addPage({
+        title: mkf.lang.get('page_title_genres'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        content: this.$tvShowsGenresContent,
+        contextMenu: tvShowsGenresContextMenu,
+        onShow: $.proxy(this, "onTvShowsGenresShow"),
+        className: 'tvShowsGenres'
+      });
+      //end TV genres
+      
+      //TV Years
+      this.$tvShowsYearsContent = $('<div class="pageContentWrapper"></div>');
+      var tvShowsYearsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      tvShowsYearsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(tvShowsPage);
+            return false;
+          }
+      });
+      tvShowsYearsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$tvShowsYearsContent.empty();
+            awxUI.onTvShowsYearsShow();
+
+            return false;
+          }
+      });
+
+      this.tvShowsYearsPage = this.tvShowsPage.addPage({
+        title: mkf.lang.get('page_title_years'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_years'),
+        content: this.$tvShowsYearsContent,
+        contextMenu: tvShowsYearsContextMenu,
+        onShow: $.proxy(this, "onTvShowsYearsShow"),
+        className: 'tvShowsYears'
+      });
+      //end TV Years
+      
+      //Music Videos
+      this.$musicVideosContent = $('<div class="pageContentWrapper"></div>');
+      var musicVideosContextMenu = $.extend(true, [], standardVideosContextMenu);
 
       this.musicVideosPage = videosPage.addPage({
         title: mkf.lang.get('page_title_musicvideos'),
@@ -623,6 +1191,39 @@ var awxUI = {};
         contextMenu: musicVideosContextMenu,
         onShow: $.proxy(this, "onMusicVideosShow"),
         className: 'musicVideos'
+      });
+      
+      var musicVideoPage = this.musicVideosPage;
+      
+      //end Music Videos
+      
+      //Music Videos Title
+      this.$musicVideosTitleContent = $('<div class="pageContentWrapper"></div>');
+      var musicVideosTitleContextMenu = $.extend(true, [], standardVideosContextMenu);
+      musicVideosTitleContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(musicVideoPage);
+            return false;
+          }
+      });
+      musicVideosTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$musicVideosTitleContent.empty();
+            awxUI.onMusicVideosTitleShow();
+
+            return false;
+          }
+      });
+
+      this.musicVideosTitlePage = this.musicVideosPage.addPage({
+        title: mkf.lang.get('page_title_musicvideos'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_musicvideos'),
+        content: this.$musicVideosTitleContent,
+        contextMenu: musicVideosTitleContextMenu,
+        onShow: $.proxy(this, "onMusicVideosTitleShow"),
+        className: 'musicVideosTitle'
       });
       //end Music Videos
       
@@ -657,7 +1258,7 @@ var awxUI = {};
         className: 'pvrtv'
       });
       
-      //Video genres
+      /*//Video genres
       this.$videoGenresContent = $('<div class="pageContentWrapper"></div>');
       var videoGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoGenresContextMenu.push({
@@ -678,7 +1279,7 @@ var awxUI = {};
         onShow: $.proxy(this, "onVideoGenresShow"),
         className: 'videoGenres'
       });
-      //end Video genres
+      //end Video genres*/
       
       //Video Files
       this.$videoFilesContent = $('<div class="pageContentWrapper"></div>');
@@ -850,21 +1451,65 @@ var awxUI = {};
       $('#statusPlayer #statusPlayerRow').children().hide()
       //$('#statusPlayer').hide();
 
-      // Hide all submenus
-      $('#navigation ul.mkfMenu ul, ul.systemMenu ul').hide();
 
+      
+      //Set menu width to largest item. Can't seem to do this with CSS. IE9 and FF work but Chrome double parent UL width.
+      setTimeout(function() {
+      
+      //Show menus so we can grab the widths.
+      $('#navigation ul.mkfMenu .mkfSubMenu1, ul.systemMenu ul').show();
+      
+      //Set root menu (music and video) width as it can't (QED) be done in CSS. Timeout is to allow the menu to draw.
+      $("#navigation ul.mkfMenu .music .mkfSubMenu1").each(function() { // Loop through all the menu items that got submenu items
+        var Widest=0; 
+        var ThisWidth=0;
+
+        $($(this).children()).each(function() {
+          ThisWidth=parseInt($(this).css('width'));
+
+          if (ThisWidth>Widest) {
+            Widest=ThisWidth;
+          }
+        });
+
+        Widest+='px';
+
+        $(this).hide();
+        $(this).children().children().css('width',Widest);
+      });
+      
+      
+      $("#navigation ul.mkfMenu .videos .mkfSubMenu1").each(function() { 
+        var Widest=0; 
+        var ThisWidth=0; 
+
+        $($(this).children()).each(function() { 
+          ThisWidth=parseInt($(this).css('width'));
+
+          if (ThisWidth>Widest) { 
+            Widest=ThisWidth;
+          }
+        });
+
+        Widest+='px'; // Add the unit
+
+        $(this).hide();
+        $(this).children().children().css('width',Widest);
+      });
+      }, 100);
       
       // Hover for menus
       $('#navigation ul.mkfMenu > li, ul.systemMenu > li').hover(function() {
         // Mouse in
-        var submenu = $(this).find('ul');
+        var submenu = $(this).find('ul:first');
+        
         submenu.stop(true, true);
         $(this).addClass('mouseover');
         submenu.slideDown('fast');
 
       }, function() {
         // Mouse out
-        var submenu = $(this).find('ul');
+        var submenu = $(this).find('ul:first');
         if (submenu.length == 0) // no submenu
           $(this).removeClass('mouseover');
         else
@@ -873,55 +1518,37 @@ var awxUI = {};
           });
       });
       
-      // Click, Hover for menus
-      /*$('#navigation ul.mkfMenu > li, ul.systemMenu > li').dblclick(function() {
-        // Mouse in
-        console.log($(this));
-        if (!$(this).hasClass('mouseover')) {
-          var submenu = $(this).find('ul');
-          submenu.stop(true, true);
-          $(this).addClass('mouseover');
-          submenu.slideDown('fast');
-        } else {
-          var submenu = $(this).find('ul');
-          if (submenu.length == 0) // no submenu
-            $(this).removeClass('mouseover');
-          else
-            submenu.slideUp('fast', function() {
-              $(this).parent().removeClass('mouseover');
-            });
-        }
-      });
-      
-      $('#navigation ul.mkfMenu > li, ul.systemMenu > li').mouseout(function() {
-        // Mouse out
-        var submenu = $(this).find('ul');
-        if (submenu.length == 0) // no submenu
-          $(this).removeClass('mouseover');
-        else
-          submenu.slideUp('fast', function() {
-            $(this).parent().removeClass('mouseover');
-          });
-      });*/
       
       $('.' + mkf.cookieSettings.get('startPage', 'recentTV') + ' a').click();
       
       xbmc.musicPlaylist = $('div.musicPlaylist');
       xbmc.videoPlaylist = $('div.videoPlaylist');
 
-      //show mfkPages root video or music to allow height 100%
-      /*if ($(this).hasClass('.videos')) {
-        
-      }*/
     },
     
-    
-    /**************************************
-     * Called when Artists-Page is shown. *
+     /**************************************
+     * Called when Artist root-Page is shown. *
      **************************************/
     onArtistsShow: function(e) {
-      var artistsPage = awxUI.artistsPage;
-      awxUI.$artistsContent.empty();
+      if (this.$artistsContent.html() == '') {
+        var artistsPage = awxUI.artistsPage;
+        var $contentBox = awxUI.$artistsContent;
+        $contentBox.addClass('loading');
+
+        $contentBox.defaultArtistsViewer();
+        $contentBox.removeClass('loading');
+
+      }
+
+      return false
+    },
+    
+    /**************************************
+     * Called when Artists Title-Page is shown. *
+     **************************************/
+    onArtistsTitleShow: function(e) {
+      var artistsTitlePage = awxUI.artistsTitlePage;
+      awxUI.$artistsTitleContent.empty();
         if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
         if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
         //if (typeof totalArtistCount === 'undefined') { totalArtistCount = 0 };
@@ -942,11 +1569,8 @@ var awxUI = {};
           };
           };
         };
-        var $contentBox = awxUI.$artistsContent;
+        var $contentBox = awxUI.$artistsTitleContent;
         
-      //if (this.$artistsContent.html() == '') {
-        //var artistsPage = this.artistsPage;
-        //var $contentBox = this.$artistsContent;
         $contentBox.addClass('loading');
 
         xbmc.getArtists({
@@ -958,11 +1582,11 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultArtistsViewer(result, artistsPage);
+            $contentBox.defaultArtistsTitleViewer(result, artistsTitlePage);
             $contentBox.removeClass('loading');
           }
         });
-      //}
+
       return false
     },
 
@@ -992,7 +1616,7 @@ var awxUI = {};
     
     
     /**************************************
-     * Called when Genres Artists-Page is shown. *
+     * Called when Genres Artists genre-Page is shown. *
      **************************************/
     onArtistsGenresShow: function() {
       if (this.$artistsGenresContent.html() == '') {
@@ -1007,20 +1631,36 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultArtistsGenresViewer(result, artistsGenresPage);
+            $contentBox.defaultGenresViewer(result, artistsGenresPage);
             $contentBox.removeClass('loading');
           }
         });
       }
     },
 
-    
     /**************************************
-     * Called when Albums-Page is shown. *
+     * Called when Albums root-Page is shown. *
      **************************************/
     onAlbumsShow: function(e) {
-      var albumsPage = awxUI.albumsPage;
-      awxUI.$albumsContent.empty();
+      if (this.$albumsContent.html() == '') {
+        var albumsPage = this.albumsPage;
+        var $contentBox = awxUI.$albumsContent;
+        $contentBox.addClass('loading');
+
+        $contentBox.defaultAlbumViewer();
+        $contentBox.removeClass('loading');
+
+      }
+
+      return false
+    },
+    
+    /**************************************
+     * Called when Albums title-Page is shown. *
+     **************************************/
+    onAlbumsTitleShow: function(e) {
+      var albumsTitlePage = awxUI.albumsTitlePage;
+      awxUI.$albumsTitleContent.empty();
         if (typeof lastAlbumCount === 'undefined') { lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25); };
         if (typeof lastAlbumCountStart === 'undefined') { lastAlbumCountStart = 0 };
         if (typeof e != 'undefined') {
@@ -1040,7 +1680,7 @@ var awxUI = {};
           };
           };
         };
-        var $contentBox = awxUI.$albumsContent;
+        var $contentBox = awxUI.$albumsTitleContent;
         $contentBox.addClass('loading');
 
         xbmc.getAlbums({
@@ -1052,7 +1692,7 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultAlbumViewer(result, albumsPage);
+            $contentBox.defaultAlbumTitleViewer(result, albumsTitlePage);
             $contentBox.removeClass('loading');
           }
         });
@@ -1065,7 +1705,7 @@ var awxUI = {};
      **************************************/
     onAlbumsRecentShow: function() {
       if (this.$albumsRecentContent.html() == '') {
-        var albumsPage = this.albumsRecentPage;
+        var albumsRecentPage = this.albumsRecentPage;
         var $contentBox = this.$albumsRecentContent;
         $contentBox.addClass('loading');
 
@@ -1076,7 +1716,7 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultAlbumRecentViewer(result, albumsPage);
+            $contentBox.defaultAlbumRecentViewer(result, albumsRecentPage);
             $contentBox.removeClass('loading');
           }
         });
@@ -1084,12 +1724,298 @@ var awxUI = {};
     },
     
     /**************************************
-     * Called when Music Videos -Page is shown. *
+     * Called when Albums Recent Played-Page is shown. *
      **************************************/
+    onAlbumsRecentPlayedShow: function() {
+      if (this.$albumsRecentPlayedContent.html() == '') {
+        var albumsRecentPlayedPage = this.albumsRecentPlayedPage;
+        var $contentBox = this.$albumsRecentPlayedContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getRecentlyPlayedAlbums({
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultAlbumRecentViewer(result, albumsRecentPlayedPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /**************************************
+     * Called when Albums Years -Page is shown. *
+     **************************************/
+    onAlbumsYearsShow: function() {
+      if (this.$albumsYearsContent.html() == '') {
+        var albumsYearsPage = this.albumsYearsPage;
+        var $contentBox = this.$albumsYearsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get years via proper method, use DB direct e.g. "musicdb://9/1965/"
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'musicdb://9/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultYearsViewer(result, albumsYearsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /**************************************
+     * Called when Genres Album genre-Page is shown. *
+     **************************************/
+    onAlbumGenresShow: function() {
+      if (this.$albumGenresContent.html() == '') {
+        var albumGenresPage = this.albumGenresPage;
+        var $contentBox = this.$albumGenresContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getAudioGenres({
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultGenresViewer(result, albumGenresPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /**************************************
+     * Called when Songs root-Page is shown. *
+     **************************************/
+    onSongsShow: function(e) {
+      if (this.$songsContent.html() == '') {
+        var songsPage = this.songsPage;
+        var $contentBox = awxUI.$songsContent;
+        $contentBox.addClass('loading');
+
+        $contentBox.defaultSongsViewer();
+        $contentBox.removeClass('loading');
+
+      }
+
+      return false
+    },
+    
+    /**************************************
+     * Called when Songs title-Page is shown. *
+     **************************************/
+    onSongsTitleShow: function(e) {
+      var songsTitlePage = awxUI.songsTitlePage;
+      awxUI.$songsTitleContent.empty();
+        if (typeof lastSongsCount === 'undefined') { lastSongsCount = mkf.cookieSettings.get('limitSongs', 25); };
+        if (typeof lastSongsCountStart === 'undefined') { lastSongsCountStart = 0 };
+        if (typeof e != 'undefined') {
+          if (e.data.Page == 'next') {
+          lastSongsCount = parseInt(lastSongsCount) + parseInt(mkf.cookieSettings.get('limitSongs', 25));
+          lastSongsCountStart += parseInt(mkf.cookieSettings.get('limitSongs', 25));
+          };
+          if (e.data.Page == 'prev') {
+          lastSongsCount = parseInt(lastSongsCount) - parseInt(mkf.cookieSettings.get('limitSongs', 25));
+          lastSongsCountStart -= parseInt(mkf.cookieSettings.get('limitSongs', 25));
+          if (lastSongsCount == 0) {
+            lastSongsCount = totalSongsCount;
+            lastSongsCountStart = totalSongsCount - mkf.cookieSettings.get('limitSongs', 25);
+          } else if (lastSongsCount < 1 || lastSongsCountStart < 0){
+            lastSongsCount = mkf.cookieSettings.get('limitSongs', 25);
+            lastSongsCountStart = 0;
+          };
+          };
+        };
+      var $contentBox = awxUI.$songsTitleContent;
+      $contentBox.addClass('loading');
+
+      xbmc.getSongs({
+        start: lastSongsCountStart,
+        end: lastSongsCount,
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed_songs_list'), mkf.messageLog.status.error, 5000);
+          $contentBox.removeClass('loading');
+        },
+
+        onSuccess: function(result) {
+          $contentBox.defaultSonglistViewer(result, songsTitlePage);
+          $contentBox.removeClass('loading');
+        }
+      });
+      return false
+    },
+    
+    /**************************************
+     * Called when Songs Recent -Page is shown. *
+     **************************************/
+    onSongsRecentShow: function() {
+      if (this.$songsRecentContent.html() == '') {
+        var songsRecentPage = this.songsRecentPage;
+        var $contentBox = this.$songsRecentContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getRecentlyAddedSongs({
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            result.isFilter = true;
+            $contentBox.defaultSonglistViewer(result, songsRecentPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /**************************************
+     * Called when Songs Recent -Page is shown. *
+     **************************************/
+    onSongsRecentPlayedShow: function() {
+      if (this.$songsRecentPlayedContent.html() == '') {
+        var songsRecentPlayedPage = this.songsRecentPlayedPage;
+        var $contentBox = this.$songsRecentPlayedContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getRecentlyPlayedSongs({
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            result.isFilter = true;
+            $contentBox.defaultSonglistViewer(result, songsRecentPlayedPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /**************************************
+     * Called when Songs Artists -Page is shown. *
+     **************************************/
+    onSongsArtistsShow: function(e) {
+      var songsArtistsPage = awxUI.songsArtistsPage;
+      awxUI.$songsArtistsContent.empty();
+        if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
+        if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
+        //if (typeof totalArtistCount === 'undefined') { totalArtistCount = 0 };
+        if (typeof e != 'undefined') {
+          if (e.data.Page == 'next') {
+          lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          lastArtistCountStart += parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          };
+          if (e.data.Page == 'prev') {
+          lastArtistCount = parseInt(lastArtistCount) - parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          lastArtistCountStart -= parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          if (lastArtistCount == 0) {
+            lastArtistCount = totalArtistCount;
+            lastArtistCountStart = totalArtistCount - mkf.cookieSettings.get('limitArtists', 25);
+          } else if (lastArtistCount < 1 || lastArtistCountStart < 0){
+            lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+            lastArtistCountStart = 0;
+          };
+          };
+        };
+        var $contentBox = awxUI.$songsArtistsContent;
+        
+        $contentBox.addClass('loading');
+
+        xbmc.getArtists({
+          start: lastArtistCountStart,
+          end: lastArtistCount,
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultArtistsTitleViewer(result, songsArtistsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+
+      return false
+    },
+    
+    /**************************************
+     * Called when Songs Years -Page is shown. *
+     **************************************/
+    onSongsYearsShow: function() {
+      if (this.$songsYearsContent.html() == '') {
+        var songsYearsPage = this.songsYearsPage;
+        var $contentBox = this.$songsYearsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get years via proper method, use DB direct e.g. "musicdb://9/1965/"
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'musicdb://9/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultYearsViewer(result, songsYearsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+     /**************************************
+     * Called when Genres Songs genre-Page is shown. *
+     **************************************/
+    onSongGenresShow: function() {
+      if (this.$songGenresContent.html() == '') {
+        var songGenresPage = this.songGenresPage;
+        var $contentBox = this.$songGenresContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getAudioGenres({
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultGenresViewer(result, songGenresPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+     /*********************************************
+     * Called when Music Video-Page is shown. *
+     *********************************************/
     onMusicVideosShow: function() {
-      if (this.$musicVideosContent.html() == '') {
-        var musicVideosPage = this.musicVideosPage;
-        var $contentBox = this.$musicVideosContent;
+      var $contentBox = this.$musicVideosContent;
+      $contentBox.empty();
+      $contentBox.defaultMusicVideosViewer('Video');
+    },
+    
+    /**************************************
+     * Called when Music Videos Title-Page is shown. *
+     **************************************/
+    onMusicVideosTitleShow: function() {
+      if (this.$musicVideosTitleContent.html() == '') {
+        var musicVideosTitlePage = this.musicVideosTitlePage;
+        var $contentBox = this.$musicVideosTitleContent;
         $contentBox.addClass('loading');
 
         xbmc.getMusicVideos({
@@ -1099,7 +2025,7 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultMusicVideosViewer(result, musicVideosPage);
+            $contentBox.defaultMusicVideosTitleViewer(result, musicVideosTitlePage);
             $contentBox.removeClass('loading');
           }
         });
@@ -1182,14 +2108,21 @@ var awxUI = {};
       });
     },
 
-
+    /*********************************************
+     * Called when Movie-Page is shown. *
+     *********************************************/
+    onMoviesShow: function() {
+      var $contentBox = this.$moviesContent;
+      $contentBox.empty();
+      $contentBox.defaultMovieViewer('Video');
+    },
 
     /*********************************************
-     * Called when Movie-Page is shown.          *
+     * Called when Movie Title Page is shown.          *
      *********************************************/
-    onMoviesShow: function(e) {
+    onMoviesTitleShow: function(e) {
       //Always refresh, mainly for limited item views
-        awxUI.$moviesContent.empty();
+        awxUI.$moviesTitleContent.empty();
         if (typeof lastMovieCount === 'undefined') { lastMovieCount = mkf.cookieSettings.get('limitVideo', 25) };
         if (typeof lastMovieCountStart === 'undefined') { lastMovieCountStart = 0 };
         if (typeof e != 'undefined') {
@@ -1209,7 +2142,8 @@ var awxUI = {};
             };
           };
         }
-        var $contentBox = awxUI.$moviesContent;
+        var $contentBox = awxUI.$moviesTitleContent;
+        var moviesTitlePage = awxUI.moviesTitlePage;
         $contentBox.addClass('loading');
 
         xbmc.getMovies({
@@ -1221,7 +2155,7 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultMovieViewer(result);
+            $contentBox.defaultMovieTitleViewer(result, moviesTitlePage);
             $contentBox.removeClass('loading');
           }
         });
@@ -1253,6 +2187,84 @@ var awxUI = {};
       }
     },
 
+    /*********************************************
+     * Called when Movie Genres-Page is shown.          *
+     *********************************************/
+    onMovieGenresShow: function() {
+
+      if (this.$movieGenresContent.html() == '') {
+        var movieGenresPage = this.movieGenresPage;
+        var $contentBox = this.$movieGenresContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getVideoGenres({
+          type: 'movie',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_movie_genres'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultGenresViewer(result, movieGenresPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when Movie Years-Page is shown.          *
+     *********************************************/
+    onMovieYearsShow: function() {
+
+      if (this.$movieYearsContent.html() == '') {
+        var movieYearsPage = this.movieYearsPage;
+        var $contentBox = this.$movieYearsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get years via proper method, use DB direct e.g. "videodb://1/3/1992"
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'videodb://1/3/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultYearsViewer(result, movieYearsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when Movie Tags-Page is shown.          *
+     *********************************************/
+    onMovieTagsShow: function() {
+
+      if (this.$movieTagsContent.html() == '') {
+        var movieTagsPage = this.movieTagsPage;
+        var $contentBox = this.$movieTagsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get years via proper method, use DB direct e.g. "videodb://1/9/noir"
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'videodb://1/9/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_tags'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultTagsViewer(result, movieTagsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
     
     /**************************************
      * Called when Video playlists-Page is shown. *
@@ -1299,14 +2311,22 @@ var awxUI = {};
       }
     },
     
-
-    /***************************************
+    /*********************************************
      * Called when Tv-Shows-Page is shown. *
+     *********************************************/
+    onTvShowsShow: function() {
+      var $contentBox = this.$tvShowsContent;
+      $contentBox.empty();
+      $contentBox.defaultTvShowViewer('Video');
+    },
+    
+    /***************************************
+     * Called when Tv-Shows- Title Page is shown. *
      ***************************************/
-    onTvShowsShow: function(e) {
-      var tvShowsPage = awxUI.tvShowsPage;
+    onTvShowsTitleShow: function(e) {
+      var tvShowsTitlePage = awxUI.tvShowsTitlePage;
       //Always refresh, mainly for limited item views
-        awxUI.$tvShowsContent.empty();
+        awxUI.$tvShowsTitleContent.empty();
         var limitTV = mkf.cookieSettings.get('limitTV', 25);
         if (typeof lastTVCount === 'undefined') { lastTVCount = limitTV };
         if (typeof lastTVCountStart === 'undefined') { lastTVCountStart = 0 };
@@ -1328,11 +2348,8 @@ var awxUI = {};
           };
           
         }
-        var $contentBox = awxUI.$tvShowsContent;
+        var $contentBox = awxUI.$tvShowsTitleContent;
         
-      /*if (this.$tvShowsContent.html() == '') {
-        var tvShowsPage = this.tvShowsPage;
-        var $contentBox = this.$tvShowsContent;*/
         $contentBox.addClass('loading');
 
         xbmc.getTvShows({
@@ -1344,11 +2361,11 @@ var awxUI = {};
           },
 
           onSuccess: function(result) {
-            $contentBox.defaultTvShowViewer(result, tvShowsPage);
+            $contentBox.defaultTvShowTitleViewer(result, tvShowsTitlePage);
             $contentBox.removeClass('loading');
           }
         });
-      //}
+
       return false
     },
 
@@ -1370,6 +2387,58 @@ var awxUI = {};
 
           onSuccess: function(result) {
             $contentBox.defaultRecentlyAddedEpisodesViewer(result, tvShowsRecentlyAddedPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when TvShows Genres-Page is shown.          *
+     *********************************************/
+    onTvShowsGenresShow: function() {
+
+      if (this.$tvShowsGenresContent.html() == '') {
+        var tvShowsGenresPage = this.tvShowsGenresPage;
+        var $contentBox = this.$tvShowsGenresContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getVideoGenres({
+          type: 'tvshow',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_genres'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultGenresViewer(result, tvShowsGenresPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when TvShows Years-Page is shown.          *
+     *********************************************/
+    onTvShowsYearsShow: function() {
+
+      if (this.$tvShowsYearsContent.html() == '') {
+        var tvShowsYearsPage = this.tvShowsYearsPage;
+        var $contentBox = this.$tvShowsYearsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get years via proper method, use DB direct e.g. "videodb://1/3/1992"
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'videodb://1/3/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultYearsViewer(result, tvShowsYearsPage);
             $contentBox.removeClass('loading');
           }
         });

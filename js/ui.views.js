@@ -93,43 +93,129 @@ var uiviews = {};
       });
 
       return false;
-    }, // END onArtistInformationClick
+    }, // END AlbumInfoOverlay
+    
+    /*------------*/
+    SongInfoOverlay: function(e) {
+      
+      var dialogHandle = mkf.dialog.show();
+      //var dialogContent = $('<div></div>');
+      var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+
+      xbmc.getAlbumDetails({
+        albumid: e.data.idAlbum,
+        onSuccess: function(albumdetails) {
+          if ( useFanart ) {
+            $('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(albumdetails.fanart) + '")');
+          };
+          
+          var thumb = (albumdetails.thumbnail? xbmc.getThumbUrl(albumdetails.thumbnail) : 'images/thumb.png');
+          var dialogContent = $('<img src="' + thumb + '" class="thumbAlbums dialogThumb" />' +
+            '<h1 class="underline">' + albumdetails.label + '</h1>' +
+            //'<div class="test"><img src="' + tvshow.file + 'logo.png' + '" /></div>' +
+            (albumdetails.artist? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_artist') + '</span><span class="labelinfo">' + albumdetails.artist + '</span></div>' : '') +
+            (albumdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + albumdetails.genre.join(', ') + '</span></div>' : '') +
+            (albumdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + albumdetails.mood.join(', ') + '</span></div>' : '') +
+            (albumdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  albumdetails.style.join(', ') + '</span></div>' : '') +
+            (albumdetails.rating? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="labelinfo">' + albumdetails.rating + '</span></div>' : '') +
+            //(albumdetails.type? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_type') + '</span><span class="labelinfo">' + albumdetails.type + '</span></div>' : '') +
+            (albumdetails.year? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_year') + '</span><span class="labelinfo">' + albumdetails.year + '</span></div>' : '') +
+            (albumdetails.albumlabel? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_label') + '</span><span class="labelinfo">' + albumdetails.albumlabel + '</span></div>' : '') +
+            //(albumdetails.yearsactive? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_yearsactive') + '</span><span class="labelinfo">' + albumdetails.yearsactive + '</span></div>' : '') +
+            //(albumdetails.instrument? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_instrument') + '</span><span class="labelinfo">' + albumdetails.instrument + '</span></div>' : '') +
+            '<p class="artistdesc">' + albumdetails.description + '</p>');
+          
+          mkf.dialog.setContent(dialogHandle, dialogContent);
+          
+        },
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+          mkf.dialog.close(dialogHandle);        
+        }
+      });
+
+      return false;
+    }, // END SongInfoOverlay
+    
     /*---------*/
     ArtistAlbums: function(e) {
       // open new page to show artist's albums
-      var $artistContent = $('<div class="pageContentWrapper"></div>');
-      var artistPage = mkf.pages.createTempPage(e.data.objParentPage, {
+      var $ArtistAlbumsContent = $('<div class="pageContentWrapper"></div>');
+      var ArtistAlbumsPage = mkf.pages.createTempPage(e.data.objParentPage, {
         title: e.data.strArtist,
-        content: $artistContent
+        content: $ArtistAlbumsContent
       });
-      artistPage.setContextMenu(
+      ArtistAlbumsPage.setContextMenu(
         [
           {
             'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
             function() {
-              mkf.pages.closeTempPage(artistPage);
+              mkf.pages.closeTempPage(ArtistAlbumsPage);
               return false;
             }
           }
         ]
       );
-      mkf.pages.showTempPage(artistPage);
+      mkf.pages.showTempPage(ArtistAlbumsPage);
 
       // show artist's albums
-      $artistContent.addClass('loading');
-      xbmc.getArtistsAlbums({
-        artistid: e.data.idArtist,
+      $ArtistAlbumsContent.addClass('loading');
+      xbmc.getAlbums({
+        item: 'artistid',
+        itemId: e.data.idArtist,
 
         onError: function() {
           mkf.messageLog.show(mkf.lang.get('message_failed_artists_albums'), mkf.messageLog.status.error, 5000);
-          $artistContent.removeClass('loading');
+          $ArtistAlbumsContent.removeClass('loading');
         },
 
         onSuccess: function(result) {
           //Stop limiting by passing this flag.
-          result.isArtist = true;
-          $artistContent.defaultAlbumViewer(result, artistPage);
-          $artistContent.removeClass('loading');
+          result.isFilter = true;
+          $ArtistAlbumsContent.defaultAlbumTitleViewer(result, ArtistAlbumsPage);
+          $ArtistAlbumsContent.removeClass('loading');
+        }
+      });
+
+      return false;
+    },
+    
+    /*---------*/
+    ArtistSongs: function(e) {
+      // open new page to show artist's albums
+      var $ArtistSongsContent = $('<div class="pageContentWrapper"></div>');
+      var ArtistSongsPage = mkf.pages.createTempPage(e.data.objParentPage, {
+        title: e.data.strArtist,
+        content: $ArtistSongsContent
+      });
+      ArtistSongsPage.setContextMenu(
+        [
+          {
+            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+            function() {
+              mkf.pages.closeTempPage(ArtistSongsPage);
+              return false;
+            }
+          }
+        ]
+      );
+      mkf.pages.showTempPage(ArtistSongsPage);
+
+      // show artist's albums
+      $ArtistSongsContent.addClass('loading');
+      xbmc.getSongs({
+        item: 'artistid',
+        itemId: e.data.idArtist,
+
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed_artists_albums'), mkf.messageLog.status.error, 5000);
+          $ArtistSongsContent.removeClass('loading');
+        },
+
+        onSuccess: function(result) {
+          result.isFilter = true;
+          $ArtistSongsContent.defaultSonglistViewer(result, ArtistSongsPage);
+          $ArtistSongsContent.removeClass('loading');
         }
       });
 
@@ -177,48 +263,7 @@ var uiviews = {};
 
         return false;
       },
-    
-    /*-----------*/
-    AllGenreAlbums: function(e) {
-      // open new page to show artist's albums
-      var $artistsGenresContent = $('<div class="pageContentWrapper"></div>');
-      var artistPage = mkf.pages.createTempPage(e.data.objParentPage, {
-        title: e.data.strGenre,
-        content: $artistsGenresContent
-      });
-      artistPage.setContextMenu(
-        [
-          {
-            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
-            function() {
-              mkf.pages.closeTempPage(artistPage);
-              return false;
-            }
-          }
-        ]
-      );
-      mkf.pages.showTempPage(artistPage);
 
-      // show artist's
-      $artistsGenresContent.addClass('loading');
-      xbmc.getGenresAlbums({
-        genreid: e.data.idGenre,
-
-        onError: function() {
-          mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
-          $artistsGenresContent.removeClass('loading');
-        },
-
-        onSuccess: function(result) {
-          //Stop limiting.
-          result.isArtist = true;
-          $artistsGenresContent.defaultAlbumViewer(result, artistPage);
-          $artistsGenresContent.removeClass('loading');
-        }
-      });
-
-      return false;
-    },
     
     /*------*/
     AlbumPlay: function(e) {
@@ -233,15 +278,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.playAlbum({
-        albumid: e.data.idAlbum,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
 
@@ -258,15 +294,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.playMusicGenre({
-        genreid: e.data.idGenre,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
     
@@ -283,15 +310,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.playArtist({
-        artistid: e.data.idArtist,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
     
@@ -310,23 +328,14 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.addAlbumToPlaylist({
-        albumid: e.data.idAlbum,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
 
     /*---------------*/
+    //Can only be music genre.
     AddGenreToPlaylist: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('messsage_add_genre_to_playlist'));
       xbmc.playlistAdd({
-        playlistid: 0,
         item: 'genreid',
         itemId: e.data.idGenre,
         onSuccess: function() {
@@ -336,15 +345,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.addGenreToPlaylist({
-        genreid: e.data.idGenre,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
     
@@ -362,15 +362,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.addArtistToPlaylist({
-        artistid: e.data.idArtist,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
     
@@ -378,6 +369,7 @@ var uiviews = {};
     /*----------*/
     Songlist: function(e) {
       // open new page to show album's songs
+      console.log(e.data.itemId);
       var $songlistContent = $('<div class="pageContentWrapper"></div>');
       var songlistPage = mkf.pages.createTempPage(e.data.objParentPage, {
         title: e.data.strAlbum,
@@ -398,8 +390,9 @@ var uiviews = {};
 
       // show album's songs
       $songlistContent.addClass('loading');
-      xbmc.getAlbumsSongs({
-        albumid: e.data.idAlbum,
+      xbmc.getSongs({
+        item: e.data.item,
+        itemId: e.data.itemId,
 
         onError: function() {
           mkf.messageLog.show(mkf.lang.get('message_failed_albums_songs'), mkf.messageLog.status.error, 5000);
@@ -407,7 +400,8 @@ var uiviews = {};
         },
 
         onSuccess: function(result) {
-          $songlistContent.defaultSonglistViewer(result);
+          result.isFilter = e.data.filter;
+          $songlistContent.defaultSonglistViewer(result, e.data.objParentPage);
           $songlistContent.removeClass('loading');
         }
       });
@@ -428,15 +422,6 @@ var uiviews = {};
           mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
         }
       });
-      /*xbmc.playSong({
-        songid: e.data.idSong,
-        onSuccess: function() {
-          mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 2000, mkf.messageLog.status.success);
-        },
-        onError: function(errorText) {
-          mkf.messageLog.appendTextAndHide(messageHandle, errorText, 8000, mkf.messageLog.status.error);
-        }
-      });*/
       return false;
     },
 
@@ -491,7 +476,7 @@ var uiviews = {};
     },
     
     /*------*/
-    MusicVideoPlay: function(event) {
+    MusicVideoPlay: function(e) {
       var messageHandle = mkf.messageLog.show(mkf.lang.get('message_playing_musicvideo'));
       xbmc.playerOpen({
         item: 'musicvideoid',
@@ -602,7 +587,7 @@ var uiviews = {};
     },
     
     /*--------*/
-    musicvidGenreList: function(e) {
+    /*musicvidGenreList: function(e) {
       // open new page to show movieGenre
       var $musicvidGenreContent = $('<div class="pageContentWrapper"></div>');
       var musicvidGenrePage = mkf.pages.createTempPage(e.data.objParentPage, {
@@ -651,7 +636,7 @@ var uiviews = {};
       fillPage();
 
       return false;
-    },
+    },*/
     
 /*--------------------*/
 /* Movie UI functions */
@@ -1054,8 +1039,8 @@ var uiviews = {};
         },
 
         onSuccess: function(result) {
-          result.setdetails.items.isSet = true;
-          $setContent.defaultMovieViewer(result.setdetails.items, e.data.idSet, setPage);
+          result.setdetails.isFilter = true;
+          $setContent.defaultMovieTitleViewer(result.setdetails, e.data.idSet, setPage);
           $setContent.removeClass('loading');
         }
       });
@@ -1115,7 +1100,7 @@ var uiviews = {};
     },
     
     /*--------*/
-    movieGenreList: function(e) {
+    /*movieGenreList: function(e) {
       // open new page to show movieGenre
       var $movieGenreContent = $('<div class="pageContentWrapper"></div>');
       var movieGenrePage = mkf.pages.createTempPage(e.data.objParentPage, {
@@ -1133,7 +1118,7 @@ var uiviews = {};
           },
 
           onSuccess: function(result) {
-            result.isSet = true;
+            result.isFilter = true;
             $movieGenreContent.defaultMovieViewer(result);
             $movieGenreContent.removeClass('loading');
           }
@@ -1164,7 +1149,7 @@ var uiviews = {};
       fillPage();
 
       return false;
-    },
+    },*/
     
 /*-----------------*/
 /* TV UI functions */
@@ -1584,7 +1569,7 @@ var uiviews = {};
     },
     
     /*--------*/
-    tvshowGenreList: function(e) {
+    /*tvshowGenreList: function(e) {
       // open new page to show movieGenre
       var $tvshowGenreContent = $('<div class="pageContentWrapper"></div>');
       var tvshowGenrePage = mkf.pages.createTempPage(e.data.objParentPage, {
@@ -1634,7 +1619,7 @@ var uiviews = {};
       fillPage();
 
       return false;
-    },
+    },*/
     
     /*---------*/
     pvrSwitchChannel: function(e) {
@@ -1735,46 +1720,215 @@ var uiviews = {};
       return false;
     },
     
-    /*--------*/
-    /*adFilterList: function(result) {
-      // open new page to show 
-      var $adFilterContent = $('<div class="pageContentWrapper"></div>');
-      var adFilterPage = mkf.pages.createTempPage(result.objParentPage, {
-        title: 'adFilter',
-        content: $adFilterContent
-      });
-      var fillPage = function() {
-        $adFilterContent.addClass('loading');
-        //pipe result to type default viewer
-        if (result.Type == 'movies') { $adFilterContent.defaultMovieViewer(result.movies); };
+/*-------------------*/
+/* Misc UI functions */
+/*-------------------*/
 
-      }
-      adFilterPage.setContextMenu(
+    /*-----------*/
+    GenreItems: function(e) {
+      var settings = {};
+      var lib = 'get' + e.data.lib;
+      var defaultViewer = '';
+      var sortby = '';
+      if (e.data.lib == 'Artists') {
+        defaultViewer = 'defaultArtistsTitleViewer';
+      } else if (e.data.lib == 'Albums') {
+        defaultViewer = 'defaultAlbumTitleViewer';
+      } else if (e.data.lib == 'Songs') {
+        defaultViewer = 'defaultSonglistViewer';
+        //sortby = 'label';
+      } else if (e.data.lib == 'Movies') {
+        defaultViewer = 'defaultMovieTitleViewer';
+      } else if (e.data.lib == 'TvShows') {
+        defaultViewer = 'defaultTvShowTitleViewer';
+      } else if (e.data.lib == 'MusicVideos') {
+        defaultViewer = 'defaultMusicVideosTitleViewer';
+      };
+      // open new page to show artist's albums
+      var $GenreItemsContent = $('<div class="pageContentWrapper"></div>');
+      var GenreItemsPage = mkf.pages.createTempPage(e.data.objParentPage, {
+        title: e.data.strGenre,
+        content: $GenreItemsContent
+      });
+      GenreItemsPage.setContextMenu(
         [
           {
-            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
             function() {
-              mkf.pages.closeTempPage(adFilterPage);
+              mkf.pages.closeTempPage(GenreItemsPage);
               return false;
             }
-          },
-          {
-            'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
-              function(){
-                $adFilterContent.empty();
-                fillPage();
-                return false;
-              }
           }
         ]
       );
-      mkf.pages.showTempPage(adFilterPage);
+      mkf.pages.showTempPage(GenreItemsPage);
 
-      //ad filter page
-      fillPage();
+      // show artist's
+      $GenreItemsContent.addClass('loading');
+      xbmc[lib]({
+        item: 'genreid',
+        itemId: e.data.idGenre,
+        //(typeof(sortby) !== 'undefined'? 'sortby: ' + sortby : ''),
+
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+          $GenreItemsContent.removeClass('loading');
+        },
+
+        onSuccess: function(result) {
+          //Stop limiting.
+          result.isFilter = true;
+          settings.filterWatched = false;
+          $GenreItemsContent[defaultViewer](result, GenreItemsPage, settings);
+          $GenreItemsContent.removeClass('loading');
+        }
+      });
 
       return false;
-    },*/
+    },
+    
+    /*-----------*/
+    YearsItems: function(e) {
+      var settings = {};
+      var lib = 'get' + e.data.lib;
+      var defaultViewer = '';
+      var settings = {
+        sortby: '',
+        order: '',
+        filter: '',
+        onSuccess: null,
+        onError: null
+      };
+
+      if (e.data.lib == 'Albums') {
+        defaultViewer = 'defaultAlbumTitleViewer';
+        settings.sortby = mkf.cookieSettings.get('albumSort', 'label');
+        settings.order = mkf.cookieSettings.get('adesc', 'ascending');
+      } else if (e.data.lib == 'Songs') {
+        defaultViewer = 'defaultSonglistViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      } else if (e.data.lib == 'Movies') {
+        //Use recent so watched are shown.
+        defaultViewer = 'defaultMovieRecentViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      } else if (e.data.lib == 'TvShows') {
+        defaultViewer = 'defaultTvShowTitleViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      } else if (e.data.lib == 'MusicVideos') {
+        defaultViewer = 'defaultMusicVideosTitleViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      };
+      
+      // open new page to show year's albums
+      var $YearsItemsContent = $('<div class="pageContentWrapper"></div>');
+      var YearsItemsPage = mkf.pages.createTempPage(e.data.objParentPage, {
+        title: e.data.strYear,
+        content: $YearsItemsContent
+      });
+      YearsItemsPage.setContextMenu(
+        [
+          {
+            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+            function() {
+              mkf.pages.closeTempPage(YearsItemsPage);
+              return false;
+            }
+          }
+        ]
+      );
+      mkf.pages.showTempPage(YearsItemsPage);
+
+      // show year's
+      $YearsItemsContent.addClass('loading');
+      //No builtin, use advanced filter
+      settings.filter = '"filter": {"field": "year", "operator": "is", "value": "' + e.data.strYear + '"}';
+      xbmc[lib]({
+        filter: settings.filter,
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+          $YearsItemsContent.removeClass('loading');
+        },
+
+        onSuccess: function(result) {
+          if (result.limits.total > 0) {
+            //Stop limiting.
+            result.isFilter = true;
+            settings.filterWatched = false;
+            $YearsItemsContent[defaultViewer](result, YearsItemsPage, settings);
+            $YearsItemsContent.removeClass('loading');
+          } else {
+            mkf.messageLog.show(mkf.lang.get('message_failed_no_items'), mkf.messageLog.status.error, 5000);
+            mkf.pages.closeTempPage(YearsItemsPage);
+          }
+            
+        }
+      });
+
+      return false;
+    },
+    
+    /*-----------*/
+    TagsItems: function(e) {
+      var lib = 'get' + e.data.lib;
+      var defaultViewer = '';
+      var settings = {
+        sortby: '',
+        order: '',
+        filter: '',
+        onSuccess: null,
+        onError: null
+      };
+
+      //Movies only currently.
+      if (e.data.lib == 'Movies') {
+        //Use recent so watched are shown.
+        defaultViewer = 'defaultMovieRecentViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      }
+      
+      // open new page to show year's albums
+      var $TagsItemsContent = $('<div class="pageContentWrapper"></div>');
+      var TagsItemsPage = mkf.pages.createTempPage(e.data.objParentPage, {
+        title: e.data.strTag,
+        content: $TagsItemsContent
+      });
+      TagsItemsPage.setContextMenu(
+        [
+          {
+            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+            function() {
+              mkf.pages.closeTempPage(TagsItemsPage);
+              return false;
+            }
+          }
+        ]
+      );
+      mkf.pages.showTempPage(TagsItemsPage);
+
+      // show tag's items
+      $TagsItemsContent.addClass('loading');
+      //No builtin, use advanced filter
+      settings.filter = '"filter": {"field": "tag", "operator": "is", "value": "' + e.data.strTag + '"}';
+      xbmc[lib]({
+        filter: settings.filter,
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+          $TagsItemsContent.removeClass('loading');
+        },
+
+        onSuccess: function(result) {
+          $TagsItemsContent[defaultViewer](result, TagsItemsPage);
+          $TagsItemsContent.removeClass('loading');
+        }
+      });
+
+      return false;
+    },
     
 /*----------*/
 /* UI Views */
@@ -1786,18 +1940,19 @@ var uiviews = {};
 
     /*----Artists list view----*/
     ArtistViewList: function(artists, parentPage) {
+      var allSongs = false;
+      if (parentPage.className == 'songsArtists') { allSongs = true; };
       var $artistList = $('<ul class="fileList"></ul>');
 
         $.each(artists.artists, function(i, artist)  {
           $artistList.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper"><a href="" class="button info' + artist.artistid + '" title="' + mkf.lang.get('btn_information') + '"><span class="miniIcon information" /></a>' +
                     '<a href="" class="button playlist' + artist.artistid + '" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
                     '<a href="" class="button play' + artist.artistid + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a>' + 
-                    '<a href="" class="artist' +
-                    artist.artistid + '">' +
-                    artist.label + '<div class="findKeywords">' + artist.label.toLowerCase() + '</div>' +
+                    (allSongs? '<a href="" class="songs' + artist.artistid + '">' + artist.label + '</a>' : '<a href="" class="artist' + artist.artistid + '">' + artist.label + '<div class="findKeywords">' + artist.label.toLowerCase() + '</div>') +
                     '</a></li>');
           $artistList.find('.artist' + artist.artistid)
             .bind('click',{ idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistAlbums);
+            $artistList.find('.songs' + artist.artistid).on('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistSongs)
           $artistList.find('.playlist' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.AddArtistToPlaylist);
           $artistList.find('.play' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistPlay);
           $artistList.find('.info' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistInfoOverlay);
@@ -1809,6 +1964,8 @@ var uiviews = {};
 
     /*----Artists thumb view----*/
     ArtistViewThumbnails: function(artists, parentPage) {
+      var allSongs = false;
+      if (parentPage.className == 'songsArtists') { allSongs = true; };
       var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
       var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
       
@@ -1818,7 +1975,7 @@ var uiviews = {};
           var thumb = (artist.thumbnail? xbmc.getThumbUrl(artist.thumbnail) : 'images/thumb.png');
           $artist = $('<div class="album'+artist.artistid+' thumbWrapper">' +
             '<div class="linkArtistWrapper">' + 
-                '<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('btn_all') + '</a>' +
+                (allSongs? '<a href="" class="songs' + artist.artistid + '">' + mkf.lang.get('btn_all_songs') + '</a>' : '<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('btn_all') + '</a>') +
                 '<a href="" class="info' + artist.artistid + '">' + mkf.lang.get('btn_information') + '</a>' +
                 '<a href="" class="enqueue' + artist.artistid + '">' + mkf.lang.get('btn_enqueue') + '</a>' +
             '</div>' +
@@ -1831,7 +1988,8 @@ var uiviews = {};
           '</div>');
 
         $artistList.append($artist);
-        $artistList.find('.albums' + artist.artistid).bind('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistAlbums)
+        $artistList.find('.albums' + artist.artistid).bind('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistAlbums);
+        $artistList.find('.songs' + artist.artistid).on('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistSongs);
         $artistList.find('.enqueue' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.AddArtistToPlaylist);
         //$artistList.find('.play' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistPlay);
         $artistList.find('.info' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistInfoOverlay);
@@ -1845,6 +2003,8 @@ var uiviews = {};
 
     /*----Artists logo view----*/
     ArtistViewLogos: function(artists, parentPage) {
+      var allSongs = false;
+      if (parentPage.className == 'songsArtists') { allSongs = true; };
       var artistsPath = mkf.cookieSettings.get('artistsPath', '');
       var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
       var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
@@ -1857,7 +2017,7 @@ var uiviews = {};
           xbmc.getLogo({path: artist.file, type: 'logo'}, function(logo) {
           $artist = $('<div class="artist'+artist.artistid+' logoWrapper thumbLogoWrapper">' +
             '<div class="linkTVLogoWrapper">' + 
-                '<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('btn_all') + '</a>' +
+                (allSongs? '<a href="" class="songs' + artist.artistid + '">' + mkf.lang.get('btn_all_songs') + '</a>' : '<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('btn_all') + '</a>') +
                 '<a href="" class="info' + artist.artistid + '">' + mkf.lang.get('btn_information') + '</a>' +
                 '<a href="" class="enqueue' + artist.artistid + '">' + mkf.lang.get('btn_enqueue') + '</a>' +
             '</div>' +
@@ -1869,7 +2029,8 @@ var uiviews = {};
             '<div class="findKeywords">' + artist.label.toLowerCase() + '</div>' +
           '</div>').appendTo($artistList);
 
-          $artistList.find('.albums' + artist.artistid).bind('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistAlbums)
+          $artistList.find('.albums' + artist.artistid).on('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistAlbums);
+          $artistList.find('.songs' + artist.artistid).on('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistSongs);
           $artistList.find('.enqueue' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.AddArtistToPlaylist);
           //$artistList.find('.play' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistPlay);
           $artistList.find('.info' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistInfoOverlay);
@@ -1967,27 +2128,7 @@ var uiviews = {};
       
       return $artistList;
     },
-    
-    /*----Audio genres list view----*/
-    AudioGenresViewList: function(agenres, parentPage) {
-      var $artistGenresList = $('<ul class="fileList"></ul>');
-      $.each(agenres.genres, function(i, artistGenres)  {
-        if (artistGenres.genreid == 0) { return };
-        $artistGenresList.append('<li' + (i%2==0? ' class="even"': '') + 
-                  '><div class="folderLinkWrapper"><a href="" class="button allgenre' + artistGenres.genreid + '" title="' + mkf.lang.get('btn_all') +
-                  '"><span class="miniIcon all" /></a><a href="" class="button playlist' + artistGenres.genreid + '" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
-                  '<a href="" class="button play' + artistGenres.genreid + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a><a href="" class="genre' + 
-                  artistGenres.genreid + '">' +
-                  artistGenres.label + '<div class="findKeywords">' + artistGenres.label.toLowerCase() + '</div>' +
-                  '</a></div></li>');
-        $artistGenresList.find('.allgenre' + artistGenres.genreid).on('click', {idGenre: artistGenres.genreid, strGenre: artistGenres.label, objParentPage: parentPage}, uiviews.AllGenreAlbums);
-        $artistGenresList.find('.genre' + artistGenres.genreid).bind('click',{idGenre: artistGenres.genreid,strGenre: artistGenres.label, objParentPage: parentPage}, uiviews.GenreArtists);
-        $artistGenresList.find('.playlist' + artistGenres.genreid).on('click', {idGenre: artistGenres.genreid}, uiviews.AddGenreToPlaylist);
-        $artistGenresList.find('.play' + artistGenres.genreid).bind('click', {idGenre: artistGenres.genreid, strAlbum: artistGenres.label}, uiviews.MusicGenrePlay);
-      });
-      return $artistGenresList;
-    },
-    
+
     /*----Audio Playlists list view----*/
     AudioPlaylistsViewList: function(aplaylists, callback) {
       var $audioPlaylists = $('<ul class="fileList"></ul>');
@@ -2024,7 +2165,7 @@ var uiviews = {};
             '<a href="" class="album' + album.albumid + '">' + album.label + ' - ' + album.artist[0] + '<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist[0].toLowerCase() + '</div>' +
             '</a></div></li>').appendTo($albumsList);
 
-          $album.find('.album'+ album.albumid).bind('click', {idAlbum: album.albumid, strAlbum: album.label, objParentPage: parentPage }, uiviews.Songlist);
+          $album.find('.album'+ album.albumid).bind('click', {itemId: album.albumid, strAlbum: album.label, objParentPage: parentPage, item: 'albumid', filter: true }, uiviews.Songlist);
           $album.find('.playlist').bind('click', {idAlbum: album.albumid}, uiviews.AddAlbumToPlaylist);
           $album.find('.play').bind('click', {idAlbum: album.albumid, strAlbum: album.label}, uiviews.AlbumPlay);
           $album.find('.info'+ album.albumid).on('click', {idAlbum: album.albumid}, uiviews.AlbumInfoOverlay);
@@ -2057,7 +2198,7 @@ var uiviews = {};
 
         $albumsList.append($album);
         $album.find('.play').bind('click', {idAlbum: album.albumid, strAlbum: album.label}, uiviews.AlbumPlay);
-        $album.find('.songs').bind('click', {idAlbum: album.albumid, strAlbum: album.label, objParentPage: parentPage }, uiviews.Songlist);
+        $album.find('.songs').bind('click', {itemId: album.albumid, strAlbum: album.label, objParentPage: parentPage, item: 'albumid', filter: true }, uiviews.Songlist);
         $album.find('.playlist').bind('click', {idAlbum: album.albumid}, uiviews.AddAlbumToPlaylist);
         $album.find('.info').bind('click', {idAlbum: album.albumid}, uiviews.AlbumInfoOverlay);
         
@@ -2098,8 +2239,9 @@ var uiviews = {};
               
               infodiv.addClass('loading');
 
-              xbmc.getAlbumsSongs({
-                albumid: albumID,
+              xbmc.getSongs({
+                item: 'albumid',
+                itemId: albumID,
 
                 onError: function() {
                   mkf.messageLog.show(mkf.lang.get('message_failed_albums_songs'), mkf.messageLog.status.error, 5000);
@@ -2161,17 +2303,32 @@ var uiviews = {};
     
     /*----Song list view-----*/
     SongViewList: function(songs, parentPage) {
+      
       var $songList = $('<ul class="fileList"></ul>');
 
+      if (parentPage.className == 'songsTitle') {
         $.each(songs.songs, function(i, song)  {
-          var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') +
+          var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"><a href="" class="button info' + song.songid + '" title="' + mkf.lang.get('btn_information') + '"><span class="miniIcon information" /></a>' +
+          '<a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') +
           '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('btn_playnext') +
-          '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.track + '. ' + song.artist + ' - ' + song.label + '</a></div></li>').appendTo($songList);
+          '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a></div></li>').appendTo($songList);
           
           $song.find('.playlist').bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
           $song.find('.play').bind('click', {idSong: song.songid}, uiviews.SongPlay);
           $song.find('.playnext').bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
         });
+      } else {
+        $.each(songs.songs, function(i, song)  {
+          var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') +
+          '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('btn_playnext') +
+          '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.track + '. ' + song.artist + ' - ' + song.label + '</a></div></li>').appendTo($songList);
+          
+          $song.find('.info').on('click', {idSong: song.songid}, uiviews.SongInfoOverlay);
+          $song.find('.playlist').on('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
+          $song.find('.play').on('click', {idSong: song.songid}, uiviews.SongPlay);
+          $song.find('.playnext').on('click', {idSong: song.songid}, uiviews.SongPlayNext);
+        });
+      }
       return $songList;
     },
   
@@ -2294,7 +2451,7 @@ var uiviews = {};
 /*-------------*/
 
     /*----Movie list accordion view----*/
-    MovieViewAccordion: function(movies, options) {
+    MovieViewAccordion: function(movies, options, parentPage) {
     
     var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
@@ -2346,7 +2503,7 @@ var uiviews = {};
     },    
     
     /*----Movie list inline info view----*/
-    MovieViewListInline: function(movies, options) {
+    MovieViewListInline: function(movies, options, parentPage) {
     
       var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
       var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
@@ -2400,7 +2557,7 @@ var uiviews = {};
     },
     
     /*----Movie list view----*/
-    MovieViewList: function(movies, options) {
+    MovieViewList: function(movies, options, parentPage) {
     
     var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
@@ -2432,7 +2589,7 @@ var uiviews = {};
     },
     
     /*----Movie logo view----*/
-    MovieViewLogos: function(movies, options) {
+    MovieViewLogos: function(movies, options, parentPage) {
     
     var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
@@ -2479,7 +2636,7 @@ var uiviews = {};
     },
       
     /*----Movie thumbnail view----*/
-    MovieViewThumbnails: function(movies, options) {
+    MovieViewThumbnails: function(movies, options, parentPage) {
     
     var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
@@ -2524,7 +2681,7 @@ var uiviews = {};
     },
         
     /*----Movie single view----*/
-    MovieViewSingle: function(movies, options) {
+    MovieViewSingle: function(movies, options, parentPage) {
     
     //var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
@@ -2707,55 +2864,49 @@ var uiviews = {};
 /*----------*/
 
     /*----TV list view----*/
-    TVViewList: function(shows, parentPage) {
-      //var $tvshowContainer = $(this);
+    TVViewList: function(shows, parentPage, options) {
       var $tvShowList = $('<ul class="fileList"></ul>');
       
-      //var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
-      var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
-      //var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
-      var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+      /*var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+      var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;*/
     
-      //if (listview) { var $tvShowList = $('<ul class="fileList"></ul>').appendTo($(this)); };
       var classEven = -1;
 
         $.each(shows.tvshows, function(i, tvshow) {
           var watched = false;
-          if (tvshow.playcount > 0 && !filterShowWatched) { watched = true; }
-          if (filterWatched && watched) { return; }
+          if (tvshow.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
           
           classEven += 1
           $tvshow = $('<li' + (classEven%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' + 
-            //'<a href="" class="season">' + mkf.lang.get('btn_seasons') + '</a>' +
-            //'<a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
             '<a href="" class="button info" title="' + mkf.lang.get('btn_information') + '"><span class="miniIcon information" /></a>' +
             '<a href="" class="button unwatched" title="' + mkf.lang.get('btn_unwatched') + '"><span class="miniIcon unwatched" /></a>' +
             '<a href="" class="tvshowName season">' + tvshow.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '<div class="findKeywords">' + tvshow.label.toLowerCase() + '</div>' +
             '</a></div></li>').appendTo($tvShowList);
 
-          $tvshow.find('.season').bind('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.SeasonsList);
-          $tvshow.find('.info').bind('click', {'tvshow': tvshow}, uiviews.TVShowInfoOverlay);
-          $tvshow.find('.unwatched').bind('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.Unwatched);
+          $tvshow.find('.season').on('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.SeasonsList);
+          $tvshow.find('.info').on('click', {'tvshow': tvshow}, uiviews.TVShowInfoOverlay);
+          $tvshow.find('.unwatched').on('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.Unwatched);
         });
 
       return $tvShowList;
     },
     
     /*----TV banner view----*/
-    TVViewBanner: function(shows, parentPage) {
+    TVViewBanner: function(shows, parentPage, options) {
     
-      var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+      /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
       var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
       var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-      var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+      var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;*/
       
       var $tvShowList = $('<div></div>');
       
       if (shows.limits.total > 0) {
         $.each(shows.tvshows, function(i, tvshow) {
           var watched = false;
-          if (tvshow.playcount > 0 && !filterShowWatched) { watched = true; }
-          if (filterWatched && watched) { return; }
+          if (tvshow.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
           var thumb = (tvshow.thumbnail? xbmc.getThumbUrl(tvshow.thumbnail) : 'images/thumb' + xbmc.getTvShowThumbType() + '.png');
           var $tvshow = $('<div class="tvshow'+tvshow.tvshowid+' thumbWrapper thumb' + xbmc.getTvShowThumbType() + 'Wrapper">' +
               '<div class="linkTVWrapper">' + 
@@ -2763,7 +2914,7 @@ var uiviews = {};
                 '<a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
                 '<a href="" class="unwatched">' + mkf.lang.get('btn_unwatched') + '</a>' +
               '</div>' +
-              (useLazyLoad?
+              (options.useLazyLoad?
                 '<img src="images/loading_thumb' + xbmc.getTvShowThumbType() + '.gif" alt="' + tvshow.label + '" class="thumb thumb' + xbmc.getTvShowThumbType() + '" data-original="' + thumb + '" />':
                 '<img src="' + thumb + '" alt="' + tvshow.label + '" class="thumb thumb' + xbmc.getTvShowThumbType() + '" />'
               ) +
@@ -2778,27 +2929,27 @@ var uiviews = {};
           
         });
       }
-      $tvShowList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkTVWrapper').show() });          
+      $tvShowList.find('.thumbWrapper').on(options.hoverOrClick, function() { $(this).children('.linkTVWrapper').show() });          
       $tvShowList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkTVWrapper').hide() });
 
       return $tvShowList;
     },
     
     /*----TV logo view----*/
-    TVViewLogoWall: function(shows, parentPage) {
-    
-      var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+    TVViewLogoWall: function(shows, parentPage, options) {
+      /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
       var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
       var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-      var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+      var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;*/
+
       
       var $tvShowList = $('<div></div>');
       
       if (shows.limits.total > 0) {
         $.each(shows.tvshows, function(i, tvshow) {
           var watched = false;
-          if (tvshow.playcount > 0 && !filterShowWatched) { watched = true; }
-          if (filterWatched && watched) { return; }
+          if (tvshow.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
           var thumb = (tvshow.thumbnail? xbmc.getThumbUrl(tvshow.thumbnail) : 'images/missing_logo.png');
           xbmc.getLogo({path: tvshow.file, type: 'logo'}, function(logo) {
           var $tvshow = $('<div class="tvshow'+tvshow.tvshowid+' logoWrapper thumbLogoWrapper">' +
@@ -2808,7 +2959,7 @@ var uiviews = {};
                 '<a href="" class="unwatched">' + mkf.lang.get('btn_unwatched') + '</a>' +
               '</div>' + 
               //'<img src="' + thumb + '" alt="' + tvshow.label + '" class="thumbLogo" />' +
-              (useLazyLoad?
+              (options.useLazyLoad?
               '<img src="images/loading_thumb.gif" alt="' + tvshow.label + '" class="thumb thumbLogo" data-original="' + (logo? logo : thumb) + '" />':
               '<img src="' + (logo? logo : thumb) + '" alt="' + tvshow.label + '" class="thumbLogo" />'
               ) +
@@ -2822,7 +2973,7 @@ var uiviews = {};
           $tvshow.find('.unwatched').bind('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.Unwatched);
           
           //Has to go here because of logo callback...
-          $tvShowList.find('.thumbLogoWrapper').on(hoverOrClick, function() { $(this).children('.linkTVLogoWrapper').show() });          
+          $tvShowList.find('.thumbLogoWrapper').on(options.hoverOrClick, function() { $(this).children('.linkTVLogoWrapper').show() });          
           $tvShowList.find('.thumbLogoWrapper').on('mouseleave', function() { $(this).children('.linkTVLogoWrapper').hide() });
 
           });
@@ -3166,6 +3317,92 @@ var uiviews = {};
 /* Misc views */
 /*------------*/  
   
+    /*----Genres list view----*/
+    genresViewList: function(agenres, parentPage) {
+      var lib = '';
+      if (parentPage.className == 'artistsGenres') {
+        lib = 'Artists';
+      } else if (parentPage.className == 'albumGenres') {
+        lib = 'Albums';
+      } else if (parentPage.className == 'songGenres') {
+        lib = 'Songs';
+      } else if (parentPage.className == 'movieGenres') {
+        lib = 'Movies';
+      } else if (parentPage.className == 'tvShowsGenres') {
+        lib = 'TvShows';
+      } else if (parentPage.className == 'musicvideoGenres') {
+        lib = 'MusicVideos';
+      };
+      
+      var $genresList = $('<ul class="fileList"></ul>');
+      $.each(agenres.genres, function(i, genre)  {
+        if (genre.genreid == 0) { return };
+        $genresList.append('<li' + (i%2==0? ' class="even"': '') + 
+                  //'><div class="folderLinkWrapper"><a href="" class="button allgenre' + genre.genreid + '" title="' + mkf.lang.get('btn_all') +
+                  '><div class="folderLinkWrapper"><a href="" class="button playlist' + genre.genreid + '" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a>' +
+                  '<a href="" class="button play' + genre.genreid + '" title="' + mkf.lang.get('btn_play') + '"><span class="miniIcon play" /></a><a href="" class="genre' + 
+                  genre.genreid + '">' +
+                  genre.label + '<div class="findKeywords">' + genre.label.toLowerCase() + '</div>' +
+                  '</a></div></li>');
+        //$genresList.find('.allgenre' + genre.genreid).on('click', {idGenre: genre.genreid, strGenre: genre.label, objParentPage: parentPage}, uiviews.AllGenreAlbums);
+        $genresList.find('.genre' + genre.genreid).on('click',{idGenre: genre.genreid, strGenre: genre.label, objParentPage: parentPage, lib: lib}, uiviews.GenreItems);
+        $genresList.find('.playlist' + genre.genreid).on('click', {idGenre: genre.genreid}, uiviews.AddGenreToPlaylist);
+        $genresList.find('.play' + genre.genreid).on('click', {idGenre: genre.genreid, strAlbum: genre.label}, uiviews.MusicGenrePlay);
+      });
+      return $genresList;
+    },
+    
+    /*----Years list view----*/
+    YearsViewList: function(years, parentPage) {
+      var lib = '';
+      if (parentPage.className == 'albumsYears') {
+        lib = 'Albums';
+      } else if (parentPage.className == 'songsYears') {
+        lib = 'Songs';
+      } else if (parentPage.className == 'movieYears') {
+        lib = 'Movies';
+      } else if (parentPage.className == 'tvShowsYears') {
+        lib = 'TvShows';
+      } else if (parentPage.className == 'musicvideosYears') {
+        lib = 'MusicVideos';
+      };
+      
+      var $yearsList = $('<ul class="fileList"></ul>');
+      $.each(years.files, function(i, year)  {
+        if (year == '0') { return };
+        $yearsList.append('<li' + (i%2==0? ' class="even"': '') + 
+                  //'><div class="folderLinkWrapper"><a href="" class="button allgenre' + artistGenres.genreid + '" title="' + mkf.lang.get('btn_all') +
+                  '><div class="folderLinkWrapper"><a href="" class="year' + 
+                  year.label + '">' +
+                  year.label + '<div class="findKeywords">' + year.label.toLowerCase() + '</div>' +
+                  '</a></div></li>');
+        //$yearsList.find('.genre' + artistGenres.genreid).on('click',{idGenre: artistGenres.genreid, strGenre: artistGenres.label, objParentPage: parentPage, lib: lib}, uiviews.GenreItems);
+        //$yearsList.find('.playlist' + artistGenres.genreid).on('click', {idGenre: artistGenres.genreid}, uiviews.AddGenreToPlaylist);
+        $yearsList.find('.year' + year.label).on('click', {strYear: year.label, lib: lib, objParentPage: parentPage}, uiviews.YearsItems);
+      });
+      return $yearsList;
+    },
+    
+    /*----Tags list view----*/
+    TagsViewList: function(tags, parentPage) {
+      var lib = '';
+      if (parentPage.className == 'movieTags') {
+        lib = 'Movies';
+      };
+      
+      var $tagsList = $('<ul class="fileList"></ul>');
+      $.each(tags.files, function(i, tag)  {
+        if (tag == '0') { return };
+        $tagsList.append('<li' + (i%2==0? ' class="even"': '') + 
+                  '><div class="folderLinkWrapper"><a href="" class="tag' + 
+                  tag.label + '">' +
+                  tag.label + '<div class="findKeywords">' + tag.label.toLowerCase() + '</div>' +
+                  '</a></div></li>');
+        $tagsList.find('.tag' + tag.label).on('click', {strTag: tag.label, lib: lib, objParentPage: parentPage}, uiviews.TagsItems);
+      });
+      return $tagsList;
+    },
+    
     AdvancedSearch: function(search, parentPage) {
       
       var fillOptions = function(fields, ops, num) {
@@ -3412,21 +3649,23 @@ var uiviews = {};
                     $vadFilterRContent.addClass('loading');
                     switch (result.Type) {
                       case 'movies':
-                        result.isSet = true;
-                        $vadFilterRContent.defaultMovieViewer(result, vadFilterRPage);
+                        result.isFilter = true; //result.isFilter = true; <- change to
+                        $vadFilterRContent.defaultMovieTitleViewer(result, vadFilterRPage);
                         $vadFilterRContent.removeClass('loading');
                       break;
                       case 'tvshows':
-                        result.isFiltered = true;
-                        $vadFilterRContent.defaultTvShowViewer(result, vadFilterRPage);
+                        result.isFilter = true;
+                        $vadFilterRContent.defaultTvShowTitleViewer(result, vadFilterRPage);
                         $vadFilterRContent.removeClass('loading');
                       break;
                       case 'episodes':
+                        result.isFilter = true;
                         $vadFilterRContent.defaultEpisodesViewer(result, vadFilterRPage);
                         $vadFilterRContent.removeClass('loading');
                       break;
                       case 'musicvideos':
-                        $vadFilterRContent.defaultMusicVideosViewer(result, vadFilterRPage);
+                        result.isFilter = true;
+                        $vadFilterRContent.defaultMusicVideosTitleViewer(result, vadFilterRPage);
                         $vadFilterRContent.removeClass('loading');
                       break;
                     }
@@ -3589,17 +3828,17 @@ var uiviews = {};
                     $aadFilterRContent.addClass('loading');
                     switch (result.Type) {
                       case 'artists':
-                        result.isFiltered = true;
-                        $aadFilterRContent.defaultArtistsViewer(result, aadFilterRPage);
+                        result.isFilter = true;
+                        $aadFilterRContent.defaultArtistsTitleViewer(result, aadFilterRPage);
                         $aadFilterRContent.removeClass('loading');
                       break;
                       case 'albums':
-                        result.isArtist = true;
-                        $aadFilterRContent.defaultAlbumViewer(result, aadFilterRPage);
+                        result.isFilter = true;
+                        $aadFilterRContent.defaultAlbumTitleViewer(result, aadFilterRPage);
                         $aadFilterRContent.removeClass('loading');
                       break;
                       case 'songs':
-                        result.isFiltered = true;
+                        result.isFilter = true;
                         $aadFilterRContent.defaultSonglistViewer(result, aadFilterRPage);
                         $aadFilterRContent.removeClass('loading');
                       break;

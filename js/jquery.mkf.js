@@ -536,10 +536,12 @@ var mkf = {};
         if (sp instanceof TempPage) {
           return true;
         }
+
         var $parentMenu =
           (sp.parentPage != settings.root?
-          $mkfMenu.find('.menuItem.' + sp.parentPage.id).find('ul'):
+          $mkfMenu.find('.menuItem.' + sp.parentPage.id).find('ul:first'):
           $mkfMenu);
+          
         var $newMenuItem = $('<li class="menuItem ' + sp.id +
                   (sp.className? ' ' + sp.className: '') +
                   '">' +
@@ -547,10 +549,11 @@ var mkf = {};
                   sp.menuButtonText +
                   '</a>' +
                   '</li>');
+
         $newMenuItem.appendTo($parentMenu);
         $newMenuItem.children('a').click(function() {
             mkf.pages.showPage(sp, settings.autoKill);
-            $('#navigation ul.mkfMenu ul, ul.systemMenu ul').hide();
+            $('#navigation ul.mkfMenu .mkfSubMenu1, ul.systemMenu ul').hide();
             return false;
           });
 
@@ -558,10 +561,12 @@ var mkf = {};
         // settings.levels.
         if (settings.levels <= 0 || settings.levels > p.level) {
           if (sp.subPages.length) {
-            $newMenuItem.append('<ul class="mkfSubMenu"></ul>');
+            $newMenuItem.append('<ul class="mkfSubMenu' + p.level + '"></ul>');
           }
           todoPages.push({level: p.level+1, page: sp});
         }
+        
+        
       });
     }
 
@@ -738,7 +743,7 @@ var mkf = {};
 
         $('body').append(
           '<div id="mkfDialog' + dialogHandle +
-          '" class="mkfOverlay" style="height: ' + document.height + 'px">' +
+          '" class="mkfOverlay" style="height: ' + $(document).height() + 'px">' +
             '<div class="dialog ' + settings.classname + '">' + 
             (settings.closeButton?
               '<a href="" class="close">' +

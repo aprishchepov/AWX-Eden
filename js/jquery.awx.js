@@ -1124,55 +1124,44 @@
   }; // END defaultVolumeControl
   
   /* ########################### *\
-   |  Incrimental Volume Control
+   |  Music artists root page
+   |
+   | 
   \* ########################### */
-  $.fn.incVolumeControl = function(options) {
-    /*this.each (function() {
-      var $sliderElement = $(this);
-
-      // Slider
-      $sliderElement.slider({
-        range: 'min',
-        value: 0,
-        orientation: (options && options.horizontal? 'horizontal': 'vertical'),
-        stop: function(event, ui) {
-          xbmc.setVolume({
-            volume: ui.value,
-            onError: function (response) {
-              mkf.messageLog.show(mkf.lang.get('message_failed_set_volume'),
-                      mkf.messageLog.status.error, 5000);
-            }
-          });
-        }
-      });
-
-      xbmc.periodicUpdater.addVolumeChangedListener(function(vol) {
-        $sliderElement.slider("option", "value", vol);
-      });
-    });*/
-  }; // END incVolumeControl
+  $.fn.defaultArtistsViewer = function() {
   
+  var $artistsroot = $('<div class="submenus"><ul class="submenus"><li><a class="music_sub titles" title="' + mkf.lang.get('btn_titles') + '"><span>' + mkf.lang.get('btn_titles') + '</span></a></li>' + 
+    '<li><a class="music_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
+    '</ul></div><br />').appendTo($(this));
+    
+    $artistsroot.find('.titles').click(function() { mkf.pages.showPage(awxUI.artistsTitlePage, false); } );
+    $artistsroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.artistsGenresPage, false); } );
 
+    
+  }; // END defaultMusicVideosViewer
+  
   /* ########################### *\
-   |  Show artists.
+   |  Show artists title.
    |
    |  @param artistResult    Result of AudioLibrary.GetArtists.
    |  @param parentPage    Page which is used as parent for new sub pages.
   \* ########################### */
-  $.fn.defaultArtistsViewer = function(artistResult, parentPage) {
+  $.fn.defaultArtistsTitleViewer = function(artistResult, parentPage) {
 
     if (!artistResult || !artistResult.limits.total > 0) { return };
     //Hack until single logo is redone with proper limiting
-    if (view =='logosingle') { artistResult.isFiltered = true };
+    if (view =='logosingle') { artistResult.isFilter = true };
     
-    if (!artistResult.isFiltered) {
+    var onPageShow = '';
+    if (parentPage.className == 'artistsTitle') { onPageShow = 'onArtistsTitleShow' }
+    else if (parentPage.className == 'songsArtists') { onPageShow = 'onSongsArtistsShow' };
+    
+    if (!artistResult.isFilter) {
       totalArtistCount = artistResult.limits.total;
       if (lastArtistCountStart > artistResult.limits.total -1) {
         lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
         lastArtistCountStart = 0;
-        /*lastArtistCount = artistResult.limits.total;
-        lastArtistCountStart = artistResult.limits.total - mkf.cookieSettings.get('limitArtists', 25);*/
-        awxUI.onArtistsShow();
+        awxUI[onPageShow]();
         return
       };
     };
@@ -1201,7 +1190,7 @@
         $artistsViewerElement.find('img.thumb').lazyload(
           {
             queuedLoad: true,
-            container: ($('#main').length? $('#main'): $('#content')),  // TODO remove fixed #main
+            container: $('#content'),  // TODO remove fixed #main
             errorImage: 'images/thumb.png'
           }
         );
@@ -1209,30 +1198,43 @@
       setTimeout(loadThumbs, 100);
     }
     
-    if (!artistResult.isFiltered) {
+    if (!artistResult.isFilter) {
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastArtistCountStart + '/' + artistResult.limits.total + '</span></div></div>').prependTo($artistsViewerElement);
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastArtistCount > artistResult.limits.total? artistResult.limits.total : lastArtistCount) + '/' + artistResult.limits.total + '</span></div></div>').appendTo($artistsViewerElement);
-      $artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onArtistsShow);
-      $artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onArtistsShow);
+      $artistsViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI[onPageShow]);
+      $artistsViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI[onPageShow]);
     };
       
   }; // END defaultArtistsViewer
 
+   /* ########################### *\
+   |  Show years genres.
+   |
+   |  
+   |  @param parentPage    Page which is used as parent for new sub pages.
+   \* ########################### */
+  $.fn.defaultYearsViewer = function(yearsResult, parentPage) {
+    // no years?
+    if (!yearsResult.limits.total > 0) { return };
+    
+    uiviews.YearsViewList(yearsResult, parentPage).appendTo($(this));
+    
+  }; // END defaultYearsViewer
 
   /* ########################### *\
-   |  Show audio genres.
+   |  Show genres.
    |
    |  @param genreResult    Result of AudioLibrary.GetGenres.
    |  @param parentPage    Page which is used as parent for new sub pages.
   \* ########################### */
-  $.fn.defaultArtistsGenresViewer = function(artistGenresResult, parentPage) {
+  $.fn.defaultGenresViewer = function(genresResult, parentPage) {
     
     // no genres?
-    if (!artistGenresResult.limits.total > 0) { return };
+    if (!genresResult.limits.total > 0) { return };
     
-    uiviews.AudioGenresViewList(artistGenresResult, parentPage).appendTo($(this));
+    uiviews.genresViewList(genresResult, parentPage).appendTo($(this));
     
-  }; // END defaultArtistsGenresViewer
+  }; // END defaultGenresViewer
   
 
   /* ########################### *\
@@ -1537,6 +1539,29 @@
     });
   }; // END defaultMusicPlaylistsViewer
 
+  /* ########################### *\
+   |  Music album root page
+   |
+   | 
+  \* ########################### */
+  $.fn.defaultAlbumViewer = function() {
+  
+  var $albumsroot = $('<div class="submenus"><ul class="submenus"><li><a class="music_sub titles" title="' + mkf.lang.get('btn_titles') + '"><span>' + mkf.lang.get('btn_titles') + '</span></a></li>' + 
+    '<li><a class="music_sub recent" title="' + mkf.lang.get('btn_recent') + '"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '<li><a class="music_sub recentplayed" title="' + mkf.lang.get('btn_recentplayed') +'"><span>' + mkf.lang.get('btn_recentplayed') + '</span></a></li>' +
+    '<li><a class="music_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
+    '<li><a class="music_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
+    //'<li><a class="music_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '</ul></div><br />').appendTo($(this));
+    
+    $albumsroot.find('.titles').click(function() { mkf.pages.showPage(awxUI.albumsTitlePage, false); } );
+    $albumsroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.albumsRecentPage, false); } );
+    $albumsroot.find('.recentplayed').click(function() { mkf.pages.showPage(awxUI.albumsRecentPlayedPage, false); } );
+    $albumsroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.albumGenresPage, false); } );
+    $albumsroot.find('.years').click(function() { mkf.pages.showPage(awxUI.albumsYearsPage, false); } );
+    //$albumsroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.musicVideosRecentPage, false); } );
+    
+  }; // END
   
   /* ########################### *\
    |  Show the albums.
@@ -1544,17 +1569,17 @@
    |  @param albumResult    Result of AudioLibrary.GetAlbums.
    |  @param parentPage    Page which is used as parent for new sub pages.
   \* ########################### */
-  $.fn.defaultAlbumViewer = function(albumResult, parentPage) {
-
+  $.fn.defaultAlbumTitleViewer = function(albumResult, parentPage) {
+  
     if (!albumResult.limits.total > 0) { return };
     totalAlbumCount = albumResult.limits.total;
     //No limit for albums for artist page
-    if (!albumResult.isArtist) {
+    if (!albumResult.isFilter) {
       //Out of bound checking.
       if (lastAlbumCountStart > albumResult.limits.total -1) {
         lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
         lastAlbumCountStart = 0;
-        awxUI.onAlbumsShow();
+        awxUI.onAlbumsTitleShow();
         return
       };
     };
@@ -1588,17 +1613,98 @@
       setTimeout(loadThumbs, 100);
     }
     
-    if (!albumResult.isArtist) {
+    if (!albumResult.isFilter) {
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastAlbumCountStart + '/' + albumResult.limits.total + '</span></div></div>').prependTo($albumViewerElement);
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastAlbumCount > albumResult.limits.total? albumResult.limits.total : lastAlbumCount) + '/' + albumResult.limits.total + '</span></div></div>').appendTo($albumViewerElement);
-      $albumViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onAlbumsShow);
-      $albumViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onAlbumsShow);
+      $albumViewerElement.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onAlbumsTitleShow);
+      $albumViewerElement.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onAlbumsTitleShow);
     }
     
   }; // END defaultAlbumViewer
 
 
   /* ########################### *\
+   |  Music songs root page
+   |
+   | 
+  \* ########################### */
+  $.fn.defaultSongsViewer = function() {
+  
+  var $songsroot = $('<div class="submenus"><ul class="submenus"><li><a class="music_sub titles" title="' + mkf.lang.get('btn_titles') + '"><span>' + mkf.lang.get('btn_titles') + '</span></a></li>' + 
+    '<li><a class="music_sub artist" title="' + mkf.lang.get('btn_artist') + '"><span>' + mkf.lang.get('btn_artist') + '</span></a></li>' +
+    '<li><a class="music_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '<li><a class="music_sub recentplayed" title="' + mkf.lang.get('btn_recentplayed') +'"><span>' + mkf.lang.get('btn_recentplayed') + '</span></a></li>' +
+    '<li><a class="music_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
+    '<li><a class="music_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
+    //'<li><a class="music_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '</ul></div><br />').appendTo($(this));
+    
+    $songsroot.find('.titles').click(function() { mkf.pages.showPage(awxUI.songsTitlePage, false); } );
+    $songsroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.songsRecentPage, false); } );
+    $songsroot.find('.recentplayed').click(function() { mkf.pages.showPage(awxUI.songsRecentPlayedPage, false); } );
+    $songsroot.find('.artist').click(function() { mkf.pages.showPage(awxUI.songsArtistsPage, false); } );
+    $songsroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.songGenresPage, false); } );
+    $songsroot.find('.years').click(function() { mkf.pages.showPage(awxUI.songsYearsPage, false); } );
+    
+  }; // END defaultSongsViewer
+
+  
+  /* ########################### *\
+   |  Show the songlist.
+   |
+   |  @param songResult    Result of AudioLibrary.GetSongs.
+  \* ########################### */
+  $.fn.defaultSonglistViewer = function(songResult, parentPage) {
+
+    if (!songResult.limits.total > 0) { return };
+    totalSongsCount = songResult.limits.total;
+    //No limit for albums for artist page
+    if (!songResult.isFilter) {
+      //Out of bound checking.
+      if (lastSongsCountStart > songResult.limits.total -1) {
+        lastSongsCount = mkf.cookieSettings.get('limitSongs', 25);
+        lastSongsCountStart = 0;
+        awxUI.onSongsTitleShow();
+        return
+      };
+    };
+    
+    uiviews.SongViewList(songResult, parentPage).appendTo($(this));
+    
+    if (!songResult.isFilter) {
+      $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastSongsCountStart + '/' + songResult.limits.total + '</span></div></div>').prependTo($(this));
+      $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastSongsCount > songResult.limits.total? songResult.limits.total : lastSongsCount) + '/' + songResult.limits.total + '</span></div></div>').appendTo($(this));
+      $(this).find('a.nextPage').on('click', { Page: 'next'}, awxUI.onSongsTitleShow);
+      $(this).find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onSongsTitleShow);
+    }
+  }; // END defaultSonglistViewer
+
+
+  /* ########################### *\
+   |  Music video root page
+   |
+   | 
+  \* ########################### */
+  $.fn.defaultMusicVideosViewer = function() {
+  
+  var $musicvideoroot = $('<div class="submenus"><ul class="submenus"><li><a class="video_sub titles" title="' + mkf.lang.get('btn_titles') + '"><span>' + mkf.lang.get('btn_titles') + '</span></a></li>' + 
+    '<li><a class="video_sub tags" title="' + mkf.lang.get('btn_tags') + '"><span>' + mkf.lang.get('btn_tags') + '</span></a></li>' +
+    '<li><a class="video_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
+    '<li><a class="video_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
+    '<li><a class="video_sub actors" title="' + mkf.lang.get('btn_artists') +'"><span>' + mkf.lang.get('btn_artists') + '</span></a></li>' +
+    '<li><a class="video_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '</ul></div><br />').appendTo($(this));
+    
+    $musicvideoroot.find('.titles').click(function() { mkf.pages.showPage(awxUI.musicVideosTitlePage, false); } );
+    $musicvideoroot.find('.tags').click(function() { mkf.pages.showPage(awxUI.musicVideosTagsPage, false); } );
+    $musicvideoroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.musicVideosGenresPage, false); } );
+    $musicvideoroot.find('.years').click(function() { mkf.pages.showPage(awxUI.musicVideosYearsPage, false); } );
+    $musicvideoroot.find('.actors').click(function() { mkf.pages.showPage(awxUI.musicVideosArtistsPage, false); } );
+    $musicvideoroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.musicVideosRecentPage, false); } );
+    
+  }; // END defaultMusicVideosViewer
+  
+   /* ########################### *\
    |  Show the Recent albums.
    |
    |  @param albumResult    Result of AudioLibrary.GetAlbums.
@@ -1646,7 +1752,7 @@
    |  @param albumResult    Result of AudioLibrary.GetAlbums.
    |  @param parentPage    Page which is used as parent for new sub pages.
   \* ########################### */
-  $.fn.defaultMusicVideosViewer = function(mvResult, parentPage) {
+  $.fn.defaultMusicVideosTitleViewer = function(mvResult, parentPage) {
 
     if (!mvResult.limits.total > 0) { return };
     
@@ -1680,24 +1786,8 @@
       setTimeout(loadThumbs, 100);
     }
 
-  }; // END defaultMusicVideosViewer
-
+  }; // END defaultMusicVideosTitleViewer
   
-  /* ########################### *\
-   |  Show the songlist.
-   |
-   |  @param songResult    Result of AudioLibrary.GetSongs.
-  \* ########################### */
-  $.fn.defaultSonglistViewer = function(songResult, parentPage) {
-    
-    if (!songResult.limits.total > 0) { return };
-    
-    uiviews.SongViewList(songResult, parentPage).appendTo($(this));
-    
-  }; // END defaultSonglistViewer
-
-
-
   /* ########################### *\
    |  Show playlist (Audio or Video).
    |
@@ -1730,24 +1820,67 @@
     
   }; // END defaultPlaylistViewer
 
+  /* ########################### *\
+   |  Show tags genres.
+   |
+   |  
+   |  @param parentPage    Page which is used as parent for new sub pages.
+   \* ########################### */
+  $.fn.defaultTagsViewer = function(tagsResult, parentPage) {
+    // no tags?
+    if (!tagsResult.limits.total > 0) { return };
+    
+    uiviews.TagsViewList(tagsResult, parentPage).appendTo($(this));
+    
+  }; // END defaultTagsViewer
+  
+  /* ########################### *\
+   |  Movie root page
+   |
+   | 
+  \* ########################### */
+  $.fn.defaultMovieViewer = function() {
 
+    var $movieroot = $('<div class="submenus"><ul class="submenus"><li><a class="video_sub titles" title="' + mkf.lang.get('btn_titles') + '"><span>' + mkf.lang.get('btn_titles') + '</span></a></li>' + 
+    '<li><a class="video_sub tags" title="' + mkf.lang.get('btn_tags') + '"><span>' + mkf.lang.get('btn_tags') + '</span></a></li>' +
+    '<li><a class="video_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
+    '<li><a class="video_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
+    '<li><a class="video_sub sets" title="' + mkf.lang.get('btn_sets') +'"><span>' + mkf.lang.get('btn_sets') + '</span></a></li>' +
+    '<li><a class="video_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '</ul></div><br />').appendTo($(this));
+    
+    $movieroot.find('.titles').click(function() { mkf.pages.showPage(awxUI.moviesTitlePage, false); } );
+    $movieroot.find('.tags').click(function() { mkf.pages.showPage(awxUI.movieTagsPage, false); } );
+    $movieroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.movieGenresPage, false); } );
+    $movieroot.find('.years').click(function() { mkf.pages.showPage(awxUI.movieYearsPage, false); } );
+    $movieroot.find('.sets').click(function() { mkf.pages.showPage(awxUI.movieSetsPage, false); } );
+    $movieroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.moviesRecentPage, false); } );
+
+    
+  }; // END defaultMovieViewer
 
   /* ########################### *\
-   |  Show movies.
+   |  Show movies title.
    |
    |  @param movieResult  Result of VideoLibrary.GetMovies.
   \* ########################### */
-  $.fn.defaultMovieViewer = function(movieResult, parentPage) {
-
+  $.fn.defaultMovieTitleViewer = function(movieResult, parentPage) {
     if (!movieResult.limits.total > 0) { return };
+
+    //Allow refresh/non-filter (next/prev) subpages
+    var onPageShow = '';
+    if (parentPage.className == 'moviesTitle') { onPageShow = 'onMoviesTitleShow' }
+    else if (parentPage.className == 'songsArtists') { onPageShow = 'onSongsArtistsShow' }
+    else { onPageShow = 'onMoviesTitleShow' };
+    
     totalMovieCount = movieResult.limits.total;
     //may be passed from set page. No limiting with movie sets.
-    if (!movieResult.isSet) {
+    if (!movieResult.isFilter) {
       //Out of bound checking. Reset to start, really should cycle backwards.
       if (typeof(lastMovieCountStart) === 'undefined' || lastMovieCountStart > movieResult.limits.total -1) {
         lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
         lastMovieCountStart = 0;    
-        awxUI.onMoviesShow();
+        awxUI[onPageShow]();
         return
       };
     };
@@ -1759,22 +1892,22 @@
 
     switch (view) {
       case 'poster':
-        uiviews.MovieViewThumbnails(movieResult, options).appendTo($movieContainer);        
+        uiviews.MovieViewThumbnails(movieResult, options, parentPage).appendTo($movieContainer);        
         break;
       case 'listover':
-        uiviews.MovieViewList(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewList(movieResult, options, parentPage).appendTo($movieContainer);
         break;
       case 'listin':
-        uiviews.MovieViewListInline(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewListInline(movieResult, options, parentPage).appendTo($movieContainer);
         break;
       case 'accordion':
-        uiviews.MovieViewAccordion(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewAccordion(movieResult, options, parentPage).appendTo($movieContainer);
         break;
       case 'singlePoster':
-        uiviews.MovieViewSingle(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewSingle(movieResult, options, parentPage).appendTo($movieContainer);
         break;
       case 'logo':
-        uiviews.MovieViewLogos(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewLogos(movieResult, options, parentPage).appendTo($movieContainer);
         break;
     };
     
@@ -1793,12 +1926,12 @@
     }
     
     //NFC why the || doesn't work below but it doesn't?!
-    if (view == 'singlePoster') { movieResult.isSet = true };
-    if (!movieResult.isSet) {
+    if (view == 'singlePoster') { movieResult.isFilter = true };
+    if (!movieResult.isFilter) {
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastMovieCountStart + '/' + movieResult.limits.total + '</span></div></div>').prependTo($movieContainer);
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastMovieCount > movieResult.limits.total? movieResult.limits.total : lastMovieCount)+ '/' + movieResult.limits.total + '</span></div></div>').appendTo($movieContainer);
-      $movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onMoviesShow);
-      $movieContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onMoviesShow);
+      $movieContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI[onPageShow]);
+      $movieContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI[onPageShow]);
     }
     
   }; // END defaultMovieViewer
@@ -1909,47 +2042,72 @@
 
   }; // END defaultMovieRecentViewer
   
+  /* ########################### *\
+   |  tv show root page
+   |
+   | 
+  \* ########################### */
+  $.fn.defaultTvShowViewer = function() {
 
+  var $tvroot = $('<div class="submenus"><ul class="submenus"><li><a class="video_sub titles" title="' + mkf.lang.get('btn_titles') + '"><span>' + mkf.lang.get('btn_titles') + '</span></a></li>' +
+    '<li><a class="video_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
+    '<li><a class="video_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
+    '<li><a class="video_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
+    //'<li><a class="video_sub sets" title="' + mkf.lang.get('btn_sets') +'"><span>' + mkf.lang.get('btn_sets') + '</span></a></li>' +
+    
+    '</ul></div><br />').appendTo($(this));
+    
+    $tvroot.find('.titles').click(function() { mkf.pages.showPage(awxUI.tvShowsTitlePage, false); } );
+    $tvroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.tvShowsGenresPage, false); } );
+    $tvroot.find('.years').click(function() { mkf.pages.showPage(awxUI.tvShowsYearsPage, false); } );
+    $tvroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.tvShowsRecentlyAddedPage, false); } );
+    
+  }; // END defaultTvShowViewer
+  
   /* ########################### *\
    |  Show TV Shows.
    |
    |  @param tvShowResult    Result of VideoLibrary.GetTVShows.
   \* ########################### */
-  $.fn.defaultTvShowViewer = function(tvShowResult, parentPage) {
-    
+  $.fn.defaultTvShowTitleViewer = function(tvShowResult, parentPage, options) {
+
     if (!tvShowResult.limits.total > 0) { return };
+    var settings = {};
     totalTVCount = tvShowResult.limits.total;
-    if (!tvShowResult.isFiltered) {
+    if (!tvShowResult.isFilter) {
     //Out of bound checking. Reset to start, really should cycle backwards.
       if (lastTVCountStart > tvShowResult.limits.total -1) {
         lastTVCount = mkf.cookieSettings.get('limitTV', 25);
         lastTVCountStart = 0;    
-        awxUI.onTvShowsShow();
+        awxUI.onTvShowsTitleShow();
         return
       };
     };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
-    //var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
-    var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+    settings.useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    settings.filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+    settings.filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+    settings.hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
     var view = mkf.cookieSettings.get('TVView', 'banner');  
+    
+    //Overwrite settings for filtered views etc. Make a setting option?
+    $.extend(settings, options);
     
     var $tvshowContainer = $(this);
 
     switch (view) {
       case 'banner':
-        uiviews.TVViewBanner(tvShowResult, parentPage).appendTo($tvshowContainer);
+        uiviews.TVViewBanner(tvShowResult, parentPage, settings).appendTo($tvshowContainer);
         break;
       case 'listover':
-        uiviews.TVViewList(tvShowResult, parentPage).appendTo($tvshowContainer);
+        uiviews.TVViewList(tvShowResult, parentPage, settings).appendTo($tvshowContainer);
         break;
       case 'logo':
-        uiviews.TVViewLogoWall(tvShowResult, parentPage).appendTo($tvshowContainer);
+        uiviews.TVViewLogoWall(tvShowResult, parentPage, settings).appendTo($tvshowContainer);
         break;
     };
 
-    if (useLazyLoad) {
+    if (settings.useLazyLoad) {
       function loadThumbs(i) {
         $tvshowContainer.find('img.thumb').lazyload(
           {
@@ -1962,11 +2120,11 @@
       setTimeout(loadThumbs, 100);
     }
 
-    if (!tvShowResult.isFiltered) {
+    if (!tvShowResult.isFilter) {
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + lastTVCountStart + '/' + totalTVCount + '</span></div></div>').prependTo($tvshowContainer);
       $('<div class="goNextPrev"><a class="prevPage" href=""></a><a class="nextPage" href=""></a><div class="lastCount"><span class="npCount">' + (lastTVCount > totalTVCount? totalTVCount : lastTVCount) + '/' + totalTVCount + '</span></div></div>').appendTo($tvshowContainer);
-      $tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsShow);
-      $tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsShow);
+      $tvshowContainer.find('a.nextPage').on('click', { Page: 'next'}, awxUI.onTvShowsTitleShow);
+      $tvshowContainer.find('a.prevPage').on('click', { Page: 'prev'}, awxUI.onTvShowsTitleShow);
     };
     
   }; // END defaultTvShowViewer
@@ -3043,7 +3201,7 @@
       
       var rotateCDart = mkf.cookieSettings.get('rotateCDart', 'no')=='yes'? true : false;
 
-      var content = '<div id="now_next"><div id="now">' + mkf.lang.get('label_now') + '<span class="label" /><span class="nowTitle" /></div><div id="next">' + mkf.lang.get('label_next') + '<span class="nextTitle" /></div></div>';
+      var content = '<div id="now_next"><div id="now">' + mkf.lang.get('label_now') + '<span class="label" /><span class="nowArtist artist" /><span class="nowTitle" /></div><div id="next">' + mkf.lang.get('label_next') + '<span class="nextTitle" /></div></div>';
       //content += '<div id="statPlayerContainer"><div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div><div id="remainPlayer"><div id="remaining">' + mkf.lang.get('label_remaining') + '<span class="timeRemain">00:00</span></div><div id="plTotal">' + mkf.lang.get('label_total') + '<span class="timeRemainTotal">00:00</span></div></div>';
       //content += '<div id="controller"></div>';
       
@@ -3064,6 +3222,7 @@
       var thumbDiscElement = $('#content #displayoverlay #artwork .discThumb');
       
       var nowLabelElement = $footerNowBox.find('span.label');
+      var nowArtistElement = $footerNowBox.find('span.nowArtist');
       var nowElement = $footerNowBox.find('span.nowTitle');
       var nextElement = $footerNowBox.find('span.nextTitle');
       var timeCurRemain = $footerStatusBox.find('span.timeRemain');
@@ -3095,12 +3254,13 @@
             if (currentFile.artist) { artistElement = currentFile.artist; } else { artistElement = mkf.lang.get('label_not_available'); }
             if (currentFile.album) { albumElement = currentFile.album; } else { albumElement = mkf.lang.get('label_not_available'); }
             
-            //hack for partymode playlist refresh - *change to playlist notification*
+            //If in partymode refresh the playlist on item change.
             if (currentFile.partymode) {
               awxUI.onMusicPlaylistShow();
             };
             nowLabelElement.text(titleElement);
-            nowElement.text(' - ' + artistElement + ' - ' + albumElement);
+            nowArtistElement.text(' - ' + artistElement);
+            nowElement.text(' - ' + albumElement);
           };
         } else if (currentFile.xbmcMediaType == 'video') {
           // VIDEO
@@ -3140,7 +3300,7 @@
         if (currentFile.thumbnail) {
           thumbElement.attr('src', xbmc.getThumbUrl(currentFile.thumbnail));
           if (currentFile.type == 'episode') {
-            if ($('#displayoverlay').css('width') != '656px') { $('#displayoverlay').css('width','656px') };
+            //if ($('#displayoverlay').css('width') != '656px') { $('#displayoverlay').css('width','656px') };
             thumbElement.css('margin-top', '120px');
             thumbElement.css('margin-left', '5px');
             thumbElement.css('width', '255px');
@@ -3153,7 +3313,7 @@
               
             });*/
           } else if (currentFile.xbmcMediaType == 'audio') {
-            if ($('#displayoverlay').css('width') != '510px') { $('#displayoverlay').css('width','510px') };
+            //if ($('#displayoverlay').css('width') != '510px') { $('#displayoverlay').css('width','510px') };
             thumbElement.css('margin-top', '57px');
             thumbElement.css('margin-left', '35px');
             thumbElement.css('height', '225px');
@@ -3258,6 +3418,7 @@
           xbmc.musicPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
           xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
           nowLabelElement.text('');
+          nowArtistElement.text('');
           nowElement.text('');
           nextElement.text('');
           timeCurRemain.text('00:00');
@@ -3325,165 +3486,6 @@
     });
   }; // END uniFooterStatus
   
-
-  /* ########################### *\
-   |  "Currently Playing"-Box
-  \* ########################### */
-  /*$.fn.defaultCurrentlyPlaying = function(options) {
-    var settings = {
-      effect: 'slide'
-    };
-    $.extend(settings, options);
-
-    this.each (function() {
-      var $currentlyPlayingBox = $(this);
-      $currentlyPlayingBox.hide();
-
-      var content = '<div class="currentlyPlayingThumbWrapper"><img src="images/thumb.png" width="100" alt="Currently Playing" class="currentThumb" /></div>';
-      content += '<div class="currentlyPlayingInfo">';
-      content += '<span class="currentlyPlaying">' + mkf.lang.get('label_currently_playing') + '</span>';
-      content += '<span class="musicData"><span class="artist">Artist</span> - <span class="album">Album</span></span>';
-      content += '<span class="tvshowData"><span class="tvshow">TV Show</span> - Season <span class="season">n/a</span> - Episode <span class="episode">n/a</span></span>';
-      content += '<span class="title">Title</span>';
-      content += '<div class="playingSliderWrapper">';
-      content += '<div class="playingSlider"></div>';
-      content += '</div>';
-      content += '<span class="time"></span>';
-      content += '<span class="duration"></span>';
-      content += '</div>';
-      $currentlyPlayingBox.html(content);
-
-      var thumbElement = $currentlyPlayingBox.find('.currentThumb');
-      var titleElement = $currentlyPlayingBox.find('.title');
-      var sliderElement = $currentlyPlayingBox.find('.playingSlider');
-      var timeElement = $currentlyPlayingBox.find('.time');
-      var durationElement = $currentlyPlayingBox.find('.duration');
-
-      var musicDataElement = $currentlyPlayingBox.find('.musicData');
-      var artistElement = $currentlyPlayingBox.find('.artist');
-      var albumElement = $currentlyPlayingBox.find('.album');
-
-      var tvshowDataElement = $currentlyPlayingBox.find('.tvshowData');
-      var tvshowElement = $currentlyPlayingBox.find('.tvshow');
-      var seasonElement = $currentlyPlayingBox.find('.season');
-      var episodeElement = $currentlyPlayingBox.find('.episode');
-
-      sliderElement.slider({
-        range: 'min',
-        value: 0,
-        stop: function(event, ui) {
-          xbmc.seekPercentage({percentage: ui.value});
-        }
-      });
-
-      function onBoxVisibilityChanged() {
-        $(window).trigger('resize'); // autom. resize #main
-      };
-      // Helper-functions
-      function showBox(box) {
-        if (box.is(":hidden") && !box.is(":animated")) {
-          if (settings.effect == 'fade')
-            box.fadeIn('fast', onBoxVisibilityChanged);
-          else
-            box.show('slide', {direction: 'down'}, 'fast', onBoxVisibilityChanged);
-        }
-      };
-
-      function hideBox(box) {
-        if (box.is(":visible") && !box.is(":animated")) {
-          if (settings.effect == 'fade')
-            box.fadeOut('fast', onBoxVisibilityChanged);
-          else
-            box.hide('slide', {direction: 'down'}, 'fast', onBoxVisibilityChanged);
-        }
-      };
-
-
-      xbmc.periodicUpdater.addPlayerStatusChangedListener(function(status) {
-        if (status == 'stopped') {
-          hideBox($currentlyPlayingBox);
-          
-        } else if (status == 'playing') {
-          showBox($currentlyPlayingBox);
-          $currentlyPlayingBox.find('.statusPaused').remove();
-
-        } else if (status == 'paused') {
-          showBox($currentlyPlayingBox);
-          $currentlyPlayingBox.append('<span title="' + mkf.lang.get('label_paused') + '" class="statusPaused"></span>');
-
-        } else if (status == 'shuffleOn') {
-          $currentlyPlayingBox.append('<span title="' + mkf.lang.get('label_shuffle') + '" class="statusShuffle"></span>');
-
-        } else if (status == 'shuffleOff') {
-          $currentlyPlayingBox.find('.statusShuffle').remove();
-          
-        } else if (status == 'off') {
-          $currentlyPlayingBox.find('.statusRepeat1').remove();
-          $currentlyPlayingBox.find('.statusRepeat').remove();
-          
-        } else if (status == 'all') {
-          $currentlyPlayingBox.append('<span title="' + mkf.lang.get('label_repeat') + '" class="statusRepeat"></span>');
-          
-        } else if (status == 'one') {
-          $currentlyPlayingBox.append('<span title="' + mkf.lang.get('label_repeat1') + '" class="statusRepeat1"></span>');
-          $currentlyPlayingBox.find('.statusRepeat').remove();
-        }
-      });
-
-
-      xbmc.periodicUpdater.addCurrentlyPlayingChangedListener(function(currentFile) {
-        // ALL: AUDIO, VIDEO, PICTURE
-        if (currentFile.title) { titleElement.text(currentFile.title); } else { titleElement.text( (currentFile.label? currentFile.label : mkf.lang.get('label_not_available')) ); }
-
-        if (currentFile.xbmcMediaType == 'audio') {
-          // AUDIO
-          musicDataElement.show();
-          tvshowDataElement.hide();
-          if (currentFile.artist) { artistElement.text(currentFile.artist); } else { artistElement.text(mkf.lang.get('label_not_available')); }
-          if (currentFile.album) { albumElement.text(currentFile.album); } else { albumElement.text(mkf.lang.get('label_not_available')); }
-        } else {
-          // VIDEO
-          musicDataElement.hide();
-
-          if (currentFile.season &&
-            currentFile.episode &&
-            currentFile.showtitle) {
-
-            tvshowElement.text(currentFile.showtitle);
-            seasonElement.text(currentFile.season);
-            episodeElement.text(currentFile.episode);
-            tvshowDataElement.show();
-
-          } else {
-            tvshowDataElement.hide();
-          }
-        }
-
-        thumbElement.attr('src', 'images/thumb.png');
-        if (currentFile.thumbnail) {
-          thumbElement.attr('src', xbmc.getThumbUrl(currentFile.thumbnail));
-          if (currentFile.showtitle) {
-            thumbElement.removeAttr('width');
-            thumbElement.attr('height', '100px');
-          } else {
-            thumbElement.removeAttr('height');
-            thumbElement.attr('width', '100px');
-          }
-
-        }
-      });
-
-
-      xbmc.periodicUpdater.addProgressChangedListener(function(progress) {
-        timeElement.text(progress.time);
-        durationElement.text(progress.total);
-        sliderElement.slider("option", "value", 100 * xbmc.getSeconds(progress.time) / xbmc.getSeconds(progress.total));
-      });
-    });
-  };*/ // END defaultCurrentlyPlaying
-
-
-
   /* ########################### *\
    |  FindBox
   \* ########################### */

@@ -63,38 +63,3 @@ a img {
   border: 0px;
 }
 
-#input {
-  position: absolute;
-  bottom: 250px;
-  left: 15px;
-  height: 65px;
-  width: 60px;
-  padding: 15px 15px 40px 15px;
-  background: #343434;
-  -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;
-  border: 1px solid #7c7c7c;
-}
-
-#input a.button {
-  background: url('../images/input.png') no-repeat;
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  right: 30px;
-}
-
-#input a.left { right: 60px; top: 60px; background-position: -60px 0px; }
-#input a.right { top: 60px; right: 0; background-position: -90px 0px; }
-#input a.up { top: 30px; background-position: -30px 0px; }
-#input a.down { top: 90px; background-position: -0px 0px; }
-#input a.select { top: 60px;right:30px; background-position: -120px 0px; }
-#input a.home { top: 0px; right: 0; background-position: -150px 0px; }
-#input a.back { top: 0px; right: 60px; background-position: -180px 0px; }
-
-#input a.left:hover { background-position: -60px -30px; }
-#input a.right:hover { background-position: -90px -30px; }
-#input a.up:hover { background-position: -30px -30px; }
-#input a.down:hover { background-position: -0px -30px; }
-#input a.select:hover { background-position: -120px -30px; }
-#input a.home:hover { background-position: -150px -30px; }
-#input a.back:hover { background-position: -180px -30px; }

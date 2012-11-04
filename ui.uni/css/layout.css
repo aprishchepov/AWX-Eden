@@ -76,27 +76,91 @@ ul.systemMenu > li {
   color: #FFFFFF;
 }*/
 #navigation ul.mkfMenu ul {
-  /*background: url("../images/menu_sub_bottom.png") no-repeat scroll left bottom transparent;*/
   left: -40px;
   list-style-type: none;
   position: absolute;
   top: 48px;
-  /*width: 150px;*/
 }
 #navigation ul.mkfMenu ul > li {
+  /*display:inline-block;
+  padding:0 0.4em;
+  height:1.4em; line-height:1.4em;
+  position:relative;*/
+  height: 38px;
+  display: inline-block;
+  float: left;
+  position: relative;
+  width: 100%;
   margin: 0;
   padding: 0;
   white-space: nowrap;
 }
+#navigation ul.mkfMenu ul.mkfSubMenu2 > li {
+  /*display:inline-block;
+  padding:0 0.4em;
+  height:1.4em; line-height:1.4em;
+  position:relative;*/
+  display: inline-block;
+  float: right;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  white-space: nowrap;
+}
+/* sub menus */
+/*nav li       {
+    display:inline-block;
+    padding:0 0.4em;
+    height:1.4em; line-height:1.4em;
+    position:relative;
+}
+
+nav li.sub:after    { content:'\25ba'; float:right; vertical-align:middle; font-size:50% }
+
+nav > ul > li     { cursor:default }
+#navigation li ul         { display:none }
+#navigation li li         { display:block; width:8em }
+#navigation li:hover > ul { display:block; position:absolute; top:1.4em; left:-1px; width:8em; z-index:10 }
+#navigation li li:hover ul{ left:8em; top:-1px }
+
+nav li       { color:black; background:#fee; border:1px solid #966; }
+nav li li    { color:black; background:#efe; border-color:#696 }
+nav li li li { color:black; background:#eef; border-color:#669 }
+
+nav li:hover       { background:#933; color:#fee }
+nav li li:hover    { background:#393; color:#efe }
+nav li li li:hover { background:#339; color:#eef }
+
+nav li li { border-top-width:0 }
+nav li li:first-child { border-top-width:1px }
+
+#navigation li:hover > ul { display:block; position:absolute; top:1.4em; left:-1px; width:8em; z-index:10 }
+#navigation li li:hover ul{ left:8em; top:-1px }
+#navigation li.mkfSubMenu:after    { content:'\25ba'; float:right; vertical-align:middle; font-size:50% }
+*/
+#navigation li.mkfSubMenu1:hover > ul { display:block; position:absolute; top:0em; left:0px; z-index:10 }
+#navigation li.mkfSubMenu1 li:hover ul{ left:8em; top:-1px }
+
+#navigation .mkfSubMenu1 li.menuItem:hover > ul { display:inline-block; position:relative; top: 0; left:0px; padding: 0; z-index:10 }
+#navigation .mkfSubMenu2 { display:none }
+
+/*end submenus*/
+
 #navigation ul.mkfMenu ul > li > a {
   background-color: rgba(75, 75, 75, 0.9);
   color: #FFFFFF;
   font-size: 16px;
   display: block;
+  float: left;
+  /*width: 100%;*/
   /*height: 25px;
   line-height: 25px;*/
   padding-right: 10px;
   text-decoration: none;
+}
+/* Remove if adding another submenu */
+#navigation ul.mkfMenu ul.mkfSubMenu2 > li > a {
+  width: 100%;
 }
 #navigation ul.mkfMenu ul > li > a:hover {
   background-color: #A0E312;
@@ -265,6 +329,20 @@ ul.systemMenu > li.mouseover > a .exit, ul.systemMenu > li.activeMenuItem > a .e
   width: 48px;
   /*position: absolute;*/
   /*right: 0px;*/
+}
+span.artist {
+  color: #599CFF;
+  font-size: 1em;
+  font-weight: normal;
+}
+span.label {
+  color: #A0E312;
+  font-size: 1em;
+}
+span.time {
+  color: #EEE;
+  font-size: 1em;
+  font-style: strong;
 }
 #streamdets {
   z-index: 1;
@@ -2035,6 +2113,126 @@ br.clear {
 #content .mkfMenu li.scanVideo a { background-position: -896px 0; }
 #content .mkfMenu li.scanMusic a { background-position: -1024px 0; }
 
+div.submenus {
+  width: 50%;
+  min-width: 415px;
+  margin: auto;
+}
+ul.submenus {
+  list-style: none;
+}
+ul.submenus span {
+  background-color: rgba(0,0,0,0.7);
+  text-shadow: 2px 2px 2px #777;
+  padding: 5px;
+  border-radius: 3px;
+}
+a.video_sub {
+  background: url("../images/video_submenus.png") no-repeat scroll 0 0 transparent;
+  border-radius: 5px 5px 5px 5px;
+  color: #FFFFFF;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 128px 0 5px;
+  text-align: center;
+  text-decoration: none;
+  width: 128px;
+}
+a.video_sub.titles {
+  background-position: 0px 0px;
+}
+a.video_sub.tags {
+  background-position: -256px 0px;
+}
+a.video_sub.genres {
+  background-position: -512px 0px;
+}
+a.video_sub.years {
+  background-position: -768px 0px;
+}
+a.video_sub.sets {
+  background-position: -1024px 0px;
+}
+a.video_sub.recent {
+  background-position: -1280px 0px;
+}
+a.video_sub.actors {
+  background-position: -1536px 0px;
+}
+
+a.video_sub.titles:hover {
+  background-position: -128px 0px;
+}
+a.video_sub.tags:hover {
+  background-position: -384px 0px;
+}
+a.video_sub.genres:hover {
+  background-position: -640px 0px;
+}
+a.video_sub.years:hover {
+  background-position: -896px 0px;
+}
+a.video_sub.sets:hover {
+  background-position: -1152px 0px;
+}
+a.video_sub.recent:hover {
+  background-position: -1408px 0px;
+}
+a.video_sub.actors:hover {
+  background-position: -1664px 0px;
+}
+
+a.music_sub {
+  background: url("../images/music_submenus.png") no-repeat scroll 0 0 transparent;
+  border-radius: 5px 5px 5px 5px;
+  color: #FFFFFF;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 128px 0 5px;
+  text-align: center;
+  text-decoration: none;
+  width: 128px;
+}
+a.music_sub.titles {
+  background-position: 0px 0px;
+}
+a.music_sub.recent {
+  background-position: -256px 0px;
+}
+a.music_sub.genres {
+  background-position: -512px 0px;
+}
+a.music_sub.years {
+  background-position: -768px 0px;
+}
+a.music_sub.recentplayed {
+  background-position: -1024px 0px;
+}
+a.music_sub.artist {
+  background-position: -1280px 0px;
+}
+
+a.music_sub.titles:hover {
+  background-position: -128px 0px;
+}
+a.music_sub.recent:hover {
+  background-position: -384px 0px;
+}
+a.music_sub.genres:hover {
+  background-position: -640px 0px;
+}
+a.music_sub.years:hover {
+  background-position: -896px 0px;
+}
+a.music_sub.recentplayed:hover {
+  background-position: -1152px 0px;
+}
+a.music_sub.artist:hover {
+  background-position: -1408px 0px;
+}
+
 #simple_controls {
   height: 48px;
   width: 96px;
@@ -2496,9 +2694,9 @@ span.currentlyPlaying {
 .currentlyPlayingInfo {
   padding: 10px 10px 10px 110px;
 }
-.time {
+/*.time {
   float: left;
-}
+}*/
 .duration {
   float: right;
 }
@@ -2569,7 +2767,7 @@ div.vadvSearch {
   margin-left: auto;
 }
 form#vadvSearchForm {
-  padding: 5px;
+  padding: 7px;
 }
 div.aadvSearch {
   background-color: rgba(0,0,0,0.8);
@@ -2578,7 +2776,7 @@ div.aadvSearch {
   margin-left: auto;
 }
 form#aadvSearchForm {
-  padding: 5px;
+  padding: 7px;
 }
 div.searchDiv {
   background-color: rgba(50,50,50,0.8);
