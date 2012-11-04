@@ -2222,7 +2222,7 @@ var awxUI = {};
     },
     
     /*********************************************
-     * Called when TvShows Years-Page is shown.          *
+     * Called when Music Videos Years-Page is shown.          *
      *********************************************/
     onMusicVideosYearsShow: function() {
 
@@ -2249,7 +2249,7 @@ var awxUI = {};
     },
     
     /*********************************************
-     * Called when TvShows Tags-Page is shown.          *
+     * Called when Music Videos Tags-Page is shown.          *
      *********************************************/
     onMusicVideosTagsShow: function() {
 

@@ -1691,7 +1691,6 @@
     '<li><a class="video_sub tags" title="' + mkf.lang.get('btn_tags') + '"><span>' + mkf.lang.get('btn_tags') + '</span></a></li>' +
     '<li><a class="video_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
     '<li><a class="video_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
-    '<li><a class="video_sub actors" title="' + mkf.lang.get('btn_artists') +'"><span>' + mkf.lang.get('btn_artists') + '</span></a></li>' +
     '<li><a class="video_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
     '</ul></div><br />').appendTo($(this));
     
@@ -1699,8 +1698,7 @@
     $musicvideoroot.find('.tags').click(function() { mkf.pages.showPage(awxUI.musicVideosTagsPage, false); } );
     $musicvideoroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.musicVideosGenresPage, false); } );
     $musicvideoroot.find('.years').click(function() { mkf.pages.showPage(awxUI.musicVideosYearsPage, false); } );
-    $musicvideoroot.find('.actors').click(function() { mkf.pages.showPage(awxUI.musicVideosArtistsPage, false); } );
-    $musicvideoroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.musicVideosRecentPage, false); } );
+    $musicvideoroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.musicVideosRecentlyAddedPage, false); } );
     
   }; // END defaultMusicVideosViewer
   
