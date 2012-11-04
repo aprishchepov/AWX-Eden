@@ -1752,7 +1752,7 @@
    |  @param albumResult    Result of AudioLibrary.GetAlbums.
    |  @param parentPage    Page which is used as parent for new sub pages.
   \* ########################### */
-  $.fn.defaultMusicVideosTitleViewer = function(mvResult, parentPage) {
+  $.fn.defaultMusicVideosTitleViewer = function(mvResult, parentPage, options) {
 
     if (!mvResult.limits.total > 0) { return };
     
@@ -1789,6 +1789,48 @@
   }; // END defaultMusicVideosTitleViewer
   
   /* ########################### *\
+   |  Show Recently Added Music Videos.
+   |
+   |  @param episodesResult
+  \* ########################### */
+  $.fn.defaultRecentlyAddedMusicVideosViewer = function(mvRecentResult, parentPage, options) {
+  
+    if (!mvRecentResult.limits.total > 0) { return };
+    
+    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    
+    var view = mkf.cookieSettings.get('musicVideosView', 'cover');
+    
+    var mvRecentViewerElement = $(this);
+    
+    switch (view) {
+      /*case 'list':
+        uiviews.AlbumsViewList(mvResult, parentPage).appendTo($mvRecentViewerElement);
+        break;*/
+      case 'cover':
+        uiviews.MusicVideosViewThumbnails(mvRecentResult, parentPage).appendTo(mvRecentViewerElement);
+        break;
+      /*case 'listin':
+        uiviews.AlbumsViewListInline(albumResult).appendTo($mvRecentViewerElement);
+        break;*/
+    };
+    
+    if (useLazyLoad) {
+      function loadThumbs(i) {
+        mvRecentViewerElement.find('img.thumb').lazyload(
+          {
+            queuedLoad: true,
+            container: $('#content'),
+            errorImage: 'images/thumb' + xbmc.getTvShowThumbType() + '.png'
+          }
+        );
+      };
+      setTimeout(loadThumbs, 100);
+    }
+    
+  }; // END defaultRecentlyAddedMusicVideosViewer
+  
+  /* ########################### *\
    |  Show playlist (Audio or Video).
    |
    |  @param playlistResult  Result of XyzPlaylist.GetItems.
@@ -1821,14 +1863,14 @@
   }; // END defaultPlaylistViewer
 
   /* ########################### *\
-   |  Show tags genres.
+   |  Tags.
    |
    |  
    |  @param parentPage    Page which is used as parent for new sub pages.
    \* ########################### */
   $.fn.defaultTagsViewer = function(tagsResult, parentPage) {
     // no tags?
-    if (!tagsResult.limits.total > 0) { return };
+    if (!tagsResult.limits.total > 0) { mkf.messageLog.show(mkf.lang.get('message_failed_no_items'), mkf.messageLog.status.error, 5000); return };
     
     uiviews.TagsViewList(tagsResult, parentPage).appendTo($(this));
     
@@ -1864,13 +1906,14 @@
    |
    |  @param movieResult  Result of VideoLibrary.GetMovies.
   \* ########################### */
-  $.fn.defaultMovieTitleViewer = function(movieResult, parentPage) {
+  $.fn.defaultMovieTitleViewer = function(movieResult, parentPage, options) {
     if (!movieResult.limits.total > 0) { return };
 
+    var settings = {};
     //Allow refresh/non-filter (next/prev) subpages
     var onPageShow = '';
     if (parentPage.className == 'moviesTitle') { onPageShow = 'onMoviesTitleShow' }
-    else if (parentPage.className == 'songsArtists') { onPageShow = 'onSongsArtistsShow' }
+    //else if (parentPage.className == 'songsArtists') { onPageShow = 'onSongsArtistsShow' }
     else { onPageShow = 'onMoviesTitleShow' };
     
     totalMovieCount = movieResult.limits.total;
@@ -1885,33 +1928,39 @@
       };
     };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    settings.useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    settings.filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+    settings.filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+    settings.hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
     var view = mkf.cookieSettings.get('filmView', 'poster');
-    var options;
+    
+    //Overwrite settings for filtered views etc. Make a setting option?
+    $.extend(settings, options);
+    
     var $movieContainer = $(this);
 
     switch (view) {
       case 'poster':
-        uiviews.MovieViewThumbnails(movieResult, options, parentPage).appendTo($movieContainer);        
+        uiviews.MovieViewThumbnails(movieResult, parentPage, settings).appendTo($movieContainer);        
         break;
       case 'listover':
-        uiviews.MovieViewList(movieResult, options, parentPage).appendTo($movieContainer);
+        uiviews.MovieViewList(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'listin':
-        uiviews.MovieViewListInline(movieResult, options, parentPage).appendTo($movieContainer);
+        uiviews.MovieViewListInline(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'accordion':
-        uiviews.MovieViewAccordion(movieResult, options, parentPage).appendTo($movieContainer);
+        uiviews.MovieViewAccordion(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'singlePoster':
-        uiviews.MovieViewSingle(movieResult, options, parentPage).appendTo($movieContainer);
+        uiviews.MovieViewSingle(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'logo':
-        uiviews.MovieViewLogos(movieResult, options, parentPage).appendTo($movieContainer);
+        uiviews.MovieViewLogos(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
     };
     
-    if (useLazyLoad) {
+    if (settings.useLazyLoad) {
       function loadThumbs(i) {
         $movieContainer.find('img.thumb').lazyload(
           {
@@ -1984,56 +2033,51 @@
    |
    |  @param movieRecentResult  Result of VideoLibrary.GetMovies.
   \* ########################### */
-  $.fn.defaultMovieRecentViewer = function(movieResult) {
+  $.fn.defaultMovieRecentViewer = function(movieResult, parentPage, options) {
 
     if (!movieResult.limits.total > 0) { return };
-    
-    var ui = mkf.cookieSettings.get('ui');
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
-    var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+    var settings = {};
+    settings.useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    settings.filterWatched = false;
+    settings.filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
+    settings.hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
     var view = mkf.cookieSettings.get('filmViewRec', 'poster');
     //var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
-    var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+    //var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
     
-    //Override display options. Example: Show all new films for recently added page.
-    var options = {
-      filterWatched: false,
-      filterShowWatched: true
-    }
+    $.extend(settings, options);
     
 
     var $movieContainer = $(this);
     
     switch (view) {
       case 'poster':
-        uiviews.MovieViewThumbnails(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewThumbnails(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'listover':
-        uiviews.MovieViewList(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewList(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'listin':
-        uiviews.MovieViewListInline(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewListInline(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'accordion':
-        uiviews.MovieViewAccordion(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewAccordion(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'singlePoster':
-        uiviews.MovieViewSingle(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewSingle(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
       case 'logo':
-        uiviews.MovieViewLogos(movieResult, options).appendTo($movieContainer);
+        uiviews.MovieViewLogos(movieResult, parentPage, settings).appendTo($movieContainer);
         break;
     };
     
-    if (useLazyLoad) {
+    if (settings.useLazyLoad) {
       function loadThumbs(i) {
         $movieContainer.find('img.thumb').lazyload(
           {
             queuedLoad: true,
-            container: ($('#main').length? $('#main'): $('#content')),  // TODO remove fixed #main
+            container: $('#content'),
             errorImage: 'images/thumb' + xbmc.getMovieThumbType() + '.png'
-            //errorImage: 'images/thumbBanner.png'
           }
         );
       };
@@ -2053,6 +2097,7 @@
     '<li><a class="video_sub recent" title="' + mkf.lang.get('btn_recent') +'"><span>' + mkf.lang.get('btn_recent') + '</span></a></li>' +
     '<li><a class="video_sub genres" title="' + mkf.lang.get('btn_genres') +'"><span>' + mkf.lang.get('btn_genres') + '</span></a></li>' +
     '<li><a class="video_sub years" title="' + mkf.lang.get('btn_years') +'"><span>' + mkf.lang.get('btn_years') + '</span></a></li>' +
+    '<li><a class="video_sub tags" title="' + mkf.lang.get('btn_tags') + '"><span>' + mkf.lang.get('btn_tags') + '</span></a></li>' +
     //'<li><a class="video_sub sets" title="' + mkf.lang.get('btn_sets') +'"><span>' + mkf.lang.get('btn_sets') + '</span></a></li>' +
     
     '</ul></div><br />').appendTo($(this));
@@ -2061,6 +2106,7 @@
     $tvroot.find('.genres').click(function() { mkf.pages.showPage(awxUI.tvShowsGenresPage, false); } );
     $tvroot.find('.years').click(function() { mkf.pages.showPage(awxUI.tvShowsYearsPage, false); } );
     $tvroot.find('.recent').click(function() { mkf.pages.showPage(awxUI.tvShowsRecentlyAddedPage, false); } );
+    $tvroot.find('.tags').click(function() { mkf.pages.showPage(awxUI.tvShowsTagsPage, false); } );
     
   }; // END defaultTvShowViewer
   
@@ -2128,8 +2174,6 @@
     };
     
   }; // END defaultTvShowViewer
-
-
 
   /* ########################### *\
    |  Show TV Show's seasons.

@@ -1009,6 +1009,7 @@ var uiviews = {};
     },
 
     MovieSetDetails: function(e) {
+      var settings = {};
       // open new page to show movies in set
       var $setContent = $('<div class="pageContentWrapper"></div>');
       var setPage = mkf.pages.createTempPage(e.data.objParentPage, {
@@ -1018,7 +1019,7 @@ var uiviews = {};
       setPage.setContextMenu(
         [
           {
-            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_season_list'), 'shortcut':'Ctrl+1', 'onClick':
+            'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
             function() {
               mkf.pages.closeTempPage(setPage);
               return false;
@@ -1040,7 +1041,8 @@ var uiviews = {};
 
         onSuccess: function(result) {
           result.setdetails.isFilter = true;
-          $setContent.defaultMovieTitleViewer(result.setdetails, e.data.idSet, setPage);
+          settings.filterWatched = false;
+          $setContent.defaultMovieTitleViewer(result.setdetails, setPage, settings);
           $setContent.removeClass('loading');
         }
       });
@@ -1883,13 +1885,20 @@ var uiviews = {};
         onError: null
       };
 
-      //Movies only currently.
       if (e.data.lib == 'Movies') {
         //Use recent so watched are shown.
         defaultViewer = 'defaultMovieRecentViewer';
         settings.sortby = 'label';
         settings.order = 'ascending';
-      }
+      } else if (e.data.lib == 'TvShows') {
+        defaultViewer = 'defaultTvShowTitleViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      } else if (e.data.lib == 'MusicVideos') {
+        defaultViewer = 'defaultMusicVideosTitleViewer';
+        settings.sortby = 'label';
+        settings.order = 'ascending';
+      };
       
       // open new page to show year's albums
       var $TagsItemsContent = $('<div class="pageContentWrapper"></div>');
@@ -1913,17 +1922,26 @@ var uiviews = {};
       // show tag's items
       $TagsItemsContent.addClass('loading');
       //No builtin, use advanced filter
-      settings.filter = '"filter": {"field": "tag", "operator": "is", "value": "' + e.data.strTag + '"}';
+      //settings.filter = '"filter": {"field": "tag", "operator": "is", "value": "' + e.data.strTag + '"}';
       xbmc[lib]({
-        filter: settings.filter,
+        item: 'tag',
+        itemStr: e.data.strTag,
         onError: function() {
           mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
           $TagsItemsContent.removeClass('loading');
         },
 
         onSuccess: function(result) {
-          $TagsItemsContent[defaultViewer](result, TagsItemsPage);
-          $TagsItemsContent.removeClass('loading');
+          if (result.limits.total > 0) {
+            //Stop limiting.
+            result.isFilter = true;
+            settings.filterWatched = false;
+            $TagsItemsContent[defaultViewer](result, TagsItemsPage);
+            $TagsItemsContent.removeClass('loading');
+          } else {
+            mkf.messageLog.show(mkf.lang.get('message_failed_no_items'), mkf.messageLog.status.error, 5000);
+            mkf.pages.closeTempPage(TagsItemsPage);
+          }
         }
       });
 
@@ -2451,14 +2469,14 @@ var uiviews = {};
 /*-------------*/
 
     /*----Movie list accordion view----*/
-    MovieViewAccordion: function(movies, options, parentPage) {
+    MovieViewAccordion: function(movies, parentPage, options) {
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+    /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
     var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
     var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
     
-    if (options) { filterWatched = options.filterWatched };
+    if (options) { filterWatched = options.filterWatched };*/
     
       //can't find accordion without this...?
       var page = $('<div></div>');
@@ -2469,8 +2487,8 @@ var uiviews = {};
         $.each(movies.movies, function(i, movie) {
           var watched = false;
           if (typeof movie.movieid === 'undefined') { return; }
-          if (movie.playcount > 0 && !filterShowWatched) { watched = true; }
-          if (filterWatched && watched) { return; }
+          if (movie.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
 
           classEven += 1;
               $movie = $('<h3 id="movieName' + movie.movieid + '"><a href="#">' + movie.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') +
@@ -2503,14 +2521,14 @@ var uiviews = {};
     },    
     
     /*----Movie list inline info view----*/
-    MovieViewListInline: function(movies, options, parentPage) {
+    MovieViewListInline: function(movies, parentPage, options) {
     
-      var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+      /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
       var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
       var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
       var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
       
-      if (options) { filterWatched = options.filterWatched };
+      if (options) { filterWatched = options.filterWatched };*/
     
       //can't find accordion without this...?
       var page = $('<div></div>');
@@ -2521,8 +2539,8 @@ var uiviews = {};
         $.each(movies.movies, function(i, movie) {
           var watched = false;
           if (typeof movie.movieid === 'undefined') { return; }
-          if (movie.playcount > 0 && !filterShowWatched) { watched = true; }
-          if (filterWatched && watched) { return; }
+          if (movie.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
 
           classEven += 1;
               $movie = $('<h3 class="multiOpenAccordion-header" id="movieName' + movie.movieid + '"><a href="#">' + movie.label +
@@ -2559,20 +2577,20 @@ var uiviews = {};
     /*----Movie list view----*/
     MovieViewList: function(movies, options, parentPage) {
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+    /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
     var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
     var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
     
-    if (options) { filterWatched = options.filterWatched };
+    if (options) { filterWatched = options.filterWatched };*/
     
       var $movieList = $('<ul class="fileList"></ul>');
       var classEven = -1;
         $.each(movies.movies, function(i, movie) {
           var watched = false;
           if (typeof movie.movieid === 'undefined') { return; }
-          if (movie.playcount > 0 && !filterShowWatched) { watched = true; }
-          if (filterWatched && watched) { return; }
+          if (movie.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
             
           classEven += 1
           $movie = $('<li' + (classEven%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' + 
@@ -2589,15 +2607,15 @@ var uiviews = {};
     },
     
     /*----Movie logo view----*/
-    MovieViewLogos: function(movies, options, parentPage) {
+    MovieViewLogos: function(movies, parentPage, options) {
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+    /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
     var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
     var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
     var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
     
-    if (options) { filterWatched = options.filterWatched };
+    if (options) { filterWatched = options.filterWatched };*/
 
     var $moviesList = $('<div></div>');
       $.each(movies.movies, function(i, movie) {
@@ -2605,7 +2623,7 @@ var uiviews = {};
         // if movie has no id (e.g. movie sets), ignore it
         if (typeof movie.movieid === 'undefined') { return; }
         if (movie.playcount > 0) { watched = true; }
-        if (filterWatched && watched) { return; }
+        if (options.filterWatched && watched) { return; }
         
         var thumb = 'images/missing_logo.png';
         xbmc.getLogo({path: movie.file, type: 'logo'}, function(logo) {
@@ -2614,7 +2632,7 @@ var uiviews = {};
               '<div class="linkTVLogoWrapper">' + 
                 '<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
               '</div>' +
-              (useLazyLoad?
+              (options.useLazyLoad?
                 '<img src="images/loading_thumb.gif" alt="' + movie.label + '" class="thumb thumbLogo" data-original="' + (logo? logo : thumb) + '" />':
                 '<img src="' + (logo? logo : thumb) + '" alt="' + movie.label + '" class="thumbLogo" />'
               ) +
@@ -2625,7 +2643,7 @@ var uiviews = {};
           $movie.find('.playlist').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
           $movie.find('.info').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
           
-          $moviesList.find('.thumbLogoWrapper').on(hoverOrClick, function() { $(this).children('.linkTVLogoWrapper').show() });          
+          $moviesList.find('.thumbLogoWrapper').on(options.hoverOrClick, function() { $(this).children('.linkTVLogoWrapper').show() });          
           $moviesList.find('.thumbLogoWrapper').on('mouseleave', function() { $(this).children('.linkTVLogoWrapper').hide() });
                 
         });
@@ -2636,15 +2654,15 @@ var uiviews = {};
     },
       
     /*----Movie thumbnail view----*/
-    MovieViewThumbnails: function(movies, options, parentPage) {
+    MovieViewThumbnails: function(movies, parentPage, options) {
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
+    /*var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
     var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
     var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
     var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
-    var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
+    var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';*/
     
-    if (options) { filterWatched = options.filterWatched };
+    //if (options) { filterWatched = options.filterWatched };
 
     var $moviesList = $('<div></div>');
       $.each(movies.movies, function(i, movie) {
@@ -2652,7 +2670,7 @@ var uiviews = {};
         // if movie has no id (e.g. movie sets), ignore it
         if (typeof movie.movieid === 'undefined') { return; }
         if (movie.playcount > 0) { watched = true; }
-        if (filterWatched && watched) { return; }
+        if (options.filterWatched && watched) { return; }
         
         var thumb = (movie.thumbnail? xbmc.getThumbUrl(movie.thumbnail) : 'images/thumb' + xbmc.getMovieThumbType() + '.png');
         var $movie = $(
@@ -2661,7 +2679,7 @@ var uiviews = {};
               '<a href="" class="play">' + mkf.lang.get('btn_play') + '</a><a href="" class="playlist">' + mkf.lang.get('btn_enqueue') + '</a><a href="" class="info">' + mkf.lang.get('btn_information') + '</a>' +
               '<div class="movieRating' + Math.round(movie.rating) + '"></div>' +
             '</div>' +
-            (useLazyLoad?
+            (options.useLazyLoad?
               '<img src="images/loading_thumb' + xbmc.getMovieThumbType() + '.gif" alt="' + movie.label + '" class="thumb thumb' + xbmc.getMovieThumbType() + '" data-original="' + thumb + '" />':
               '<img src="' + thumb + '" alt="' + movie.label + '" class="thumb thumb' + xbmc.getMovieThumbType() + '" />'
             ) +
@@ -2674,21 +2692,21 @@ var uiviews = {};
         
       });
       
-      $moviesList.find('.thumbWrapper').on(hoverOrClick, function() { $(this).children('.linkWrapper').show() });          
+      $moviesList.find('.thumbWrapper').on(options.hoverOrClick, function() { $(this).children('.linkWrapper').show() });          
       $moviesList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkWrapper').hide() });
       
       return $moviesList;
     },
         
     /*----Movie single view----*/
-    MovieViewSingle: function(movies, options, parentPage) {
+    MovieViewSingle: function(movies, parentPage, options) {
     
     //var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
-    var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+    /*var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
     var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
     var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
     
-    if (options) { filterWatched = options.filterWatched };
+    if (options) { filterWatched = options.filterWatched };*/
 
     
     var currentItem = 0;
@@ -2725,7 +2743,7 @@ var uiviews = {};
         $('div.movieName img').remove();
         if (currentItem > movies.limits.start) { currentItem-- } else { currentItem = movies.limits.end -1 };
         //Check if next movie has been watched.
-        if (filterWatched) {
+        if (options.filterWatched) {
           while (movies.movies[currentItem].playcount > 0) {
             if (currentItem > movies.limits.start) { currentItem-- } else { currentItem = movies.limits.end -1 };
           }
@@ -2753,7 +2771,7 @@ var uiviews = {};
         $('div.movieName img').remove();
         if (currentItem < movies.limits.end -1) { currentItem++ } else { currentItem = movies.limits.start };
         //Check if next movie has been watched.
-        if (filterWatched) {
+        if (options.filterWatched) {
           while (movies.movies[currentItem].playcount > 0) {
             if (currentItem < movies.limits.end -1) { currentItem++ } else { currentItem = movies.limits.start };
           }
@@ -3330,7 +3348,7 @@ var uiviews = {};
         lib = 'Movies';
       } else if (parentPage.className == 'tvShowsGenres') {
         lib = 'TvShows';
-      } else if (parentPage.className == 'musicvideoGenres') {
+      } else if (parentPage.className == 'musicVideosGenres') {
         lib = 'MusicVideos';
       };
       
@@ -3363,7 +3381,7 @@ var uiviews = {};
         lib = 'Movies';
       } else if (parentPage.className == 'tvShowsYears') {
         lib = 'TvShows';
-      } else if (parentPage.className == 'musicvideosYears') {
+      } else if (parentPage.className == 'musicVideosYears') {
         lib = 'MusicVideos';
       };
       
@@ -3388,17 +3406,22 @@ var uiviews = {};
       var lib = '';
       if (parentPage.className == 'movieTags') {
         lib = 'Movies';
+      } else if (parentPage.className == 'tvShowsTags') {
+        lib = 'TvShows';
+      } else if (parentPage.className == 'musicVideosTags') {
+        lib = 'MusicVideos';
       };
       
+      //console.log(tags);
       var $tagsList = $('<ul class="fileList"></ul>');
       $.each(tags.files, function(i, tag)  {
         if (tag == '0') { return };
         $tagsList.append('<li' + (i%2==0? ' class="even"': '') + 
                   '><div class="folderLinkWrapper"><a href="" class="tag' + 
-                  tag.label + '">' +
+                  tag.id + '">' +
                   tag.label + '<div class="findKeywords">' + tag.label.toLowerCase() + '</div>' +
                   '</a></div></li>');
-        $tagsList.find('.tag' + tag.label).on('click', {strTag: tag.label, lib: lib, objParentPage: parentPage}, uiviews.TagsItems);
+        $tagsList.find('.tag' + tag.id).on('click', {strTag: tag.label, lib: lib, objParentPage: parentPage}, uiviews.TagsItems);
       });
       return $tagsList;
     },

@@ -38,6 +38,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
   'page_title_tvshows':                     'TV Shows',
   'page_title_video_files':                 'Files',
   'page_title_video_playlist':              'Playlist',
+  'page_title_recent':                      'Recently Added',
   'page_title_tv_recentlyadded':            'Recent TV',
   'page_title_movies_recentlyadded':        'Recent Movies',
   'page_title_album_recent':                'Recent Albums',

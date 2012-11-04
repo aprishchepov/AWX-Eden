@@ -1042,13 +1042,13 @@ a.formButton:hover {
   padding-right: 20px;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 55px;
   z-index: 900;
 }
 #messageLog div.mkfMessage {
   background: none repeat scroll 0 0 rgba(41, 41, 41, 0.9);
   border-radius: 5px 5px 5px 5px;
-  margin-top: 55px;
+  margin-top: 10px;
   min-height: 32px;
   padding: 10px;
   width: 200px;

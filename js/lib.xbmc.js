@@ -1098,7 +1098,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { ' + (settings.itemId == -1? '': '"filter": { "' + settings.item + '": ' + settings.itemId + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist", "ignorearticle": true } }, "id": 1}',
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist", "ignorearticle": true } }, "id": 1}',
 
         function(response) {
           settings.onSuccess(response.result);
@@ -1166,7 +1166,7 @@ var xbmc = {};
       settings.order = mkf.cookieSettings.get('adesc', 'ascending');
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { ' + (settings.itemId == -1? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + settings.itemId + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libAlbums"}',
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libAlbums"}',
 
         function(response) {
           if (settings.order == 'descending' && settings.sortby == 'none') {
@@ -1253,7 +1253,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { ' + (settings.itemId == -1? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + settings.itemId + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "artist", "duration", "track" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libSongs"}',
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "artist", "duration", "track" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libSongs"}',
 
         function(response) {
           settings.onSuccess(response.result);
@@ -1301,8 +1301,13 @@ var xbmc = {};
     
     getMusicVideos: function(options) {
       var settings = {
+        item: '',
+        itemId: -1,
+        filter: '',
         sortby: 'none',
         order: 'ascending',
+        start: 0,
+        end: 99999,
         onSuccess: null,
         onError: null
       };
@@ -1312,7 +1317,7 @@ var xbmc = {};
       settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libMusicVideos"}',
 
         function(response) {
           if (settings.order == 'descending' && settings.sortby == 'none') {
@@ -1329,7 +1334,24 @@ var xbmc = {};
       );    
     },
     
-    getGenreMusicVideos: function(options) {
+    getRecentlyAddedMusicVideos: function(options) {
+      var settings = {
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+
+      xbmc.sendCommand(
+        '{"jsonrpc":"2.0", "id": "libRecentMVs", "method": "VideoLibrary.GetRecentlyAddedMusicVideos","params": { "limits": { "end": 25}, "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ] } }',
+
+        function(response) {
+          settings.onSuccess(response.result);
+        },
+        settings.onError
+      );
+    },
+    
+    /*getGenreMusicVideos: function(options) {
       var settings = {
         genreid: 0,
         sortby: 'none',
@@ -1358,7 +1380,7 @@ var xbmc = {};
 
         settings.onError
       );    
-    },
+    },*/
     
     getMusicVideoInfo: function(options) {
       var settings = {
@@ -2079,6 +2101,7 @@ var xbmc = {};
       var settings = {
         item: '',
         itemId: -1,
+        itemStr: '',
         filter: '',
         sortby: 'label',
         order: 'ascending',
@@ -2093,7 +2116,7 @@ var xbmc = {};
       settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { ' + (settings.itemId == -1? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + settings.itemId + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
+        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libMovies"}',
         function(response) {
           if (settings.order == 'descending' && settings.sortby == 'none') {
             var mresult = $.makeArray(response.result.movies).reverse();
@@ -2255,7 +2278,7 @@ var xbmc = {};
       settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { ' + (settings.itemId == -1? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + settings.itemId + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
+        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": "libTvShows"}',
         function(response) {
           settings.onSuccess(response.result);
         },

@@ -1026,7 +1026,7 @@ var awxUI = {};
         onShow: $.proxy(this, "onMovieTagsShow"),
         className: 'movieTags'
       });
-      //end Tags genres
+      //end Tags
       
       //TV Shows
       this.$tvShowsContent = $('<div class="pageContentWrapper"></div>');
@@ -1100,15 +1100,6 @@ var awxUI = {};
             return false;
           }
       });
-      /*videoTvShowsRecentlyAddedContextMenu.push({
-        'id':'findTVShowButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findTVShowButton').offset();
-            awxUI.$tvShowsRecentlyAddedContent
-              .defaultFindBox({id:'tvShowFindBox', searchItems:'.thumbWrapper', top: pos.top, left: pos.left});
-            return false;
-          }
-      });*/
       
       this.tvShowsRecentlyAddedPage = this.tvShowsPage.addPage({
         title: mkf.lang.get('page_title_tv_recentlyadded'),
@@ -1180,6 +1171,36 @@ var awxUI = {};
       });
       //end TV Years
       
+      //tvShows Tags
+      this.$tvShowsTagsContent = $('<div class="pageContentWrapper"></div>');
+      var tvShowsTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      tvShowsTagsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(tvShowsPage);
+            return false;
+          }
+      });
+      tvShowsTagsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$tvShowsTagsContent.empty();
+            awxUI.onTvShowsTagsShow();
+
+            return false;
+          }
+      });
+
+      this.tvShowsTagsPage = this.tvShowsPage.addPage({
+        title: mkf.lang.get('page_title_tags'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_tags'),
+        content: this.$tvShowsTagsContent,
+        contextMenu: tvShowsTagsContextMenu,
+        onShow: $.proxy(this, "onTvShowsTagsShow"),
+        className: 'tvShowsTags'
+      });
+      //end tvShows Tags
+      
       //Music Videos
       this.$musicVideosContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosContextMenu = $.extend(true, [], standardVideosContextMenu);
@@ -1226,6 +1247,126 @@ var awxUI = {};
         className: 'musicVideosTitle'
       });
       //end Music Videos
+      
+      //For recently added music videos
+      this.$musicVideosRecentContent = $('<div class="pageContentWrapper"></div>');
+      var musicVideosRecentlyAddedContextMenu = $.extend(true, [], standardVideosContextMenu);
+      musicVideosRecentlyAddedContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(musicVideoPage);
+            return false;
+          }
+      });
+      musicVideosRecentlyAddedContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$musicVideosRecentContent.empty();
+            awxUI.onMusicVideosRecentlyAddedShow();
+
+            return false;
+          }
+      });
+      
+      this.musicVideosRecentlyAddedPage = this.musicVideosPage.addPage({
+        title: mkf.lang.get('page_title_recent'),
+        content: this.$musicVideosRecentContent,
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recent'),
+        contextMenu: musicVideosRecentlyAddedContextMenu,
+        onShow: $.proxy(this, "onMusicVideosRecentlyAddedShow"),
+        className: 'recentMusicVideos'
+      });
+      // end recently added music videos
+      
+      //music videos genres
+      this.$musicVideosGenresContent = $('<div class="pageContentWrapper"></div>');
+      var musicVideosGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
+      musicVideosGenresContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(musicVideoPage);
+            return false;
+          }
+      });
+      musicVideosGenresContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$musicVideosGenresContent.empty();
+            awxUI.onMusicVideosGenresShow();
+
+            return false;
+          }
+      });
+
+      this.musicVideosGenresPage = this.musicVideosPage.addPage({
+        title: mkf.lang.get('page_title_genres'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        content: this.$musicVideosGenresContent,
+        contextMenu: musicVideosGenresContextMenu,
+        onShow: $.proxy(this, "onMusicVideosGenresShow"),
+        className: 'musicVideosGenres'
+      });
+      //end music videos genres
+      
+      //music videos Years
+      this.$musicVideosYearsContent = $('<div class="pageContentWrapper"></div>');
+      var musicVideosYearsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      musicVideosYearsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(musicVideoPage);
+            return false;
+          }
+      });
+      musicVideosYearsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$musicVideosYearsContent.empty();
+            awxUI.onMusicVideosYearsShow();
+
+            return false;
+          }
+      });
+
+      this.musicVideosYearsPage = this.musicVideosPage.addPage({
+        title: mkf.lang.get('page_title_years'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_years'),
+        content: this.$musicVideosYearsContent,
+        contextMenu: musicVideosYearsContextMenu,
+        onShow: $.proxy(this, "onMusicVideosYearsShow"),
+        className: 'musicVideosYears'
+      });
+      //end music videos Years
+      
+      //tvShows Tags
+      this.$musicVideosTagsContent = $('<div class="pageContentWrapper"></div>');
+      var musicVideosTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
+      musicVideosTagsContextMenu.push({
+        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+          function() {
+            mkf.pages.showPage(musicVideoPage);
+            return false;
+          }
+      });
+      musicVideosTagsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+          function(){
+            awxUI.$musicVideosTagsContent.empty();
+            awxUI.onMusicVideosTagsShow();
+
+            return false;
+          }
+      });
+
+      this.musicVideosTagsPage = this.musicVideosPage.addPage({
+        title: mkf.lang.get('page_title_tags'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_tags'),
+        content: this.$musicVideosTagsContent,
+        contextMenu: musicVideosTagsContextMenu,
+        onShow: $.proxy(this, "onMusicVideosTagsShow"),
+        className: 'musicVideosTags'
+      });
+      //end music videos Tags
       
       // PVR TV
       this.$pvrtvContent = $('<div class="pageContentWrapper"></div>');
@@ -2033,6 +2174,108 @@ var awxUI = {};
     },
     
     /*********************************************
+     * Called when Recent Music Videos-Page is shown.          *
+     *********************************************/
+    onMusicVideosRecentlyAddedShow: function() {
+      if (this.$musicVideosRecentContent.html() == '') {
+        var musicVideosRecentPage = this.musicVideosRecentlyAddedPage;
+        var $contentBox = this.$musicVideosRecentContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getRecentlyAddedMusicVideos({
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_recent'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultRecentlyAddedMusicVideosViewer(result, musicVideosRecentPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when TvShows Genres-Page is shown.          *
+     *********************************************/
+    onMusicVideosGenresShow: function() {
+
+      if (this.$musicVideosGenresContent.html() == '') {
+        var musicVideosGenresPage = this.musicVideosGenresPage;
+        var $contentBox = this.$musicVideosGenresContent;
+        $contentBox.addClass('loading');
+
+        xbmc.getVideoGenres({
+          type: 'musicvideo',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_genres'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultGenresViewer(result, musicVideosGenresPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when TvShows Years-Page is shown.          *
+     *********************************************/
+    onMusicVideosYearsShow: function() {
+
+      if (this.$musicVideosYearsContent.html() == '') {
+        var musicVideosYearsPage = this.musicVideosYearsPage;
+        var $contentBox = this.$musicVideosYearsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get years via proper method, use DB direct e.g. "videodb://1/3/1992"
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'videodb://3/3/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultYearsViewer(result, musicVideosYearsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when TvShows Tags-Page is shown.          *
+     *********************************************/
+    onMusicVideosTagsShow: function() {
+
+      if (this.$musicVideosTagsContent.html() == '') {
+        var musicVideosTagsPage = this.musicVideosTagsPage;
+        var $contentBox = this.$musicVideosTagsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get tags via proper method, use DB direct.
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'videodb://3/9/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_tags'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultTagsViewer(result, musicVideosTagsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
      * Called when PVR Radio Page is shown.    *
      *********************************************/
     onPVRRadioShow: function() {
@@ -2431,7 +2674,7 @@ var awxUI = {};
         //Can't get years via proper method, use DB direct e.g. "videodb://1/3/1992"
         xbmc.getDirectory({
           media: 'files',
-          directory: 'videodb://1/3/',
+          directory: 'videodb://2/3/',
           onError: function() {
             mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
@@ -2439,6 +2682,33 @@ var awxUI = {};
 
           onSuccess: function(result) {
             $contentBox.defaultYearsViewer(result, tvShowsYearsPage);
+            $contentBox.removeClass('loading');
+          }
+        });
+      }
+    },
+    
+    /*********************************************
+     * Called when TvShows Tags-Page is shown.          *
+     *********************************************/
+    onTvShowsTagsShow: function() {
+
+      if (this.$tvShowsTagsContent.html() == '') {
+        var tvShowsTagsPage = this.tvShowsTagsPage;
+        var $contentBox = this.$tvShowsTagsContent;
+        $contentBox.addClass('loading');
+
+        //Can't get tags via proper method, use DB direct.
+        xbmc.getDirectory({
+          media: 'files',
+          directory: 'videodb://2/9/',
+          onError: function() {
+            mkf.messageLog.show(mkf.lang.get('message_failed_tags'), mkf.messageLog.status.error, 5000);
+            $contentBox.removeClass('loading');
+          },
+
+          onSuccess: function(result) {
+            $contentBox.defaultTagsViewer(result, tvShowsTagsPage);
             $contentBox.removeClass('loading');
           }
         });
