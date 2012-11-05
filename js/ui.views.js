@@ -97,39 +97,38 @@ var uiviews = {};
     
     /*------------*/
     SongInfoOverlay: function(e) {
-      
       var dialogHandle = mkf.dialog.show();
       //var dialogContent = $('<div></div>');
       var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
 
-      xbmc.getAlbumDetails({
-        albumid: e.data.idAlbum,
-        onSuccess: function(albumdetails) {
+      xbmc.getSongDetails({
+        songid: e.data.idSong,
+        onSuccess: function(songdetails) {
+          console.log(songdetails);
           if ( useFanart ) {
-            $('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(albumdetails.fanart) + '")');
+            $('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(songdetails.fanart) + '")');
           };
           
-          var thumb = (albumdetails.thumbnail? xbmc.getThumbUrl(albumdetails.thumbnail) : 'images/thumb.png');
+          var thumb = (songdetails.thumbnail? xbmc.getThumbUrl(songdetails.thumbnail) : 'images/thumb.png');
           var dialogContent = $('<img src="' + thumb + '" class="thumbAlbums dialogThumb" />' +
-            '<h1 class="underline">' + albumdetails.label + '</h1>' +
-            //'<div class="test"><img src="' + tvshow.file + 'logo.png' + '" /></div>' +
-            (albumdetails.artist? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_artist') + '</span><span class="labelinfo">' + albumdetails.artist + '</span></div>' : '') +
-            (albumdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + albumdetails.genre.join(', ') + '</span></div>' : '') +
-            (albumdetails.mood? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_mood') + '</span><span class="labelinfo">' + albumdetails.mood.join(', ') + '</span></div>' : '') +
-            (albumdetails.style? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_style') + '</span><span class="labelinfo">' +  albumdetails.style.join(', ') + '</span></div>' : '') +
-            (albumdetails.rating? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="labelinfo">' + albumdetails.rating + '</span></div>' : '') +
-            //(albumdetails.type? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_type') + '</span><span class="labelinfo">' + albumdetails.type + '</span></div>' : '') +
-            (albumdetails.year? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_year') + '</span><span class="labelinfo">' + albumdetails.year + '</span></div>' : '') +
-            (albumdetails.albumlabel? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_label') + '</span><span class="labelinfo">' + albumdetails.albumlabel + '</span></div>' : '') +
-            //(albumdetails.yearsactive? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_yearsactive') + '</span><span class="labelinfo">' + albumdetails.yearsactive + '</span></div>' : '') +
-            //(albumdetails.instrument? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_instrument') + '</span><span class="labelinfo">' + albumdetails.instrument + '</span></div>' : '') +
-            '<p class="artistdesc">' + albumdetails.description + '</p>');
+            '<h1 class="underline">' + songdetails.label + '</h1>' +
+            (songdetails.artist[0]? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_artist') + '</span><span class="labelinfo">' + songdetails.artist[0] + '</span></div>' : '') +
+            (songdetails.genre? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_genre') + '</span><span class="labelinfo">' + songdetails.genre.join(', ') + '</span></div>' : '') +
+            (songdetails.track > 0? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_track') + '</span><span class="labelinfo">' + songdetails.track + '</span></div>' : '') +
+            (songdetails.album? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_album') + '</span><span class="labelinfo">' +  songdetails.album + '</span></div>' : '') +
+            (songdetails.rating? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_rating') + '</span><span class="labelinfo">' + songdetails.rating + '</span></div>' : '') +
+            (songdetails.duration? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_duration') + '</span><span class="labelinfo">' + xbmc.formatTime(songdetails.duration) + '</span></div>' : '') +
+            (songdetails.year? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_year') + '</span><span class="labelinfo">' + songdetails.year + '</span></div>' : '') +
+            (songdetails.lastplayed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_lastplayed') + '</span><span class="labelinfo">' + songdetails.lastplayed + '</span></div>' : '') +
+            (songdetails.playcount? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_playcount') + '</span><span class="labelinfo">' + songdetails.playcount + '</span></div>' : '') +
+            //(songdetails.instrument? '<div class="movieinfo"><span class="label">' + mkf.lang.get('label_instrument') + '</span><span class="labelinfo">' + songdetails.instrument + '</span></div>' : '') +
+            '<p class="artistdesc">' + songdetails.lyrics + '</p>');
           
           mkf.dialog.setContent(dialogHandle, dialogContent);
           
         },
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('message_failed_info'), mkf.messageLog.status.error, 5000);
           mkf.dialog.close(dialogHandle);        
         }
       });
@@ -2331,9 +2330,10 @@ var uiviews = {};
           '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('btn_playnext') +
           '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a></div></li>').appendTo($songList);
           
-          $song.find('.playlist').bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
-          $song.find('.play').bind('click', {idSong: song.songid}, uiviews.SongPlay);
-          $song.find('.playnext').bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
+          $song.find('.info' + song.songid).on('click', {idSong: song.songid}, uiviews.SongInfoOverlay);
+          $song.find('.playlist' + song.songid).bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
+          $song.find('.play' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlay);
+          $song.find('.playnext' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
         });
       } else {
         $.each(songs.songs, function(i, song)  {
@@ -2341,10 +2341,9 @@ var uiviews = {};
           '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('btn_playnext') +
           '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.track + '. ' + song.artist + ' - ' + song.label + '</a></div></li>').appendTo($songList);
           
-          $song.find('.info').on('click', {idSong: song.songid}, uiviews.SongInfoOverlay);
-          $song.find('.playlist').on('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
-          $song.find('.play').on('click', {idSong: song.songid}, uiviews.SongPlay);
-          $song.find('.playnext').on('click', {idSong: song.songid}, uiviews.SongPlayNext);
+          $song.find('.playlist' + song.songid).on('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
+          $song.find('.play' + song.songid).on('click', {idSong: song.songid}, uiviews.SongPlay);
+          $song.find('.playnext' + song.songid).on('click', {idSong: song.songid}, uiviews.SongPlayNext);
         });
       }
       return $songList;

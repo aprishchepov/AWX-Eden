@@ -1263,6 +1263,24 @@ var xbmc = {};
       );
     },
     
+    getSongDetails: function(options) {
+      var settings = {
+        songid: -1,
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+
+      xbmc.sendCommand(
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongDetails", "params": { "songid" : ' + settings.songid + ', "properties" : [ "title", "artist", "albumartist", "genre", "year", "rating", "album", "track", "duration", "comment", "lyrics", "musicbrainztrackid", "musicbrainzartistid", "musicbrainzalbumid", "musicbrainzalbumartistid", "playcount", "fanart", "thumbnail", "file", "albumid", "lastplayed", "disc" ] }, "id": "libSongDets"}',
+
+        function(response) {
+          settings.onSuccess(response.result.songdetails);
+        },
+        settings.onError
+      );
+    },
+    
     getRecentlyAddedSongs: function(options) {
       var settings = {
         onSuccess: null,
