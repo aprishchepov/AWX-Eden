@@ -1535,11 +1535,6 @@ var awxUI = {};
               '</div>' +
               '<div id="background">' +
               '<div id="header">' +
-                /*'<div id="controls">' +
-                  '<div class="mute unmuted"></div><div id="volumeSlider"></div>' +
-                '</div>' +
-                '<div id="currentlyPlaying"></div>' +*/
-              
               '<div id="navigation"></div>'+
               '<div id="statusLine"><div id="location"></div><div id="contextMenu"></div></div>' +
               '</div>' + 
@@ -1594,11 +1589,13 @@ var awxUI = {};
 
 
       
-      //Set menu width to largest item. Can't seem to do this with CSS. IE9 and FF work but Chrome double parent UL width.
+      //Set menu width to largest item. Can't seem to do this with CSS. IE9 and FF work but Chrome doubles parent UL width.
       setTimeout(function() {
       
       //Show menus so we can grab the widths.
       $('#navigation ul.mkfMenu .mkfSubMenu1, ul.systemMenu ul').show();
+      
+      $('.mkfSubMenu2').parent().addClass('subMenu');
       
       //Set root menu (music and video) width as it can't (QED) be done in CSS. Timeout is to allow the menu to draw.
       $("#navigation ul.mkfMenu .music .mkfSubMenu1").each(function() { // Loop through all the menu items that got submenu items
@@ -2197,7 +2194,7 @@ var awxUI = {};
     },
     
     /*********************************************
-     * Called when TvShows Genres-Page is shown.          *
+     * Called when Music Videos Genres-Page is shown.          *
      *********************************************/
     onMusicVideosGenresShow: function() {
 
