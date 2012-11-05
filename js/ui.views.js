@@ -2323,7 +2323,7 @@ var uiviews = {};
       
       var $songList = $('<ul class="fileList"></ul>');
 
-      if (parentPage.className == 'songsTitle') {
+      //if (parentPage.className == 'songsTitle') {
         $.each(songs.songs, function(i, song)  {
           var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"><a href="" class="button info' + song.songid + '" title="' + mkf.lang.get('btn_information') + '"><span class="miniIcon information" /></a>' +
           '<a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') +
@@ -2335,7 +2335,7 @@ var uiviews = {};
           $song.find('.play' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlay);
           $song.find('.playnext' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
         });
-      } else {
+      /*} else {
         $.each(songs.songs, function(i, song)  {
           var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') +
           '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('btn_playnext') +
@@ -2345,7 +2345,7 @@ var uiviews = {};
           $song.find('.play' + song.songid).on('click', {idSong: song.songid}, uiviews.SongPlay);
           $song.find('.playnext' + song.songid).on('click', {idSong: song.songid}, uiviews.SongPlayNext);
         });
-      }
+      }*/
       return $songList;
     },
   
