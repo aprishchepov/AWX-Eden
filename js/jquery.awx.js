@@ -2928,41 +2928,46 @@
     };
     
     var onFilePlayClick = function(event) {
-      //Check file for resume point
-      xbmc.getFileDetails({
-        file: event.data.file,
-        media: media,
-        onError: function() {
-          //Failed to get file info. Shouldn't happen but try to play the file anyway.
-        },
-        onSuccess: function(response) {
-          if (typeof(response.filedetails.resume) != 'undefined') {
-            if (response.filedetails.resume.position > 0) {
-              var resumeMins = response.filedetails.resume.position/60;
-              var dialogHandle = mkf.dialog.show();
-              
-              var dialogContent = $('<div>' +
-
-                '<div class="movieinfo"><span class="resume">' + '<a class="resume" href="">' + mkf.lang.get('label_resume_from') + Math.floor(resumeMins) + ' ' + mkf.lang.get('minutes') + '</a></span></div></div>' +
-                '<div class="movieinfo"><span class="resume">' + '<a class="beginning" href="">' + mkf.lang.get('label_resume_start') + '</a>' + '</span></div></div></p>' +
+      if (event.data.file.startsWith('http://') || event.data.file.startsWith('rtmp://')) {
+        //Stream, can't have resume point, will timeout so avoid.
+          playFile({file: event.data.file});
+      } else {
+        //Check file for resume point
+        xbmc.getFileDetails({
+          file: event.data.file,
+          media: media,
+          onError: function() {
+            //Failed to get file info. Shouldn't happen but try to play the file anyway.
+            playFile({file: event.data.file});
+          },
+          onSuccess: function(response) {
+            if (typeof(response.filedetails.resume) != 'undefined') {
+              if (response.filedetails.resume.position > 0) {
+                var resumeMins = response.filedetails.resume.position/60;
+                var dialogHandle = mkf.dialog.show();
                 
-                '</div>');
+                var dialogContent = $('<div>' +
 
-              $(dialogContent).find('a.beginning').on('click', {file: event.data.file, resume: false}, playFile);
-              $(dialogContent).find('a.resume').on('click', {file: event.data.file, resume: true}, playFile);
-                
-              mkf.dialog.setContent(dialogHandle, dialogContent);
+                  '<div class="movieinfo"><span class="resume">' + '<a class="resume" href="">' + mkf.lang.get('label_resume_from') + Math.floor(resumeMins) + ' ' + mkf.lang.get('minutes') + '</a></span></div></div>' +
+                  '<div class="movieinfo"><span class="resume">' + '<a class="beginning" href="">' + mkf.lang.get('label_resume_start') + '</a>' + '</span></div></div></p>' +
+                  
+                  '</div>');
+
+                $(dialogContent).find('a.beginning').on('click', {file: event.data.file, resume: false}, playFile);
+                $(dialogContent).find('a.resume').on('click', {file: event.data.file, resume: true}, playFile);
+                  
+                mkf.dialog.setContent(dialogHandle, dialogContent);
+              } else {
+                playFile({file: event.data.file});
+              }
             } else {
+              //Just play the file
               playFile({file: event.data.file});
             }
-          } else {
-            //Just play the file
-            playFile({file: event.data.file});
+            
           }
-          
-        }
-      });
-        
+        });
+      }
       return false;
     };
 
@@ -3168,11 +3173,14 @@
 
             if (files) {
               $.each(files, function(i, file)  {
-                if (!file.file.startsWith('addons://') && file.filetype == "file") {
-                  var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><div class="folderLinkWrapper file' + i + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a> <a href="" class="file play">' + file.file.replace(/\\/g, "\\\\").substring(file.file.lastIndexOf("/")+1) + '</a></div></li>').appendTo($filelist);
-                  $file.find('.play').bind('click', {file: file.file}, onFilePlayClick);
-                  $file.find('.playlist').bind('click', {file: file.file}, onAddFileToPlaylistClick);
-                  ++globalI;
+                if (!file.file.startsWith('addons://') && file.filetype == 'file') {
+                  if (!file.file.startsWith('script://') && file.filetype == 'file') {
+                    console.log(file);
+                    var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><div class="folderLinkWrapper file' + i + '"> <a href="" class="button playlist" title="' + mkf.lang.get('btn_enqueue') + '"><span class="miniIcon enqueue" /></a> <a href="" class="file play">' + file.label + '</a></div></li>').appendTo($filelist);
+                    $file.find('.play').bind('click', {file: file.file}, onFilePlayClick);
+                    $file.find('.playlist').bind('click', {file: file.file}, onAddFileToPlaylistClick);
+                    ++globalI;
+                  }
                 }
               });
             }
@@ -3195,11 +3203,11 @@
               return;
             }
             $.each(result.sources, function(i, share)  {
-              if (!share.file.startsWith('addons://')) {
+              //if (!share.file.startsWith('addons://')) {
                 var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><a href="" class="file' + i + '"> [SRC] ' + share.label + '</a></li>').appendTo($filelist);
                 $file.find('a').bind('click', {folder: {name: '[SRC] ' + share.label, path: share.file}}, onFolderClick);
                 ++globalI;
-              }
+              //}
             });
           },
           onError: function() {
@@ -3208,7 +3216,7 @@
           async: false
         });
 
-        var manualMediaDir = '/mnt/media/music/'
+        var manualMediaDir = 'addons://sources/' + media;
         // TODO support Windows/OSX-Folders
         // /media - Folder may exist (access to usb-sticks etc.)
         xbmc.getDirectory({
@@ -3216,8 +3224,8 @@
           directory: manualMediaDir,
 
           onSuccess: function(result) {
-            var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><a href="" class="fileMedia">' + manualMediaDir + '</a></li>').appendTo($filelist);
-            $file.bind('click', {folder: {name:manualMediaDir, path:manualMediaDir}}, onFolderClick);
+            var $file = $('<li' + (globalI%2==0? ' class="even"': '') + '><a href="" class="fileMedia">' + mkf.lang.get('label_addons') + '</a></li>').appendTo($filelist);
+            $file.bind('click', {folder: {name: mkf.lang.get('label_addons'), path:manualMediaDir}}, onFolderClick);
           },
 
           async: false

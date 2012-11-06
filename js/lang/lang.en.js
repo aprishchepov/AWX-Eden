@@ -355,6 +355,7 @@ mkf.lang.add({language: 'English', short: 'en', author: 'MKay', values: {
   'label_cinex_play':                       'Play via Cinema Experience',
   'label_resume_from':                      'Resume from: ',
   'label_resume_start':                     'Play from beginning',
+  'label_addons':                           'Addons (unsupported feature)',
 
   'label_adv_search_video':                 'Advanced Video Search',
   'label_adv_search_audio':                 'Advanced Music Search',
