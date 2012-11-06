@@ -1090,6 +1090,7 @@ var xbmc = {};
       var settings = {
         item: '',
         itemId: -1,
+        filter: '',
         start: 0,
         end: 999999,
         onSuccess: null,
