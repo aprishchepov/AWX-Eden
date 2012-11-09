@@ -38,13 +38,20 @@ var awx = {};
       var init = {
         // --- STEP 1: Set Language
         step1 : function() {
-          mkf.lang.setLanguage(mkf.cookieSettings.get('lang', 'en'));
-          init.step2();
+          mkf.lang.setLanguage(mkf.cookieSettings.get('lang', 'en'), function(ready) {
+            if (ready) {
+              init.step2();
+            } else {
+              $('#loadingAWXHint').removeClass('loading');
+              $('#loadingAWXHint').html('Failed loading language file! <br />Please make sure they are in /lang/<country code>.json. <br />Example: en.json'); 
+            }
+          });
+          //init.step2();
         },
 
         // --- STEP 2: Load UI-Script
         step2 : function() {
-          $('#loadingAWXHint').text(mkf.lang.get('message_setup_ui'));
+          $('#loadingAWXHint').text(mkf.lang.get('Setting up UI...', 'Initial window screen'));
 
           //var ui = mkf.cookieSettings.get('ui');
           var uiScript = '';
@@ -63,7 +70,7 @@ var awx = {};
             script: uiScript,
             onload: init.step3,
             onerror: function() {
-              alert(mkf.lang.get('message_failed_ui'));
+              alert(mkf.lang.get('Failed to load UI!', 'Alert'));
               init.step5();
             }
           });
@@ -71,7 +78,7 @@ var awx = {};
 
         // --- STEP 3: Init xbmc-lib
         step3: function() {
-          $('#loadingAWXHint').text(mkf.lang.get('message_init_xbmc'));
+          $('#loadingAWXHint').text(mkf.lang.get('Initialize XBMC-lib...', 'Initial window screen'));
           xbmc.init($('#initAWX'), init.step4);
         },
 

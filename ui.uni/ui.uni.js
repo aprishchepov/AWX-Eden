@@ -103,14 +103,14 @@ var awxUI = {};
       // --- MUSIC ---
       this.$musicContent = $('<div class="pageContentWrapper"></div>');
       var musicPage = mkf.pages.addPage({
-        title: mkf.lang.get('page_title_music'),
+        title: mkf.lang.get('Music', 'Page and menu'),
         menuButtonText: '<span class="icon music"></span>',
         content: this.$musicContent,
         className: 'music'
       });
 
       var standardMusicContextMenu = [{
-            'icon':'back', 'title':mkf.lang.get('ctxt_btn_back_to_music'), 'shortcut':'Ctrl+1', 'onClick':
+            'icon':'back', 'title':mkf.lang.get('Back', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
             function(){
               mkf.pages.showPage(musicPage);
               return false;
@@ -122,8 +122,8 @@ var awxUI = {};
       var artistsContextMenu = $.extend(true, [], standardMusicContextMenu);
       
       this.artistsPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_artist'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_artist'),
+        title: mkf.lang.get('Artists', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Artists', 'Page and menu'),
         content: this.$artistsContent,
         contextMenu: artistsContextMenu,
         onShow: $.proxy(this, "onArtistsShow"),
@@ -137,23 +137,23 @@ var awxUI = {};
       this.$artistsTitleContent = $('<div class="pageContentWrapper"></div>');
       var artistsTitleContextMenu = $.extend(true, [], standardMusicContextMenu);
       artistsTitleContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(artistsPage);
             return false;
           }
       });
       artistsTitleContextMenu.push({
-        'id':'findArtistsTitleButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findArtistsTitleButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findArtistsTitleButton').offset();
             awxUI.$artistsTitleContent
-              .defaultFindBox({id:'artistsTitleFindBox', searchItems: xbmc.getSearchTerm('artists'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'artistsTitleFindBox', searchItems: xbmc.getSearchTerm('artists'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       artistsTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$artistsTitleContent.empty();
             awxUI.onArtistsTitleShow();
@@ -163,8 +163,8 @@ var awxUI = {};
       });
       
       this.artistsTitlePage = this.artistsPage.addPage({
-        title: mkf.lang.get('page_title_title'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        title: mkf.lang.get('Titles', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Titles', 'Page and menu'),
         content: this.$artistsTitleContent,
         contextMenu: artistsTitleContextMenu,
         onShow: $.proxy(this, "onArtistsTitleShow"),
@@ -175,23 +175,23 @@ var awxUI = {};
       this.$artistsGenresContent = $('<div class="pageContentWrapper"></div>');
       var artistsGenresContextMenu = $.extend(true, [], standardMusicContextMenu);
       artistsGenresContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_title'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(artistsPage);
             return false;
           }
       });
       artistsGenresContextMenu.push({
-        'id':'findArtistsGenresButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findArtistsGenresButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findArtistsGenresButton').offset();
             awxUI.$artistsGenresContent
-              .defaultFindBox({id:'artistsGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'artistsGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       artistsGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$artistsGenresContent.empty();
             awxUI.onArtistsGenresShow();
@@ -201,8 +201,8 @@ var awxUI = {};
       });  
       
       this.artistsGenresPage = this.artistsPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_genre'),
+        title: mkf.lang.get('Genres', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres', 'Page and menu'),
         content: this.$artistsGenresContent,
         contextMenu: artistsGenresContextMenu,
         onShow: $.proxy(this, "onArtistsGenresShow"),
@@ -213,16 +213,16 @@ var awxUI = {};
       this.$MusicPlaylistsContent = $('<div class="pageContentWrapper"></div>');
       var MusicPlaylistsContextMenu = $.extend(true, [], standardMusicContextMenu);
       /*MusicPlaylistsContextMenu.push({
-        'id':'findArtistsButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findArtistsButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findArtistsButton').offset();
             awxUI.$MusicPlaylistsContent
-              .defaultFindBox({id:'artistsFindBox', searchItems:'a', top: pos.top, left: pos.left});
+              .defaultFindBox({id:'artistsFindBox', searchItems:'a', top: pos.top +50, left: pos.left});
             return false;
           }
       });*/
       MusicPlaylistsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$MusicPlaylistsContent.empty();
             awxUI.onMusicPlaylistsShow();
@@ -232,8 +232,8 @@ var awxUI = {};
       });  
       
       this.MusicPlaylistsPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_music_playlists'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_music_playlists'),
+        title: mkf.lang.get('Playlists', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Playlists', 'Page and menu'),
         content: this.$MusicPlaylistsContent,
         contextMenu: MusicPlaylistsContextMenu,
         onShow: $.proxy(this, "onMusicPlaylistsShow"),
@@ -245,8 +245,8 @@ var awxUI = {};
       var musicAlbumsContextMenu = $.extend(true, [], standardMusicContextMenu);
       
       this.albumsPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_albums'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_albums'),
+        title: mkf.lang.get('Albums', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Albums', 'Page and menu'),
         content: this.$albumsContent,
         contextMenu: musicAlbumsContextMenu,
         onShow: $.proxy(this, "onAlbumsShow"),
@@ -260,23 +260,23 @@ var awxUI = {};
       this.$albumsTitleContent = $('<div class="pageContentWrapper"></div>');
       var musicAlbumsTitleContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicAlbumsTitleContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(albumsPage);
             return false;
           }
       });
       musicAlbumsTitleContextMenu.push({
-        'id':'findAlbumTitleButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findAlbumTitleButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findAlbumTitleButton').offset();
             awxUI.$albumsTitleContent
-              .defaultFindBox({id:'albumsTitleFindBox', searchItems: xbmc.getSearchTerm('albums'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'albumsTitleFindBox', searchItems: xbmc.getSearchTerm('albums'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       musicAlbumsTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$albumsTitleContent.empty();
             awxUI.onAlbumsTitleShow();
@@ -286,8 +286,8 @@ var awxUI = {};
       });
       
       this.albumsTitlePage = this.albumsPage.addPage({
-        title: mkf.lang.get('page_title_title'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        title: mkf.lang.get('Titles', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Titles', 'Page and menu'),
         content: this.$albumsTitleContent,
         contextMenu: musicAlbumsTitleContextMenu,
         onShow: $.proxy(this, "onAlbumsTitleShow"),
@@ -298,14 +298,14 @@ var awxUI = {};
       this.$albumsRecentContent = $('<div class="pageContentWrapper"></div>');
       var musicAlbumsRecentContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicAlbumsRecentContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(albumsPage);
             return false;
           }
       });
       musicAlbumsRecentContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$albumsRecentContent.empty();
             awxUI.onAlbumsRecentShow();
@@ -315,8 +315,8 @@ var awxUI = {};
       });
 
       this.albumsRecentPage = this.albumsPage.addPage({
-        title: mkf.lang.get('page_title_album_recent'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recent'),
+        title: mkf.lang.get('Recently Added', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Added', 'Page and menu'),
         content: this.$albumsRecentContent,
         contextMenu: musicAlbumsRecentContextMenu,
         onShow: $.proxy(this, "onAlbumsRecentShow"),
@@ -328,14 +328,14 @@ var awxUI = {};
       this.$albumsRecentPlayedContent = $('<div class="pageContentWrapper"></div>');
       var musicAlbumsRecentPlayedContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicAlbumsRecentPlayedContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(albumsPage);
             return false;
           }
       });
       musicAlbumsRecentPlayedContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$albumsRecentPlayedContent.empty();
             awxUI.onAlbumsRecentPlayedShow();
@@ -345,8 +345,8 @@ var awxUI = {};
       });
 
       this.albumsRecentPlayedPage = this.albumsPage.addPage({
-        title: mkf.lang.get('page_title_album_recent'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recentplayed'),
+        title: mkf.lang.get('Recently Played', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Played', 'Page and menu'),
         content: this.$albumsRecentPlayedContent,
         contextMenu: musicAlbumsRecentPlayedContextMenu,
         onShow: $.proxy(this, "onAlbumsRecentPlayedShow"),
@@ -358,14 +358,14 @@ var awxUI = {};
       this.$albumsYearsContent = $('<div class="pageContentWrapper"></div>');
       var musicAlbumsYearsContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicAlbumsYearsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(albumsPage);
             return false;
           }
       });
       musicAlbumsYearsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$albumsYearsContent.empty();
             awxUI.onAlbumsYearsShow();
@@ -375,8 +375,8 @@ var awxUI = {};
       });
 
       this.albumsYearsPage = this.albumsPage.addPage({
-        title: mkf.lang.get('page_title_years'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_years'),
+        title: mkf.lang.get('Years', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Years', 'Page and menu'),
         content: this.$albumsYearsContent,
         contextMenu: musicAlbumsYearsContextMenu,
         onShow: $.proxy(this, "onAlbumsYearsShow"),
@@ -388,23 +388,23 @@ var awxUI = {};
       this.$albumGenresContent = $('<div class="pageContentWrapper"></div>');
       var albumGenresContextMenu = $.extend(true, [], standardMusicContextMenu);
       albumGenresContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(albumsPage);
             return false;
           }
       });
       albumGenresContextMenu.push({
-        'id':'findArtistsGenresButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findAlbumGenresButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findAlbumGenresButton').offset();
             awxUI.$artistsGenresContent
-              .defaultFindBox({id:'albumGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'albumGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       albumGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$albumGenresContent.empty();
             awxUI.onAlbumGenresShow();
@@ -414,8 +414,8 @@ var awxUI = {};
       });  
       
       this.albumGenresPage = this.albumsPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_genre'),
+        title: mkf.lang.get('Genres', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres', 'Page and menu'),
         content: this.$albumGenresContent,
         contextMenu: albumGenresContextMenu,
         onShow: $.proxy(this, "onAlbumGenresShow"),
@@ -427,8 +427,8 @@ var awxUI = {};
       var songsContextMenu = $.extend(true, [], standardMusicContextMenu);
       
       this.songsPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_songs'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_songs'),
+        title: mkf.lang.get('Songs', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Songs', 'Page and menu'),
         content: this.$songsContent,
         contextMenu: songsContextMenu,
         onShow: $.proxy(this, "onSongsShow"),
@@ -441,14 +441,23 @@ var awxUI = {};
       this.$songsTitleContent = $('<div class="pageContentWrapper"></div>');
       var songsTitleContextMenu = $.extend(true, [], standardMusicContextMenu);
       songsTitleContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(songsPage);
             return false;
           }
       });
       songsTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'id':'findSongsTitlesButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
+          function(){
+            var pos = $('#findSongsTitlesButton').offset();
+            awxUI.$artistsGenresContent
+              .defaultFindBox({id:'songsTitlesFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top +50, left: pos.left});
+            return false;
+          }
+      });
+      songsTitleContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$songsTitleContent.empty();
             awxUI.onSongsTitleShow();
@@ -458,8 +467,8 @@ var awxUI = {};
       });
 
       this.songsTitlePage = this.songsPage.addPage({
-        title: mkf.lang.get('page_title_title'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        title: mkf.lang.get('Titles', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Titles', 'Page and menu'),
         content: this.$songsTitleContent,
         contextMenu: songsTitleContextMenu,
         onShow: $.proxy(this, "onSongsTitleShow"),
@@ -471,14 +480,14 @@ var awxUI = {};
       this.$songsRecentContent = $('<div class="pageContentWrapper"></div>');
       var musicSongsRecentContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicSongsRecentContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(songsPage);
             return false;
           }
       });
       musicSongsRecentContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$songsRecentContent.empty();
             awxUI.onSongsRecentShow();
@@ -488,8 +497,8 @@ var awxUI = {};
       });
 
       this.songsRecentPage = this.songsPage.addPage({
-        title: mkf.lang.get('page_title_recent'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recent'),
+        title: mkf.lang.get('Recently Added', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Added', 'Page and menu'),
         content: this.$songsRecentContent,
         contextMenu: musicSongsRecentContextMenu,
         onShow: $.proxy(this, "onSongsRecentShow"),
@@ -501,14 +510,14 @@ var awxUI = {};
       this.$songsRecentPlayedContent = $('<div class="pageContentWrapper"></div>');
       var musicSongsRecentPlayedContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicSongsRecentPlayedContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(songsPage);
             return false;
           }
       });
       musicSongsRecentPlayedContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$songsRecentPlayedContent.empty();
             awxUI.onSongsRecentPlayedShow();
@@ -518,8 +527,8 @@ var awxUI = {};
       });
 
       this.songsRecentPlayedPage = this.songsPage.addPage({
-        title: mkf.lang.get('page_title_recent'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recentplayed'),
+        title: mkf.lang.get('Recently Played', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Played', 'Page and menu'),
         content: this.$songsRecentPlayedContent,
         contextMenu: musicSongsRecentPlayedContextMenu,
         onShow: $.proxy(this, "onSongsRecentPlayedShow"),
@@ -531,14 +540,14 @@ var awxUI = {};
       this.$songsArtistsContent = $('<div class="pageContentWrapper"></div>');
       var songsArtistsContextMenu = $.extend(true, [], standardMusicContextMenu);
       songsArtistsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(songsPage);
             return false;
           }
       });
-      songsTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+      songsArtistsContextMenu.push({
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$songsArtistsContent.empty();
             awxUI.onSongsArtistsShow();
@@ -548,8 +557,8 @@ var awxUI = {};
       });
 
       this.songsArtistsPage = this.songsPage.addPage({
-        title: mkf.lang.get('page_title_artists'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_artist'),
+        title: mkf.lang.get('Artists', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Artists', 'Page and menu'),
         content: this.$songsArtistsContent,
         contextMenu: songsArtistsContextMenu,
         onShow: $.proxy(this, "onSongsArtistsShow"),
@@ -561,14 +570,14 @@ var awxUI = {};
       this.$songsYearsContent = $('<div class="pageContentWrapper"></div>');
       var musicSongsYearsContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicSongsYearsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(songsPage);
             return false;
           }
       });
       musicSongsYearsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$songsYearsContent.empty();
             awxUI.onSongsYearsShow();
@@ -578,8 +587,8 @@ var awxUI = {};
       });
 
       this.songsYearsPage = this.songsPage.addPage({
-        title: mkf.lang.get('page_title_years'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_years'),
+        title: mkf.lang.get('Years', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Years', 'Page and menu'),
         content: this.$songsYearsContent,
         contextMenu: musicSongsYearsContextMenu,
         onShow: $.proxy(this, "onSongsYearsShow"),
@@ -591,23 +600,23 @@ var awxUI = {};
       this.$songGenresContent = $('<div class="pageContentWrapper"></div>');
       var songGenresContextMenu = $.extend(true, [], standardMusicContextMenu);
       songGenresContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(songsPage);
             return false;
           }
       });
       songGenresContextMenu.push({
-        'id':'findSongGenresButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findSongGenresButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findSongGenresButton').offset();
             awxUI.$songGenresContent
-              .defaultFindBox({id:'songGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'songGenresFindBox', searchItems: xbmc.getSearchTerm('agenres'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       songGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$artistsGenresContent.empty();
             awxUI.onSongGenresShow();
@@ -617,8 +626,8 @@ var awxUI = {};
       });  
       
       this.songGenresPage = this.songsPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_genre'),
+        title: mkf.lang.get('Genres', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres', 'Page and menu'),
         content: this.$songGenresContent,
         contextMenu: songGenresContextMenu,
         onShow: $.proxy(this, "onSongGenresShow"),
@@ -629,16 +638,16 @@ var awxUI = {};
       this.$pvrradioContent = $('<div class="pageContentWrapper"></div>');
       var pvrradioContextMenu = $.extend(true, [], standardMusicContextMenu);
       pvrradioContextMenu.push({
-        'id':'findArtistsButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findRadioButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findRadioButton').offset();
             awxUI.$artistsContent
-              .defaultFindBox({id:'radioFindBox', searchItems: xbmc.getSearchTerm('channels'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'radioFindBox', searchItems: xbmc.getSearchTerm('channels'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       pvrradioContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$pvrradioContent.empty();
             awxUI.onPVRRadioShow();
@@ -648,8 +657,8 @@ var awxUI = {};
       });
       
       this.pvrradioPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_pvr_radio'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_pvr_radio'),
+        title: mkf.lang.get('PVR Radio', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('PVR Radio', 'Page and menu'),
         content: this.$pvrradioContent,
         contextMenu: pvrradioContextMenu,
         onShow: $.proxy(this, "onPVRRadioShow"),
@@ -660,17 +669,17 @@ var awxUI = {};
       this.$musicFilesContent = $('<div class="pageContentWrapper"></div>');
       var musicFilesContextMenu = $.extend(true, [], standardMusicContextMenu);
       /*musicFilesContextMenu.push({
-        'id':'findFilesButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findFilesButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findFilesButton').offset();
             awxUI.$musicFilesContent
-              .defaultFindBox({id:'filesFindBox', searchItems:'.folderLinkWrapper', top: pos.top, left: pos.left});
+              .defaultFindBox({id:'filesFindBox', searchItems:'.folderLinkWrapper', top: pos.top +50, left: pos.left});
             return false;
           }
       });
       musicFilesContextMenu.push({
         // Doesn't work because of subPages.
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             console.log(awxUI.$musicFilesContent);
             awxUI.$musicFilesContent.empty();
@@ -682,8 +691,8 @@ var awxUI = {};
       });*/
       
       this.musicFilesPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_music_files'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_music_files'),
+        title: mkf.lang.get('Files', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Files', 'Page and menu'),
         content: this.$musicFilesContent,
         contextMenu: musicFilesContextMenu,
         onShow: $.proxy(this, "onMusicFilesShow"),
@@ -694,19 +703,19 @@ var awxUI = {};
       this.$musicPlaylistContent = $('<div class="pageContentWrapper"></div>');
       var musicPlaylistContextMenu = $.extend(true, [], standardMusicContextMenu);
       musicPlaylistContextMenu.push({
-        'icon':'clear', 'title':mkf.lang.get('ctxt_btn_clear playlist'), 'shortcut':'Ctrl+2', 'onClick':
+        'icon':'clear', 'title':mkf.lang.get('Clear Playlist', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
-            var messageHandle = mkf.messageLog.show(mkf.lang.get('message_clear_audio_playlist'));
+            var messageHandle = mkf.messageLog.show(mkf.lang.get('Clear Playlist', 'Popup message'));
 
             xbmc.clearAudioPlaylist({
               onSuccess: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 5000, mkf.messageLog.status.success);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('OK'), 5000, mkf.messageLog.status.success);
                 // reload playlist
                 awxUI.onMusicPlaylistShow();
               },
 
               onError: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('Failed!'), 5000, mkf.messageLog.status.error);
               }
             });
 
@@ -714,7 +723,7 @@ var awxUI = {};
           }
       });
       musicPlaylistContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$musicPlaylistContent.empty();
             awxUI.onMusicPlaylistShow();
@@ -722,17 +731,17 @@ var awxUI = {};
           }
       });
       musicPlaylistContextMenu.push({
-        'id':'findPlaylistButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findPlaylistButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findPlaylistButton').offset();
             awxUI.$musicPlaylistContent
-              .defaultFindBox({id:'playlistFindBox', searchItems: xbmc.getSearchTerm('aplaylist'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'playlistFindBox', searchItems: xbmc.getSearchTerm('aplaylist'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       this.musicPlaylistPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_music_playlist'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_music_playlist'),
+        title: mkf.lang.get('Playlist', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Playlist', 'Page and menu'),
         content: this.$musicPlaylistContent,
         contextMenu: musicPlaylistContextMenu,
         onShow: $.proxy(this, "onMusicPlaylistShow"),
@@ -744,9 +753,9 @@ var awxUI = {};
       var musicScanContextMenu = $.extend(true, [], standardMusicContextMenu);
       
       this.musicScanPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_music_scan'),
+        title: mkf.lang.get('Library Tools', 'Page and menu'),
         content: this.$musicScanContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_music_scan'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Library Tools', 'Page and menu'),
         contextMenu: musicScanContextMenu,
         onShow: $.proxy(this, "onMusicScanShow"),
         className: 'scanMusic'
@@ -757,9 +766,9 @@ var awxUI = {};
       var audioAdFilterContextMenu = $.extend(true, [], standardMusicContextMenu);
       
       this.audioAdFilterPage = musicPage.addPage({
-        title: mkf.lang.get('page_title_audio_adv_search'),
+        title: mkf.lang.get('Advanced Search', 'Page and menu'),
         content: this.$audioAdFilterContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_audio_adv_search'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Advanced Search', 'Page and menu'),
         contextMenu: audioAdFilterContextMenu,
         onShow: $.proxy(this, "onAudioAdFilterShow"),
         className: 'audioAdFilter'
@@ -768,14 +777,14 @@ var awxUI = {};
       // --- VIDEOS ---
       this.$videosContent = $('<div class="pageContentWrapper"></div>');
       var videosPage = mkf.pages.addPage({
-        title: mkf.lang.get('page_title_videos'),
+        title: mkf.lang.get('Video', 'Page and menu'),
         menuButtonText: '<span class="icon videos"></span>',
         content: this.$videosContent,
         className: 'videos'
       });
 
       var standardVideosContextMenu = [{
-            'icon':'back', 'title':mkf.lang.get('ctxt_btn_back_to_videos'), 'shortcut':'Ctrl+1', 'onClick':
+            'icon':'back', 'title':mkf.lang.get('Back', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
             function(){
               mkf.pages.showPage(videosPage);
               return false;
@@ -787,9 +796,9 @@ var awxUI = {};
       var videoMoviesContextMenu = $.extend(true, [], standardVideosContextMenu);
       
       this.moviesPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_movies'),
+        title: mkf.lang.get('Movies', 'Page and menu'),
         content: this.$moviesContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_movies'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Movies', 'Page and menu'),
         contextMenu: videoMoviesContextMenu,
         onShow: $.proxy(this, "onMoviesShow"),
         className: 'movies'
@@ -802,23 +811,23 @@ var awxUI = {};
       this.$moviesTitleContent = $('<div class="pageContentWrapper"></div>');
       var videoMoviesTitleContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoMoviesTitleContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(moviesPage);
             return false;
           }
       });
       videoMoviesTitleContextMenu.push({
-        'id':'findMovieButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findMovieTitleButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findMovieTitleButton').offset();
             awxUI.$moviesTitleContent
-              .defaultFindBox({id:'moviesTitleFindBox', searchItems: xbmc.getSearchTerm('movies'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'moviesTitleFindBox', searchItems: xbmc.getSearchTerm('movies'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       videoMoviesTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$moviesTitleContent.empty();
             awxUI.onMoviesTitleShow();
@@ -828,9 +837,9 @@ var awxUI = {};
       });
       
       this.moviesTitlePage = this.moviesPage.addPage({
-        title: mkf.lang.get('page_title_title'),
+        title: mkf.lang.get('Titles', 'Page and menu'),
         content: this.$moviesTitleContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Titles', 'Page and menu'),
         contextMenu: videoMoviesTitleContextMenu,
         onShow: $.proxy(this, "onMoviesTitleShow"),
         className: 'moviesTitle'
@@ -841,23 +850,23 @@ var awxUI = {};
       this.$movieSetsContent = $('<div class="pageContentWrapper"></div>');
       var videoMovieSetsContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoMovieSetsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(moviesPage);
             return false;
           }
       });
       videoMovieSetsContextMenu.push({
-        'id':'findMovieSetsButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findMovieSetsButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findMovieSetsButton').offset();
             awxUI.$movieSetsContent
-              .defaultFindBox({id:'moviesetsFindBox', searchItems: xbmc.getSearchTerm('moviesets'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'moviesetsFindBox', searchItems: xbmc.getSearchTerm('moviesets'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       videoMovieSetsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$movieSetsContent.empty();
             awxUI.onMovieSetsShow();
@@ -867,9 +876,9 @@ var awxUI = {};
       });
       
       this.movieSetsPage = this.moviesPage.addPage({
-        title: mkf.lang.get('page_title_moviesets'),
+        title: mkf.lang.get('Movie Sets', 'Page and menu'),
         content: this.$movieSetsContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_moviesets'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Movie Sets', 'Page and menu'),
         contextMenu: videoMovieSetsContextMenu,
         onShow: $.proxy(this, "onMovieSetsShow"),
         className: 'moviesets'
@@ -880,16 +889,16 @@ var awxUI = {};
       this.$VideoPlaylistsContent = $('<div class="pageContentWrapper"></div>');
       var VideoPlaylistsContextMenu = $.extend(true, [], standardVideosContextMenu);
       /*VideoPlaylistsContextMenu.push({
-        'id':'findvplaylistButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findvplaylistButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findvplaylistButton').offset();
             awxUI.$moviesContent
-              .defaultFindBox({id:'vplaylistFindBox', searchItems: xbmc.getSearchTerm('vplaylist'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'vplaylistFindBox', searchItems: xbmc.getSearchTerm('vplaylist'), top: pos.top +50, left: pos.left});
             return false;
           }
       });*/
       VideoPlaylistsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$VideoPlaylistsContent.empty();
             awxUI.onVideoPlaylistsShow();
@@ -899,8 +908,8 @@ var awxUI = {};
       });  
       
       this.VideoPlaylistsPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_video_playlists'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_playlists'),
+        title: mkf.lang.get('Playlists', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Playlists', 'Page and menu'),
         content: this.$VideoPlaylistsContent,
         contextMenu: VideoPlaylistsContextMenu,
         onShow: $.proxy(this, "onVideoPlaylistsShow"),
@@ -912,14 +921,14 @@ var awxUI = {};
       this.$moviesRecentContent = $('<div class="pageContentWrapper"></div>');
       var videoMoviesRecentContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoMoviesRecentContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(moviesPage);
             return false;
           }
       });
       videoMoviesRecentContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$moviesRecentContent.empty();
             awxUI.onMoviesRecentShow();
@@ -929,9 +938,9 @@ var awxUI = {};
       });
 
       this.moviesRecentPage = this.moviesPage.addPage({
-        title: mkf.lang.get('page_title_movies_recentlyadded'),
+        title: mkf.lang.get('Recently Added', 'Page and menu'),
         content: this.$moviesRecentContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_movies_recentlyadded'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Added', 'Page and menu'),
         contextMenu: videoMoviesRecentContextMenu,
         onShow: $.proxy(this, "onMoviesRecentShow"),
         className: 'recentMovies'
@@ -942,14 +951,14 @@ var awxUI = {};
       this.$movieGenresContent = $('<div class="pageContentWrapper"></div>');
       var movieGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
       movieGenresContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(moviesPage);
             return false;
           }
       });
       movieGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$movieGenresContent.empty();
             awxUI.onMovieGenresShow();
@@ -959,8 +968,8 @@ var awxUI = {};
       });
 
       this.movieGenresPage = this.moviesPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        title: mkf.lang.get('Genres', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres', 'Page and menu'),
         content: this.$movieGenresContent,
         contextMenu: movieGenresContextMenu,
         onShow: $.proxy(this, "onMovieGenresShow"),
@@ -972,14 +981,14 @@ var awxUI = {};
       this.$movieYearsContent = $('<div class="pageContentWrapper"></div>');
       var movieYearsContextMenu = $.extend(true, [], standardVideosContextMenu);
       movieYearsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(moviesPage);
             return false;
           }
       });
       movieYearsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$movieYearsContent.empty();
             awxUI.onMovieYearsShow();
@@ -989,8 +998,8 @@ var awxUI = {};
       });
 
       this.movieYearsPage = this.moviesPage.addPage({
-        title: mkf.lang.get('page_title_years'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_years'),
+        title: mkf.lang.get('Years', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Years', 'Page and menu'),
         content: this.$movieYearsContent,
         contextMenu: movieYearsContextMenu,
         onShow: $.proxy(this, "onMovieYearsShow"),
@@ -1002,14 +1011,14 @@ var awxUI = {};
       this.$movieTagsContent = $('<div class="pageContentWrapper"></div>');
       var movieTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
       movieTagsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(moviesPage);
             return false;
           }
       });
       movieTagsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$movieTagsContent.empty();
             awxUI.onMovieTagsShow();
@@ -1019,8 +1028,8 @@ var awxUI = {};
       });
 
       this.movieTagsPage = this.moviesPage.addPage({
-        title: mkf.lang.get('page_title_tags'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_tags'),
+        title: mkf.lang.get('Tags', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Tags', 'Page and menu'),
         content: this.$movieTagsContent,
         contextMenu: movieTagsContextMenu,
         onShow: $.proxy(this, "onMovieTagsShow"),
@@ -1033,9 +1042,9 @@ var awxUI = {};
       var videoTvShowsContextMenu = $.extend(true, [], standardVideosContextMenu);
       
       this.tvShowsPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_tvshows'),
+        title: mkf.lang.get('TV Shows', 'Page and menu'),
         content: this.$tvShowsContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_tvshows'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('TV Shows', 'Page and menu'),
         contextMenu: videoTvShowsContextMenu,
         onShow: $.proxy(this, "onTvShowsShow"),
         className: 'tv'
@@ -1047,23 +1056,23 @@ var awxUI = {};
       this.$tvShowsTitleContent = $('<div class="pageContentWrapper"></div>');
       var videoTvShowsTitleContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoTvShowsTitleContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(tvShowsPage);
             return false;
           }
       });
       videoTvShowsTitleContextMenu.push({
-        'id':'findTVShowTitleButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findTVShowTitleButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
-            var pos = $('#findTVShowButton').offset();
+            var pos = $('#findTVShowTitleButton').offset();
             awxUI.$tvShowsContent
-              .defaultFindBox({id:'tvShowFindBox', searchItems: xbmc.getSearchTerm('tvshows'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'tvShowFindBox', searchItems: xbmc.getSearchTerm('tvshows'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       videoTvShowsTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$tvShowsTitleContent.empty();
             awxUI.onTvShowsTitleShow();
@@ -1073,9 +1082,9 @@ var awxUI = {};
       });
       
       this.tvShowsTitlePage = this.tvShowsPage.addPage({
-        title: mkf.lang.get('page_title_title'),
+        title: mkf.lang.get('Titles', 'Page and menu'),
         content: this.$tvShowsTitleContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_title'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Titles', 'Page and menu'),
         contextMenu: videoTvShowsTitleContextMenu,
         onShow: $.proxy(this, "onTvShowsTitleShow"),
         className: 'tvTitle'
@@ -1085,14 +1094,14 @@ var awxUI = {};
       this.$tvShowsRecentlyAddedContent = $('<div class="pageContentWrapper"></div>');
       var videoTvShowsRecentlyAddedContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoTvShowsRecentlyAddedContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(tvShowsPage);
             return false;
           }
       });
       videoTvShowsRecentlyAddedContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$tvShowsRecentlyAddedContent.empty();
             awxUI.onTvShowsRecentlyAddedShow();
@@ -1102,9 +1111,9 @@ var awxUI = {};
       });
       
       this.tvShowsRecentlyAddedPage = this.tvShowsPage.addPage({
-        title: mkf.lang.get('page_title_tv_recentlyadded'),
+        title: mkf.lang.get('Recently Added', 'Page and menu'),
         content: this.$tvShowsRecentlyAddedContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_tv_recentlyadded'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Added', 'Page and menu'),
         contextMenu: videoTvShowsRecentlyAddedContextMenu,
         onShow: $.proxy(this, "onTvShowsRecentlyAddedShow"),
         className: 'recentTV'
@@ -1115,14 +1124,14 @@ var awxUI = {};
       this.$tvShowsGenresContent = $('<div class="pageContentWrapper"></div>');
       var tvShowsGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
       tvShowsGenresContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(tvShowsPage);
             return false;
           }
       });
       tvShowsGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$tvShowsGenresContent.empty();
             awxUI.onTvShowsGenresShow();
@@ -1132,8 +1141,8 @@ var awxUI = {};
       });
 
       this.tvShowsGenresPage = this.tvShowsPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        title: mkf.lang.get('Genres', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres', 'Page and menu'),
         content: this.$tvShowsGenresContent,
         contextMenu: tvShowsGenresContextMenu,
         onShow: $.proxy(this, "onTvShowsGenresShow"),
@@ -1145,14 +1154,14 @@ var awxUI = {};
       this.$tvShowsYearsContent = $('<div class="pageContentWrapper"></div>');
       var tvShowsYearsContextMenu = $.extend(true, [], standardVideosContextMenu);
       tvShowsYearsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(tvShowsPage);
             return false;
           }
       });
       tvShowsYearsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$tvShowsYearsContent.empty();
             awxUI.onTvShowsYearsShow();
@@ -1162,8 +1171,8 @@ var awxUI = {};
       });
 
       this.tvShowsYearsPage = this.tvShowsPage.addPage({
-        title: mkf.lang.get('page_title_years'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_years'),
+        title: mkf.lang.get('Years', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Years', 'Page and menu'),
         content: this.$tvShowsYearsContent,
         contextMenu: tvShowsYearsContextMenu,
         onShow: $.proxy(this, "onTvShowsYearsShow"),
@@ -1175,14 +1184,14 @@ var awxUI = {};
       this.$tvShowsTagsContent = $('<div class="pageContentWrapper"></div>');
       var tvShowsTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
       tvShowsTagsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(tvShowsPage);
             return false;
           }
       });
       tvShowsTagsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$tvShowsTagsContent.empty();
             awxUI.onTvShowsTagsShow();
@@ -1192,8 +1201,8 @@ var awxUI = {};
       });
 
       this.tvShowsTagsPage = this.tvShowsPage.addPage({
-        title: mkf.lang.get('page_title_tags'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_tags'),
+        title: mkf.lang.get('Tags', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Tags', 'Page and menu'),
         content: this.$tvShowsTagsContent,
         contextMenu: tvShowsTagsContextMenu,
         onShow: $.proxy(this, "onTvShowsTagsShow"),
@@ -1206,8 +1215,8 @@ var awxUI = {};
       var musicVideosContextMenu = $.extend(true, [], standardVideosContextMenu);
 
       this.musicVideosPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_musicvideos'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_musicvideos'),
+        title: mkf.lang.get('Music Videos', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Music Videos', 'Page and menu'),
         content: this.$musicVideosContent,
         contextMenu: musicVideosContextMenu,
         onShow: $.proxy(this, "onMusicVideosShow"),
@@ -1222,14 +1231,14 @@ var awxUI = {};
       this.$musicVideosTitleContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosTitleContextMenu = $.extend(true, [], standardVideosContextMenu);
       musicVideosTitleContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close_album_list'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(musicVideoPage);
             return false;
           }
       });
       musicVideosTitleContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$musicVideosTitleContent.empty();
             awxUI.onMusicVideosTitleShow();
@@ -1239,8 +1248,8 @@ var awxUI = {};
       });
 
       this.musicVideosTitlePage = this.musicVideosPage.addPage({
-        title: mkf.lang.get('page_title_musicvideos'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_musicvideos'),
+        title: mkf.lang.get('Titles', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Titles', 'Page and menu'),
         content: this.$musicVideosTitleContent,
         contextMenu: musicVideosTitleContextMenu,
         onShow: $.proxy(this, "onMusicVideosTitleShow"),
@@ -1252,14 +1261,14 @@ var awxUI = {};
       this.$musicVideosRecentContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosRecentlyAddedContextMenu = $.extend(true, [], standardVideosContextMenu);
       musicVideosRecentlyAddedContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(musicVideoPage);
             return false;
           }
       });
       musicVideosRecentlyAddedContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$musicVideosRecentContent.empty();
             awxUI.onMusicVideosRecentlyAddedShow();
@@ -1269,9 +1278,9 @@ var awxUI = {};
       });
       
       this.musicVideosRecentlyAddedPage = this.musicVideosPage.addPage({
-        title: mkf.lang.get('page_title_recent'),
+        title: mkf.lang.get('Recently Added', 'Page and menu'),
         content: this.$musicVideosRecentContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_recent'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Recently Added', 'Page and menu'),
         contextMenu: musicVideosRecentlyAddedContextMenu,
         onShow: $.proxy(this, "onMusicVideosRecentlyAddedShow"),
         className: 'recentMusicVideos'
@@ -1282,14 +1291,14 @@ var awxUI = {};
       this.$musicVideosGenresContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
       musicVideosGenresContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(musicVideoPage);
             return false;
           }
       });
       musicVideosGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$musicVideosGenresContent.empty();
             awxUI.onMusicVideosGenresShow();
@@ -1299,8 +1308,8 @@ var awxUI = {};
       });
 
       this.musicVideosGenresPage = this.musicVideosPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        title: mkf.lang.get('Genres', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres', 'Page and menu'),
         content: this.$musicVideosGenresContent,
         contextMenu: musicVideosGenresContextMenu,
         onShow: $.proxy(this, "onMusicVideosGenresShow"),
@@ -1312,14 +1321,14 @@ var awxUI = {};
       this.$musicVideosYearsContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosYearsContextMenu = $.extend(true, [], standardVideosContextMenu);
       musicVideosYearsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(musicVideoPage);
             return false;
           }
       });
       musicVideosYearsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$musicVideosYearsContent.empty();
             awxUI.onMusicVideosYearsShow();
@@ -1329,8 +1338,8 @@ var awxUI = {};
       });
 
       this.musicVideosYearsPage = this.musicVideosPage.addPage({
-        title: mkf.lang.get('page_title_years'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_years'),
+        title: mkf.lang.get('Years', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Years', 'Page and menu'),
         content: this.$musicVideosYearsContent,
         contextMenu: musicVideosYearsContextMenu,
         onShow: $.proxy(this, "onMusicVideosYearsShow"),
@@ -1342,14 +1351,14 @@ var awxUI = {};
       this.$musicVideosTagsContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
       musicVideosTagsContextMenu.push({
-        'icon':'close', 'title':mkf.lang.get('ctxt_btn_close'), 'shortcut':'Ctrl+1', 'onClick':
+        'icon':'close', 'title':mkf.lang.get('Close', 'Tool tip'), 'shortcut':'Ctrl+1', 'onClick':
           function() {
             mkf.pages.showPage(musicVideoPage);
             return false;
           }
       });
       musicVideosTagsContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$musicVideosTagsContent.empty();
             awxUI.onMusicVideosTagsShow();
@@ -1359,8 +1368,8 @@ var awxUI = {};
       });
 
       this.musicVideosTagsPage = this.musicVideosPage.addPage({
-        title: mkf.lang.get('page_title_tags'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_tags'),
+        title: mkf.lang.get('Tags', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Tags', 'Page and menu'),
         content: this.$musicVideosTagsContent,
         contextMenu: musicVideosTagsContextMenu,
         onShow: $.proxy(this, "onMusicVideosTagsShow"),
@@ -1372,16 +1381,16 @@ var awxUI = {};
       this.$pvrtvContent = $('<div class="pageContentWrapper"></div>');
       var pvrtvContextMenu = $.extend(true, [], standardVideosContextMenu);
       pvrtvContextMenu.push({
-        'id':'findPVRtvButton', 'icon':'find', 'title':mkf.lang.get('ctxt_btn_find'), 'shortcut':'Ctrl+2', 'onClick':
+        'id':'findPVRtvButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
             var pos = $('#findPVRtvButton').offset();
             awxUI.$pvrtvContent
-              .defaultFindBox({id:'pvrtvFindBox', searchItems: xbmc.getSearchTerm('channels'), top: pos.top, left: pos.left});
+              .defaultFindBox({id:'pvrtvFindBox', searchItems: xbmc.getSearchTerm('channels'), top: pos.top +50, left: pos.left});
             return false;
           }
       });
       pvrtvContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$pvrtvContent.empty();
             awxUI.onPVRtvShow();
@@ -1391,8 +1400,8 @@ var awxUI = {};
       });
       
       this.pvrtvPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_pvr_tv'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_pvr_tv'),
+        title: mkf.lang.get('PVR TV', 'Page and menu'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('PVR TV', 'Page and menu'),
         content: this.$pvrtvContent,
         contextMenu: pvrtvContextMenu,
         onShow: $.proxy(this, "onPVRtvShow"),
@@ -1403,7 +1412,7 @@ var awxUI = {};
       this.$videoGenresContent = $('<div class="pageContentWrapper"></div>');
       var videoGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$videoGenresContent.empty();
             awxUI.onVideoGenresShow();
@@ -1413,8 +1422,8 @@ var awxUI = {};
       });
 
       this.videoGenresPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_title_genres'),
+        title: mkf.lang.get('Genres'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Genres'),
         content: this.$videoGenresContent,
         contextMenu: videoGenresContextMenu,
         onShow: $.proxy(this, "onVideoGenresShow"),
@@ -1425,9 +1434,9 @@ var awxUI = {};
       //Video Files
       this.$videoFilesContent = $('<div class="pageContentWrapper"></div>');
       this.videoFilesPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_video_files'),
+        title: mkf.lang.get('Files', 'Page and menu'),
         content: this.$videoFilesContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_files'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Files', 'Page and menu'),
         contextMenu: standardVideosContextMenu,
         onShow: $.proxy(this, "onVideoFilesShow"),
         className: 'videofiles'
@@ -1437,19 +1446,19 @@ var awxUI = {};
       this.$videoPlaylistContent = $('<div class="pageContentWrapper"></div>');
       var videoPlaylistContextMenu = $.extend(true, [], standardVideosContextMenu);
       videoPlaylistContextMenu.push({
-        'icon':'clear', 'title':mkf.lang.get('ctxt_btn_clear playlist'), 'shortcut':'Ctrl+2', 'onClick':
+        'icon':'clear', 'title':mkf.lang.get('Clear Playlist', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
-            var messageHandle = mkf.messageLog.show(mkf.lang.get('message_clear_video_playlist'));
+            var messageHandle = mkf.messageLog.show(mkf.lang.get('Clear Playlist', 'Popup message'));
 
             xbmc.clearVideoPlaylist({
               onSuccess: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_ok'), 5000, mkf.messageLog.status.success);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('OK'), 5000, mkf.messageLog.status.success);
                 // reload playlist
                 awxUI.onVideoPlaylistShow();
               },
 
               onError: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('message_failed'), 5000, mkf.messageLog.status.error);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('Failed!'), 5000, mkf.messageLog.status.error);
               }
             });
 
@@ -1457,7 +1466,7 @@ var awxUI = {};
           }
       });
       videoPlaylistContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('ctxt_btn_refresh_list'), 'onClick':
+        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
             awxUI.$videoPlaylistContent.empty();
             awxUI.onVideoPlaylistShow();
@@ -1467,9 +1476,9 @@ var awxUI = {};
       });
       
       this.videoPlaylistPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_video_playlist'),
+        title: mkf.lang.get('Playlist', 'Page and menu'),
         content: this.$videoPlaylistContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_playlist'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Playlist', 'Page and menu'),
         contextMenu: videoPlaylistContextMenu,
         onShow: $.proxy(this, "onVideoPlaylistShow"),
         className: 'videoPlaylist'
@@ -1480,9 +1489,9 @@ var awxUI = {};
       var videoScanContextMenu = $.extend(true, [], standardVideosContextMenu);
       
       this.videoScanPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_video_scan'),
+        title: mkf.lang.get('Library Tools', 'Page and menu'),
         content: this.$videoScanContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_scan'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Library Tools', 'Page and menu'),
         contextMenu: videoScanContextMenu,
         onShow: $.proxy(this, "onVideoScanShow"),
         className: 'videoscan'
@@ -1493,9 +1502,9 @@ var awxUI = {};
       var videoAdFilterContextMenu = $.extend(true, [], standardVideosContextMenu);
       
       this.videoAdFilterPage = videosPage.addPage({
-        title: mkf.lang.get('page_title_video_adv_search'),
+        title: mkf.lang.get('Advanced Search', 'Page and menu'),
         content: this.$videoAdFilterContent,
-        menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_adv_search'),
+        menuButtonText: '&raquo; ' + mkf.lang.get('Advanced Search', 'Page and menu'),
         contextMenu: videoAdFilterContextMenu,
         onShow: $.proxy(this, "onVideoAdFilterShow"),
         className: 'videoAdFilter'
@@ -1550,7 +1559,7 @@ var awxUI = {};
               '<div id="simple_controls"></div><div id="infoContainer"></div>' +
               '<div id="statPlayerContainer"><div id="streamdets"><div class="vFormat" /><div class="aspect" /><div class="vCodec" /><div class="aCodec" /><div class="channels" /><div class="vSubtitles" style="display: none" /></div>' +
               '<div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div>' +
-              '<div id="remainPlayer"><div id="remaining">' + mkf.lang.get('label_remaining') + '<span class="timeRemain">00:00</span></div><div id="plTotal">' + mkf.lang.get('label_total') + '<span class="timeRemainTotal">00:00</span></div></div>' +
+              '<div id="remainPlayer"><div id="remaining">' + mkf.lang.get('Remaining:', 'Footer label') + ' <span class="timeRemain">00:00</span></div><div id="plTotal">' + mkf.lang.get('Total:', 'Footer label') + ' <span class="timeRemainTotal">00:00</span></div></div>' +
               //'<div id="statPlayerContainer"><div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div><div id="remainPlayer"><div id="remaining">Remaing:</div><div id="plTotal">Playlist Total:</div></div>' +
               '<div id="controller"></div></div>' +
               '</div>' +
@@ -1715,7 +1724,7 @@ var awxUI = {};
           start: lastArtistCountStart,
           end: lastArtistCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1740,7 +1749,7 @@ var awxUI = {};
 
         xbmc.getMusicPlaylists({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1764,7 +1773,7 @@ var awxUI = {};
 
         xbmc.getAudioGenres({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1825,7 +1834,7 @@ var awxUI = {};
           start: lastAlbumCountStart,
           end: lastAlbumCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1849,7 +1858,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedAlbums({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1872,7 +1881,7 @@ var awxUI = {};
 
         xbmc.getRecentlyPlayedAlbums({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1898,7 +1907,7 @@ var awxUI = {};
           media: 'files',
           directory: 'musicdb://9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1921,7 +1930,7 @@ var awxUI = {};
 
         xbmc.getAudioGenres({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1982,7 +1991,7 @@ var awxUI = {};
         start: lastSongsCountStart,
         end: lastSongsCount,
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('message_failed_songs_list'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
           $contentBox.removeClass('loading');
         },
 
@@ -2005,7 +2014,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedSongs({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2029,7 +2038,7 @@ var awxUI = {};
 
         xbmc.getRecentlyPlayedSongs({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_album_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2076,7 +2085,7 @@ var awxUI = {};
           start: lastArtistCountStart,
           end: lastArtistCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2103,7 +2112,7 @@ var awxUI = {};
           media: 'files',
           directory: 'musicdb://9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2126,7 +2135,7 @@ var awxUI = {};
 
         xbmc.getAudioGenres({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_artist_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2158,7 +2167,7 @@ var awxUI = {};
 
         xbmc.getMusicVideos({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_musicvideo_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2181,7 +2190,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedMusicVideos({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_recent'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2206,7 +2215,7 @@ var awxUI = {};
         xbmc.getVideoGenres({
           type: 'musicvideo',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_genres'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2233,7 +2242,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://3/3/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2260,7 +2269,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://3/9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_tags'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2284,7 +2293,7 @@ var awxUI = {};
         xbmc.pvrGetChannelGroups({
           group: 'radio',
           onError: function() {
-            //mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+            //mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2332,7 +2341,7 @@ var awxUI = {};
 
       xbmc.getAudioPlaylist({
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('message_failed_audio_playlist'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
           $contentBox.removeClass('loading');
         },
 
@@ -2390,7 +2399,7 @@ var awxUI = {};
           start: lastMovieCountStart,
           end: lastMovieCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_movie_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2415,7 +2424,7 @@ var awxUI = {};
 
         xbmc.getMovieSets({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_movie_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2440,7 +2449,7 @@ var awxUI = {};
         xbmc.getVideoGenres({
           type: 'movie',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_movie_genres'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2467,7 +2476,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://1/3/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2494,7 +2503,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://1/9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_tags'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2517,7 +2526,7 @@ var awxUI = {};
 
         xbmc.getVideoPlaylists({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2539,7 +2548,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedMovies({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_movie_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2596,7 +2605,7 @@ var awxUI = {};
           start: lastTVCountStart,
           end: lastTVCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2621,7 +2630,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedEpisodes({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2646,7 +2655,7 @@ var awxUI = {};
         xbmc.getVideoGenres({
           type: 'tvshow',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_genres'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2673,7 +2682,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://2/3/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_years'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2700,7 +2709,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://2/9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('message_failed_tags'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2723,7 +2732,7 @@ var awxUI = {};
 
         xbmc.pvrGetChannelGroups({
           onError: function() {
-            //mkf.messageLog.show(mkf.lang.get('message_failed_tvshow_list'), mkf.messageLog.status.error, 5000);
+            //mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2754,7 +2763,7 @@ var awxUI = {};
 
       xbmc.getVideoPlaylist({
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('message_failed_video_playlist'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
           $contentBox.removeClass('loading');
         },
 

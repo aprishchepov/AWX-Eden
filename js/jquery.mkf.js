@@ -889,13 +889,24 @@ var mkf = {};
     lang: {
       languages: {},
       curLang: '',
+      langMsg: '',
 
       add: function(newLang) {
         // e.g. newLang = {langage:'German', short:'de', author:'MKay', values: {...}}
         this.languages[newLang.short] = newLang;
       },
 
-      get: function(key, args) {
+      get: function(key, context) {
+        if (!this.curLang || !this.languages[this.curLang]) {
+          return 'ERROR:LANGUAGE_UNDEFINED';
+        } else if (context) {
+          return this.langMsg.pgettext(context, key);
+        } else {
+          return this.langMsg.gettext(key);
+        };
+        
+      },
+      /*get: function(key, args) {
         if (!this.curLang || !this.languages[this.curLang]) {
           return 'ERROR:LANGUAGE_UNDEFINED';
         } else if (!this.languages[this.curLang].values[key]) {
@@ -909,14 +920,65 @@ var mkf = {};
           }
           return result;
         }
-      },
+      },*/
 
-      setLanguage: function(lang) {
+      setLanguage: function(lang, callback) {
         this.curLang = lang;
+        var ld = 'lang/' + lang + '.json';
+        //var langData = {};
+        $.getJSON(ld, function(data) {
+          mkf.lang.langMsg = new Jed({
+            locale_data: { "messages": data }, 
+            "missing_key_callback" : function(key) {
+            console.error(key)
+            }
+          }); 
+          callback(true)
+        })
+        .error(function() { callback(false) });
+        //console.log(this.langData);
+        //this.langMsg = new Jed({ locale_data: { "messages": this.langData } });
       },
 
-      getLanguages: function() {
-        return this.languages;
+      getLanguages: function(callback) {
+        //return this.languages;
+        //var getLangs = function(callback) {
+          xbmc.getDirectory({
+            media: 'files',
+            directory: 'special://home/addons/webinterface.awxi/lang',
+            onError: function() {
+              mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+              callback(false)
+            },
+            onSuccess: function(langs) {
+              var langList = [];
+              var langFiles = [];
+              
+              //Love async...
+              for (i=0; i < langs.files.length; i++) {
+                //Build list of lang files.
+                if (langs.files[i].file.split('.').pop() == 'json') {
+                  langFiles.push(langs.files[i].label);
+                };
+                //Finsihed building list, parse.
+                if (i == langs.files.length-1) {
+                  for (n=0; n < langFiles.length; n++) {
+                    var count = 0;
+                    $.getJSON('lang/' + langFiles[n], function(data) {
+                      //Add short lang code for cookie etc.
+                      count++;
+                      data[''].code = this.url.split('.')[0].split('/')[1];
+                      langList.push(data['']);
+                      if (count == langFiles.length) { callback(langList) };
+                    });
+                  };
+                };
+              };
+            }
+          });
+        //}
+        
+        //getLangs(function(d) { console.log(d) } );
       }
     }
   });

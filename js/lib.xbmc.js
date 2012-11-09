@@ -306,7 +306,7 @@ var xbmc = {};
                   })
                   .bind('error', function() {
                     // use default: 'Banner'
-                    callback(mkf.lang.get('message_failed_detect_thumb_type'));
+                    callback(mkf.lang.get('Failed to detect TV Show Thumb Type!'));
                   })
                   .attr('src', xbmc.getThumbUrl(tvshow.thumbnail));
 
@@ -324,7 +324,7 @@ var xbmc = {};
         },
 
         function (response) {
-          callback(mkf.lang.get('message_failed_detect_thumb_type'));
+          callback(mkf.lang.get('Failed to detect TV Show Thumb Type!'));
         },
 
         null,
@@ -380,7 +380,7 @@ var xbmc = {};
           settings.onSuccess(reponse.result);
         },
         function(response) {
-          settings.onError(mkf.lang.get('message_failed_play'));
+          settings.onError(mkf.lang.get('Failed to send command!', 'Popup message'));
         }
       );
     },
@@ -454,7 +454,7 @@ var xbmc = {};
           settings.onSuccess(reponse.result);
         },
         function(response) {
-          settings.onError(mkf.lang.get('message_failed_pvr_record'));
+          settings.onError();
         }
       );
     },
@@ -473,7 +473,7 @@ var xbmc = {};
           settings.onSuccess(reponse.result);
         },
         function(response) {
-          settings.onError(mkf.lang.get('message_failed_pvr_changrp'));
+          settings.onError();
         }
       );
     },
@@ -492,7 +492,7 @@ var xbmc = {};
           settings.onSuccess(reponse.result);
         },
         function(response) {
-          settings.onError(mkf.lang.get('message_failed_pvr_changrpdets'));
+          settings.onError();
         }
       );
     },
@@ -512,7 +512,7 @@ var xbmc = {};
           settings.onSuccess(reponse.result);
         },
         function(response) {
-          settings.onError(mkf.lang.get('message_failed_pvr_chans'));
+          settings.onError();
         }
       );
     },
@@ -531,7 +531,7 @@ var xbmc = {};
           settings.onSuccess(reponse.result);
         },
         function(response) {
-          settings.onError(mkf.lang.get('message_failed_pvr_chansdets'));
+          settings.onError();
         }
       );
     },
@@ -760,7 +760,7 @@ var xbmc = {};
           '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "' + settings.item + '": ' + (settings.itemId == -1? '"' + settings.itemStr + '"': settings.itemId) + (settings.position != -1? ', "position": ' + settings.position + ', "playlistid": ' + settings.playlistid : '') + ' } ' + (settings.resume? ', "options": { "resume": true }' : '') + ' }, "id": "libPlayerOpen"}',
           settings.onSuccess,
           function(response) {
-            settings.onError(mkf.lang.get('message_failed_play'));
+            settings.onError(response);
           }
       );
     },
@@ -1502,8 +1502,8 @@ var xbmc = {};
             //if (file.filetype == 'file') { if (file.file.search(/\.mp3|\.flac|\.wav|\.aac/i)) { console.log( i + '.audio file!') }; };
           });
         },
-        onError: function() {
-          settings.onError(mkf.lang.get('message_failed_folders_content'));
+        onError: function(result) {
+          settings.onError(result);
         }
       });
       if (containsfiles) {
@@ -1515,7 +1515,7 @@ var xbmc = {};
           },
           
           function(response) {
-            settings.onError(mkf.lang.get('message_failed_add_files_to_playlist'));
+            settings.onError(mkf.lang.get('Failed to add items to the playlist!', 'Popup message'));
           }
         );  
       };
@@ -1529,12 +1529,12 @@ var xbmc = {};
             },
             
             function(response) {
-              settings.onError(mkf.lang.get('message_failed_add_files_to_playlist'));
+              settings.onError(mkf.lang.get('Failed to add items to the playlist!', 'Popup message'));
             }
           );  
         });
       };
-      if (!containsfiles && recurseDir.length == 0) { settings.onError(mkf.lang.get('message_failed_add_files_to_playlist')); };
+      if (!containsfiles && recurseDir.length == 0) { settings.onError(mkf.lang.get('Failed to add items to the playlist!', 'Popup message')); };
     },
 
     clearAudioPlaylist: function(options) {
@@ -1618,9 +1618,7 @@ var xbmc = {};
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "Playlist.Remove", "params" : { "playlistid" : 0, "position": ' + settings.item + ' }, "id": 1}',
         settings.onSuccess,
-        function(response) {
-          settings.onError(mkf.lang.get('message_failed_remove' + 'settings.item'));
-        }
+        settings.onError
       );
     },
     
@@ -1635,9 +1633,7 @@ var xbmc = {};
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "Playlist.Remove", "params" : { "playlistid" : 1, "position" : ' + settings.item + ' }, "id": 1}',
         settings.onSuccess,
-        function(response) {
-          settings.onError(mkf.lang.get('message_failed_remove' + 'settings.item'));
-        }
+        settings.onError
       );
     },
 
@@ -1680,7 +1676,7 @@ var xbmc = {};
         );
       //return true;
       } else {
-        settings.onError(mkf.lang.get('message_failed'));
+        settings.onError
       }
     },
 
@@ -1708,13 +1704,13 @@ var xbmc = {};
             },
 
             onError: function() {
-              settings.onError(mkf.lang.get('message_failed_add_file_to_playlist'));
+              settings.onError();
             }
           });
         },
 
         onError: function() {
-          settings.onError(mkf.lang.get('message_failed_clear_playlist'));
+          settings.onError();
         }
       });
     },
@@ -1749,7 +1745,7 @@ var xbmc = {};
         },
 
         onError: function() {
-          settings.onError(mkf.lang.get('message_failed_clear_playlist'));
+          settings.onError();
         }
       });
     },
@@ -2079,7 +2075,7 @@ var xbmc = {};
         },
 
         onError: function() {
-          settings.onError(mkf.lang.get('message_failed_clear_playlist'));
+          settings.onError();
         }
       });
     },
@@ -2927,7 +2923,7 @@ var xbmc = {};
               console.log(xbmc.inErrorState);
               if (xbmc.inErrorState == 5) {
                 $('body').empty();
-                mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+                mkf.dialog.show({content:'<h1>' + mkf.lang.get('XBMC has quit. You can close this window.') + '</h1>', closeButton: false});
                 xbmc.setHasQuit();
               };
             },
@@ -3157,7 +3153,7 @@ var xbmc = {};
                       }
                     },
                     onError: function() {
-                      xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
+                      xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get();
                     }
                   });
                 };
@@ -3527,7 +3523,7 @@ var xbmc = {};
                                 }
                               },
                               onError: function() {
-                                xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get(message_failed);
+                                xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get();
                               }
                             });
 
@@ -3586,7 +3582,7 @@ var xbmc = {};
                   xbmc.inErrorState ++;
                   if (xbmc.inErrorState == 5) {
                     $('body').empty();
-                    mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+                    mkf.dialog.show({content:'<h1>' + mkf.lang.get('XBMC has quit. You can close this window.') + '</h1>', closeButton: false});
                     xbmc.setHasQuit();
                   };
                 }
@@ -3701,7 +3697,7 @@ var xbmc = {};
                         }
                       },
                       onError: function() {
-                        xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get('message_failed');
+                        xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get();
                       }
                     });
 
@@ -3895,34 +3891,34 @@ var xbmc = {};
           break;
           case 'VideoLibrary.OnScanStarted':
             //Set to messageid so we can clear it on finish.
-            xbmc.vidOnScanStartedMsgId = mkf.messageLog.show(mkf.lang.get('message_video_scan'), mkf.messageLog.status.loading, 0);
+            xbmc.vidOnScanStartedMsgId = mkf.messageLog.show(mkf.lang.get('Started Video Library Scan', 'Popup message'), mkf.messageLog.status.loading, 0);
           break;
           case 'VideoLibrary.OnScanFinished':
             if (xbmc.vidOnScanStartedMsgId != -1) {
-              mkf.messageLog.replaceTextAndHide(xbmc.vidOnScanStartedMsgId, mkf.lang.get('message_video_scan_fin'), 2000, mkf.messageLog.status.success);
+              mkf.messageLog.replaceTextAndHide(xbmc.vidOnScanStartedMsgId, mkf.lang.get('Finished Video Library Scan', 'Popup message'), 2000, mkf.messageLog.status.success);
               //Reset
               xbmc.vidOnScanStartedMsgId = -1;
             } else {
-              mkf.messageLog.show(mkf.lang.get('message_video_scan_fin'), mkf.messageLog.status.success, 3000);
+              mkf.messageLog.show(mkf.lang.get('Finished Video Library Scan', 'Popup message'), mkf.messageLog.status.success, 3000);
             };
           break;
           case 'AudioLibrary.OnScanStarted':
             //Set to messageid so we can clear it on finish.
-            xbmc.audOnScanStartedMsgId = mkf.messageLog.show(mkf.lang.get('message_music_scan'), mkf.messageLog.status.loading, 0);
+            xbmc.audOnScanStartedMsgId = mkf.messageLog.show(mkf.lang.get('Started Music Library Scan', 'Popup message'), mkf.messageLog.status.loading, 0);
           break;
           case 'AudioLibrary.OnScanFinished':
             if (xbmc.audOnScanStartedMsgId != -1) {
-              mkf.messageLog.replaceTextAndHide(xbmc.audOnScanStartedMsgId, mkf.lang.get('message_music_scan_fin'), 2000, mkf.messageLog.status.success);
+              mkf.messageLog.replaceTextAndHide(xbmc.audOnScanStartedMsgId, mkf.lang.get('Finished Music Library Scan', 'Popup message'), 2000, mkf.messageLog.status.success);
               //Reset
               xbmc.audOnScanStartedMsgId = -1;
             } else {
-              mkf.messageLog.show(mkf.lang.get('message_music_scan_fin'), mkf.messageLog.status.success, 3000);
+              mkf.messageLog.show(mkf.lang.get('Finished Music Library Scan', 'Popup message'), mkf.messageLog.status.success, 3000);
             };
             
           break;
           case 'Input.OnInputRequested':
             //Add masking for passwords
-            uiviews.InputSendText(JSONRPCnotification.params.data);
+            uiviews.InputSendText(JSONRPCnotification.params.data, (JSONRPCnotification.params.data.type == 'password'? true : false));
           break;
           case 'Input.OnInputFinished':
             console.log('Input closed');
@@ -3930,7 +3926,7 @@ var xbmc = {};
           break;
           case 'System.OnQuit':
             $('body').empty();
-            mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+            mkf.dialog.show({content:'<h1>' + mkf.lang.get('XBMC has quit. You can close this window.') + '</h1>', closeButton: false});
             xbmc.setHasQuit();
           break;
           }
@@ -3948,7 +3944,7 @@ var xbmc = {};
                   setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
               } else {
                 $('body').empty();
-                mkf.dialog.show({content:'<h1>' + mkf.lang.get('message_xbmc_has_quit') + '</h1>', closeButton: false});
+                mkf.dialog.show({content:'<h1>' + mkf.lang.get('XBMC has quit. You can close this window.') + '</h1>', closeButton: false});
                 xbmc.setHasQuit();
               }
             }
