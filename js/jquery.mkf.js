@@ -889,6 +889,7 @@ var mkf = {};
     lang: {
       languages: {},
       curLang: '',
+      langMsg: '',
 
       add: function(newLang) {
         // e.g. newLang = {langage:'German', short:'de', author:'MKay', values: {...}}
@@ -896,6 +897,14 @@ var mkf = {};
       },
 
       get: function(key, args) {
+        if (!this.curLang || !this.languages[this.curLang]) {
+          return 'ERROR:LANGUAGE_UNDEFINED';
+        } else {
+          return this.langMsg.gettext(key);
+        };
+        
+      },
+      /*get: function(key, args) {
         if (!this.curLang || !this.languages[this.curLang]) {
           return 'ERROR:LANGUAGE_UNDEFINED';
         } else if (!this.languages[this.curLang].values[key]) {
@@ -909,10 +918,23 @@ var mkf = {};
           }
           return result;
         }
-      },
+      },*/
 
-      setLanguage: function(lang) {
+      setLanguage: function(lang, callback) {
         this.curLang = lang;
+        var ld = 'lang/' + lang + '.json';
+        //var langData = {};
+        $.getJSON(ld, function(data) {
+          mkf.lang.langMsg = new Jed({
+            locale_data: { "messages": data }, 
+            "missing_key_callback" : function(key) {
+            console.error(key)
+            }
+          }); 
+          callback(true)
+          });
+        //console.log(this.langData);
+        //this.langMsg = new Jed({ locale_data: { "messages": this.langData } });
       },
 
       getLanguages: function() {
