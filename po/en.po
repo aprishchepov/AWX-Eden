@@ -15,161 +15,185 @@ msgstr ""
 "Language: English\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#Page naming and menu item names.
-
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Music"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Artists"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Genres"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Albums"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Songs"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Years"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Tags"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "PVR Radio"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "PVR TV"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Files"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Playlist"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Playlists"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Video"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Music Videos"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Movies"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Movie Sets"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "TV Shows"
 msgstr ""
 
-msgctxt "Page"
+msgctxt "Page and menu"
 msgid "Recently Added"
 msgstr ""
 
+msgctxt "Page and menu"
 msgid "Video Library Tools"
 msgstr ""
 
+msgctxt "Page and menu"
 msgid "Music Library Tools"
 msgstr ""
 
+msgctxt "Page and menu"
 msgid "Advanced Search"
 msgstr ""
 
+msgctxt "Page"
 msgid "Results"
 msgstr ""
 
+msgctxt "Page and menu"
 msgid "Title"
 msgstr ""
 
+msgctxt "Tool tip"
 msgid "Find"
 msgstr ""
 
+msgctxt "Tool tip"
 msgid "Clear Playlist"
 msgstr ""
 
+msgctxt "Tool tip"
 msgid "Close"
 msgstr ""
 
+msgctxt "Tool tip"
 msgid "Refresh"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Clear Playlist... "
 msgstr ""
 
+msgctxt "Tool tip"
 msgid "Swap Playlist Item..."
 msgstr ""
 
+msgctxt "Popup message"
 msgid "OK"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to retrieve list!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to send command!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to set Volume!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to get Directory!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to get File Sources!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to get genre!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to find any items!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "No unwatched episodes!"
 msgstr ""
 
 msgid "XBMC has quit. You can close this window."
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Playing... "
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Adding to playlist..."
 msgstr ""
 
 msgid "Not supported"
 msgstr "This is currently not supported by the XBMC-API."
 
+msgctxt "Popup message"
 msgid "Playing item... "
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Removing item... "
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to remove playlist item... "
 msgstr ""
 
@@ -185,57 +209,75 @@ msgstr ""
 msgid "Failed to detect TV Show Thumb Type!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Album not found!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to get retrieve content!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to play!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to clear playlist!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to adding item to playlist!"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Started Music Library Scan"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Finished Music Library Scan"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Finished Video Library Scan"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Started Music Library Clean"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Started Music Library Export"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Started Video Library Scan"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Started Video Library Clean"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Started Video Library Export"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Record action failed"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Changed channel"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to change channel"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Recording channel"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "Failed to start recording"
 msgstr ""
 
@@ -249,9 +291,6 @@ msgid "AWX Settings"
 msgstr ""
 
 msgid "Titles"
-msgstr ""
-
-msgid "Genres"
 msgstr ""
 
 msgid "Recently Added"
@@ -503,9 +542,6 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
-msgid "Genre"
-msgstr ""
-
 msgid "Added"
 msgstr ""
 
@@ -519,9 +555,6 @@ msgid "Artist"
 msgstr ""
 
 msgid "Album"
-msgstr ""
-
-msgid "Genre"
 msgstr ""
 
 msgid "Year"
@@ -605,97 +638,135 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-msgid "Artist"
+msgid "Artist:"
 msgstr ""
 
-msgid "Label"
+msgid "Label:"
 msgstr ""
 
-msgid "Premiered"
+msgid "Premiered:"
 msgstr ""
 
-msgid "Episodes"
+msgid "Episodes:"
 msgstr ""
 
-msgid "Original Title"
+msgid "Original Title:"
 msgstr ""
 
-msgid "Runtime"
+msgid "Runtime:"
 msgstr ""
 
-msgid "Genre"
+msgctxt "Label"
+msgid "Genre:"
+msgid_plural "Genres:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgctxt "Label"
+msgid "Mood:"
+msgid_plural "Moods:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgctxt "Label"
+msgid "Born:"
 msgstr ""
 
-msgid "Mood"
+msgctxt "Label"
+msgid "Formed:"
 msgstr ""
 
-msgid "Born"
+msgctxt "Label"
+msgid "Died:"
 msgstr ""
 
-msgid "Formed"
+msgctxt "Label"
+msgid "Disbanded:"
 msgstr ""
 
-msgid "Died"
-msgstr ""
+msgctxt "Label"
+msgid "Year active:"
+msgid_plural "Years active:"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "Disbanded"
-msgstr ""
+msgctxt "Label"
+msgid "Instrument:"
+msgid_plural "Instruments:"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "Years active"
-msgstr ""
+msgctxt "Label"
+msgid "Style:"
+msgid_plural "Styles:"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "Instrument"
-msgstr ""
-
-msgid "Style"
-msgstr ""
-
+msgctxt "Label"
 msgid "Rating"
 msgstr ""
 
-msgid "Year"
+msgctxt "Label"
+msgid "Year:"
 msgstr ""
 
-msgid "Director"
+msgctxt "Label"
+msgid "Director:"
 msgstr ""
 
-msgid "Writer"
+msgctxt "Label"
+msgid "Writer:"
 msgstr ""
 
-msgid "Last Played"
+msgctxt "Label"
+msgid "Last Played:"
 msgstr ""
 
-msgid "Played"
+msgctxt "Label"
+msgid "Played:"
 msgstr ""
 
-msgid "Studio"
+msgctxt "Label"
+msgid "Studio:"
 msgstr ""
 
-msgid "Votes"
+msgctxt "Label"
+msgid "Votes:"
 msgstr ""
 
-msgid "Subtitles"
+msgctxt "Label"
+msgid "Subtitle:"
+msgid_plural "Subtitles:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgctxt "Label"
+msgid "Audio Stream:"
+msgid_plural "Audio Streams:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgctxt "Label"
+msgid "Tagline:"
 msgstr ""
 
-msgid "Audio Streams"
+msgctxt "Label"
+msgid "Trailer:"
 msgstr ""
 
-msgid "Tagline"
-msgstr ""
-
-msgid "Trailer"
-msgstr ""
-
-msgid "Link"
+msgctxt "Label"
+msgid "Link:"
 msgstr ""
 
 msgid "Play in XBMC"
 msgstr ""
 
-msgid "Set"
+msgctxt "Label"
+msgid "Set:"
 msgstr ""
 
-msgid "File"
+msgctxt "Label"
+msgid "File:"
 msgstr ""
 
 msgid "Currently Playing"
