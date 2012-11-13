@@ -1,13 +1,15 @@
 0.6.0
  - Initial build for Frodo.
  - Websockets - near instant responce to notifications.
+ - Changed to Jed gettext support. Translators see http://forum.xbmc.org/showthread.php?tid=141158
  - New control overlay.
  - Limiting on library items.
  - Info and context buttons.
  - All available controls in large overlay.
  - Popup when entering text is required.
  - Advanced search.
- - Video genres.
+ - Submenus.
+ - Extra pages: Songs, Years, Tags, Genres, Recently played.
  - Party mode support.
  - jQuery 1.8.2.
  - Playlists sends batch (one big send instead of lots of singles).
