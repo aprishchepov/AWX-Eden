@@ -1,6 +1,6 @@
 /*
  *  AWX - Ajax based Webinterface for XBMC
- *  Copyright (C) 2010  MKay
+ *  Copyright (C) 2012  MKay, mizaki
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -664,7 +664,6 @@ var xbmc = {};
       );
     },
     
-
     shutdown: function(options) {
       var settings = {
         type: 'shutdown',
@@ -981,7 +980,6 @@ var xbmc = {};
       };
       return 'Unknown';
     },
-    
 
     getAcodec: function (acodec) {
       acodec = acodec.toLowerCase();
@@ -1127,27 +1125,7 @@ var xbmc = {};
         settings.onError
       );
     },
-    
-    /*getArtistsGenres: function(options) {
-      var settings = {
-        genreid: -1,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
 
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": {"filter": {"genreid": ' + settings.genreid + '}, "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist" } }, "id": 1}',
-
-        function(response) {
-          settings.onSuccess(response.result);
-        },
-
-        settings.onError
-      );
-    },*/
-
-    
     getAlbums: function(options) {
       var settings = {
         item: '',
@@ -1369,37 +1347,6 @@ var xbmc = {};
         settings.onError
       );
     },
-    
-    /*getGenreMusicVideos: function(options) {
-      var settings = {
-        genreid: 0,
-        sortby: 'none',
-        order: 'ascending',
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      settings.sortby = mkf.cookieSettings.get('musicVideoSort', 'label');
-      settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "filter": { "genreid": ' + settings.genreid + '}, "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
-
-        function(response) {
-          if (settings.order == 'descending' && settings.sortby == 'none') {
-          var aresult = $.makeArray(response.result.albums).reverse();
-          delete response.result.musicvideos;
-          response.result.musicvideos = aresult;
-          settings.onSuccess(response.result);
-          } else {
-          settings.onSuccess(response.result);
-          }
-        },
-
-        settings.onError
-      );    
-    },*/
     
     getMusicVideoInfo: function(options) {
       var settings = {
@@ -1750,28 +1697,6 @@ var xbmc = {};
       });
     },
 
-    /*getAlbumsSongs: function(options) {
-      var settings = {
-        albumid: 0,
-        sortby: 'track',
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "filter": {"albumid": ' + settings.albumid + '}, "properties": ["artist", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating"], "sort": { "method": "' + settings.sortby + '"} }, "id": 1}',
-
-        function(response) {
-          settings.onSuccess(response.result);
-        },
-
-        settings.onError
-      );
-    },*/
-
-
-
     getAudioPlaylist: function(options) {
       var settings = {
         onSuccess: null,
@@ -1840,37 +1765,6 @@ var xbmc = {};
       );
     },
 
-
-
-    /*playVideo: function(options) {
-      var settings = {
-        item: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      if (xbmc.activePlayerid == 1) {
-        xbmc.sendCommand(
-          '{"jsonrpc": "2.0", "method": "Player.GoTo", "params" : { "playerid" : 1, "to": ' + settings.item + ' }, "id": 1}',
-          settings.onSuccess,
-          function(response) {
-            settings.onError(mkf.lang.get('message_failed_play'));
-          }
-        );
-      } else {
-        xbmc.sendCommand(
-          '{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "playlistid" : 1, "position": ' + settings.item + ' } }, "id": 1}',
-          settings.onSuccess,
-          function(response) {
-            settings.onError(mkf.lang.get('message_failed_play'));
-          }
-        );
-      }
-    },*/
-
-
-
     addVideoFileToPlaylist: function(options) {
       var settings = {
         file: '',
@@ -1889,8 +1783,6 @@ var xbmc = {};
       );
     },
 
-
-
     addVideoFolderToPlaylist: function(options) {
       var settings = {
         folder: '',
@@ -1908,125 +1800,6 @@ var xbmc = {};
       );
       
     },
-
-
-
-    /*addMovieToPlaylist: function(options) {
-      var settings = {
-        movieid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": {"item": {"movieid": ' + settings.movieid + '}, "playlistid": 1}, "id": 1}',
-        settings.onSuccess,
-        settings.onError,
-        null,
-        settings.async
-      );
-    },*/
-
-    /*resumeMovie: function(options) {
-      var settings = {
-        movieid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "movieid" : ' + settings.movieid + '}, "options": { "resume": true } }, "id": 1}',
-        settings.onSuccess,
-        settings.onError
-      );
-    },*/
-
-    /*addMusicVideoToPlaylist: function(options) {
-      var settings = {
-        musicvideoid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": {"item": {"musicvideoid": ' + settings.musicvideoid + '}, "playlistid": 1}, "id": 1}',
-        settings.onSuccess,
-        settings.onError
-      );
-    },*/
-
-    /*playMovie: function(options) {
-      var settings = {
-        movieid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      //Fix: change to use player.open
-      this.clearVideoPlaylist({
-        onSuccess: function() {
-          xbmc.addMovieToPlaylist({
-            movieid: settings.movieid,
-
-            onSuccess: function() {
-              xbmc.playVideo({
-                onSuccess: settings.onSuccess,
-                onError: function(errorText) {
-                  settings.onError(errorText);
-                }
-              });
-            },
-
-            onError: function() {
-              settings.onError(mkf.lang.get('message_failed_add_movie_to_playlist'));
-            }
-          });
-        },
-
-        onError: function() {
-          settings.onError(mkf.lang.get('message_failed_clear_playlist'));
-        }
-      });
-    },
-
-    playMusicVideo: function(options) {
-      var settings = {
-        musicvideoid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      //Fix: change to use player.open
-      this.clearVideoPlaylist({
-        onSuccess: function() {
-          xbmc.addMusicVideoToPlaylist({
-            musicvideoid: settings.musicvideoid,
-
-            onSuccess: function() {
-              xbmc.playVideo({
-                onSuccess: settings.onSuccess,
-                onError: function(errorText) {
-                  settings.onError(errorText);
-                }
-              });
-            },
-
-            onError: function() {
-              settings.onError(mkf.lang.get('message_failed_add_movie_to_playlist'));
-            }
-          });
-        },
-
-        onError: function() {
-          settings.onError(mkf.lang.get('message_failed_clear_playlist'));
-        }
-      });
-    },*/
 
     playVideoFile: function(options) {
       var settings = {
@@ -2079,38 +1852,6 @@ var xbmc = {};
         }
       });
     },
-
-    /*getGenreMovie: function(options) {
-      var settings = {
-        sortby: 'label',
-        order: 'ascending',
-        start: 0,
-        end: 99999,
-        lastStart: 0,
-        genreid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
-      settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": { "genreid": ' + settings.genreid + '}, "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": 1}',
-        function(response) {
-          if (settings.order == 'descending' && settings.sortby == 'none') {
-            var mresult = $.makeArray(response.result.movies).reverse();
-            delete response.result.movies;
-            response.result.movies = mresult;
-            settings.onSuccess(response.result);
-          } else {
-            settings.onSuccess(response.result);
-          };
-        },
-        settings.onError
-      );
-    },*/
     
     getMovies: function(options) {
       var settings = {
@@ -2206,74 +1947,6 @@ var xbmc = {};
         settings.onError
       );
     },
-    
-    /*addEpisodeToPlaylist: function(options) {
-      var settings = {
-        episodeid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": {"item": {"episodeid": ' + settings.episodeid + '}, "playlistid": 1}, "id": 1}',
-        settings.onSuccess,
-        settings.onError,
-        null,
-        settings.async
-      );
-    },*/
-
-
-
-    /*playEpisode: function(options) {
-      var settings = {
-        episodeid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      this.clearVideoPlaylist({
-        onSuccess: function() {
-          xbmc.addEpisodeToPlaylist({
-            episodeid: settings.episodeid,
-
-            onSuccess: function() {
-              xbmc.playVideo({
-                onSuccess: settings.onSuccess,
-                onError: function(errorText) {
-                  settings.onError(errorText);
-                }
-              });
-            },
-
-            onError: function() {
-              settings.onError(mkf.lang.get('message_failed_add_episode_to_playlist'));
-            }
-          });
-        },
-
-        onError: function() {
-          settings.onError(mkf.lang.get('message_failed_clear_playlist'));
-        }
-      });
-    },
-
-    resumeEpisode: function(options) {
-      var settings = {
-        episodeid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      xbmc.sendCommand(
-          '{"jsonrpc": "2.0", "method": "Player.Open", "params" : { "item" : { "episodeid" : ' + settings.episodeid + '}, "options": { "resume": true } }, "id": 1}',
-          settings.onSuccess,
-          settings.onError
-      );
-    },*/
 
     getTvShows: function(options) {
       var settings = {
@@ -2300,31 +1973,6 @@ var xbmc = {};
         settings.onError
       );
     },
-    
-    /*getGenreTVshow: function(options) {
-      var settings = {
-        sortby: 'label',
-        order: 'ascending',
-        start: 0,
-        end: 99999,
-        lastStart: 0,
-        genreid: 0,
-        onSuccess: null,
-        onError: null
-      };
-      $.extend(settings, options);
-
-      settings.sortby = mkf.cookieSettings.get('TVSort', 'label');
-      settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
-
-      xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "filter": { "genreid": ' + settings.genreid + '}, "limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
-        function(response) {
-          settings.onSuccess(response.result);
-        },
-        settings.onError
-      );
-    },*/
     
     getTvShowInfo: function(options) {
       var settings = {

@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------
 
 AWXi uses the JavaScript Library jQuery and jQuery UI. These projects are
-licensed under both MIT license.
+licensed under MIT license.
 Have a look at
     http://jquery.com
     http://jqueryui.com
@@ -50,9 +50,7 @@ It is licensed under MIT.
 
 --------------------------------------------------------------------------------
 
-Tranlations:
-German - MKay
-Russian - Scaramush
-French - DanoneKiD
-Polish - cienislaw
-Chinese - Taxigps
+AWXi uses Jed for translation strings. See http://slexaxton.github.com/Jed/
+Licensed under the WTFPL.
+
+--------------------------------------------------------------------------------

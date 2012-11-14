@@ -1,6 +1,6 @@
 /*
  *  AWX - Ajax based Webinterface for XBMC
- *  Copyright (C) 2010  MKay
+ *  Copyright (C) 2012  MKay, mizaki
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -583,7 +583,7 @@
         '<legend>' + mkf.lang.get('Start Page', 'Settings label') + '</legend>' +
         '<select id="startPage" name="startPage">' +
         '<option value="recentAlbums" ' + (startPage=='recentAlbums'? 'selected' : '') + '>' + mkf.lang.get('Recently Added Albums', 'Settings option') + '</option>' +
-        '<option value="recentTV" ' + (startPage=='recentTV'? 'selected' : '') + '>' + mkf.lang.get('Recently Added TV', 'Settings option') + '</option>' +
+        '<option value="recentTV" ' + (startPage=='recentTV'? 'selected' : '') + '>' + mkf.lang.get('Recently Added TV Episodes', 'Settings option') + '</option>' +
         '<option value="recentMovies" ' + (startPage=='recentMovies'? 'selected' : '') + '>' + mkf.lang.get('Recently Added Movies', 'Settings option') + '</option>' +
         '<option value="movies"' + (startPage=='movies'? 'selected' : '') + '>' + mkf.lang.get('Movies', 'Settings option') + '</option>' +
         '<option value="tv"' + (startPage=='tv'? 'selected' : '') + '>' + mkf.lang.get('TV Shows', 'Settings option') + '</option>' +
@@ -648,7 +648,7 @@
         '</fieldset>' +
         
         '<fieldset class="ui_views">' +
-        '<legend>' + mkf.lang.get('Recently Added TV', 'Settings label') + '</legend>' +
+        '<legend>' + mkf.lang.get('Recently Added TV Episodes', 'Settings label') + '</legend>' +
         '<select name="TVViewRec"><option value="infolist" ' + (TVViewRec=='infolist'? 'selected' : '') + '>' + mkf.lang.get('Information List', 'Settings option') + '</option>' +
         '</select>' +
         '</fieldset>' +
@@ -789,7 +789,8 @@
       $( "#tabs" ).tabs({ selected: 0 });
       
       $('.expertHelp').click(function() {
-        alert(mkf.lang.get('LazyLoad info'));
+        //JSON lang \n is escaped, replace \\n with \n.
+        alert(mkf.lang.get('LazyLoad info').replace(/\\n/g,"\n"));
         return false;
       });
 
@@ -2265,24 +2266,7 @@
     }
     
   }; // END defaultEpisodesViewer
-  
-  /* ########################### *\
-   |  Video Genres
-   |
-   |  @param episodesResult
-  \* ########################### */
-  /*$.fn.defaultVideoGenresViewer = function(parentPage) {
-    
-    var $scanVideoList = $('<div class="tools"><span class="genres genreMovies" title="' + mkf.lang.get('page_buttontext_movies') +
-    '">' + mkf.lang.get('page_buttontext_movies') + '</span><span class="genres genreTV" title="' + mkf.lang.get('page_buttontext_tvshows') +
-    '">' + mkf.lang.get('page_buttontext_tvshows') + '</span><span class="genres genreMusicVid" title="' + mkf.lang.get('page_buttontext_musicvideos') +'">' + mkf.lang.get('page_buttontext_musicvideos') +'</span></div><br />').appendTo($(this));
-    
-    $scanVideoList.find('.genreMovies').on('click', {type: 'movie', parentPage: parentPage }, uiviews.VideoGenresViewList);
-    $scanVideoList.find('.genreTV').on('click', {type: 'tvshow', parentPage: parentPage }, uiviews.VideoGenresViewList);
-    $scanVideoList.find('.genreMusicVid').on('click', {type: 'musicvideo', parentPage: parentPage }, uiviews.VideoGenresViewList);
-    
-  }; */// END defaultVideoGenresViewer
-  
+
   /* ########################### *\
    |  Show unwatched episodes.
    |
@@ -3469,63 +3453,57 @@
     
     var $searchItems = $(self).find(settings.searchItems);
     var $box = $('#' + settings.id);
-    /*if ($box.length) {
-      // Box was already created
-      $box.show();
-      $box.find('input').focus();
 
-    } else {*/
-      // Box not yet created
-      var $div = $('<div id="' + settings.id + '" class="findBox"><input type="text" /></div>')
-        .appendTo($('body'))
-        .css({'left': settings.left, 'top': settings.top});
+    // Always create box
+    var $div = $('<div id="' + settings.id + '" class="findBox"><input type="text" /></div>')
+      .appendTo($('body'))
+      .css({'left': settings.left, 'top': settings.top});
 
-      if ($div.width() + $div.position().left > $(window).width()) {
-        $div.css({'left': settings.left-$div.width()});
+    if ($div.width() + $div.position().left > $(window).width()) {
+      $div.css({'left': settings.left-$div.width()});
+    }
+    var input = $div.find('input');
+
+    function onInputContentChanged() {
+      $(self).find('.findBoxTitle').remove();
+      if (input.val()) {
+        $(self).prepend('<div class="findBoxTitle"><span>' + mkf.lang.get('Search result within this page for', 'Label') + ' : ' + [input.val()] + '</span></div>');
       }
-      var input = $div.find('input');
+      if (settings.searchItems == '.folderLinkWrapper' || settings.searchItems == 'a' ){
+      $searchItems.parent().removeAttr("style");
+      } else {
+      $searchItems.removeAttr("style");
+      }
+      if (settings.searchItems == '.folderLinkWrapper' || settings.searchItems == 'a' ){
+      $searchItems.not(":contains('" + input.val().toLowerCase() + "')").parent().hide();
+      } else {
+      $searchItems.not(":contains('" + input.val().toLowerCase() + "')").hide();
+      }
+      $(window).trigger('resize'); // ugly but best performance: trigger 'resize' because lazy-load-images may be visible now and should be loaded.
+    };
 
-      function onInputContentChanged() {
-        $(self).find('.findBoxTitle').remove();
-        if (input.val()) {
-          $(self).prepend('<div class="findBoxTitle"><span>' + mkf.lang.get('Search result within this page for', 'Label') + ' : ' + [input.val()] + '</span></div>');
+    input
+      .blur(function() {
+        $(this).parent().hide();
+      })
+      .keydown(function(event) {
+        if (event.keyCode == 0x0D) {
+          onInputContentChanged();
         }
-        if (settings.searchItems == '.folderLinkWrapper' || settings.searchItems == 'a' ){
-        $searchItems.parent().removeAttr("style");
-        } else {
-        $searchItems.removeAttr("style");
-        }
-        if (settings.searchItems == '.folderLinkWrapper' || settings.searchItems == 'a' ){
-        $searchItems.not(":contains('" + input.val().toLowerCase() + "')").parent().hide();
-        } else {
-        $searchItems.not(":contains('" + input.val().toLowerCase() + "')").hide();
-        }
-        $(window).trigger('resize'); // ugly but best performance: trigger 'resize' because lazy-load-images may be visible now and should be loaded.
-      };
-
-      input
-        .blur(function() {
+        if (event.keyCode == 0x1B || event.keyCode == 0x0D) {
           $(this).parent().hide();
-        })
-        .keydown(function(event) {
-          if (event.keyCode == 0x0D) {
-            onInputContentChanged();
-          }
-          if (event.keyCode == 0x1B || event.keyCode == 0x0D) {
-            $(this).parent().hide();
-          }
-        })
-        /*.keyup(function() {
-          if (timeout) {
-            clearTimeout(timeout);
-          }
-          timeout = setTimeout(onInputContentChanged, settings.delay);
-        })*/
-        .focus(function() {
-          this.select();
-        })
-        .focus();
-    //}
+        }
+      })
+      /*.keyup(function() {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(onInputContentChanged, settings.delay);
+      })*/
+      .focus(function() {
+        this.select();
+      })
+      .focus();
 
     return false;
   }; // END defaultFindBox

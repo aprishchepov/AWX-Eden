@@ -1,6 +1,6 @@
 /*
  *  AWX - Ajax based Webinterface for XBMC
- *  Copyright (C) 2010  MKay
+ *  Copyright (C) 2012  MKay, mizaki
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,9 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-
 var awxUI = {};
-
 
 (function($) {
 
@@ -212,15 +210,6 @@ var awxUI = {};
       //playlists m3u smart etc.
       this.$MusicPlaylistsContent = $('<div class="pageContentWrapper"></div>');
       var MusicPlaylistsContextMenu = $.extend(true, [], standardMusicContextMenu);
-      /*MusicPlaylistsContextMenu.push({
-        'id':'findArtistsButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findArtistsButton').offset();
-            awxUI.$MusicPlaylistsContent
-              .defaultFindBox({id:'artistsFindBox', searchItems:'a', top: pos.top +50, left: pos.left});
-            return false;
-          }
-      });*/
       MusicPlaylistsContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
@@ -668,27 +657,6 @@ var awxUI = {};
       //Music Files
       this.$musicFilesContent = $('<div class="pageContentWrapper"></div>');
       var musicFilesContextMenu = $.extend(true, [], standardMusicContextMenu);
-      /*musicFilesContextMenu.push({
-        'id':'findFilesButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findFilesButton').offset();
-            awxUI.$musicFilesContent
-              .defaultFindBox({id:'filesFindBox', searchItems:'.folderLinkWrapper', top: pos.top +50, left: pos.left});
-            return false;
-          }
-      });
-      musicFilesContextMenu.push({
-        // Doesn't work because of subPages.
-        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
-          function(){
-            console.log(awxUI.$musicFilesContent);
-            awxUI.$musicFilesContent.empty();
-            console.log(awxUI.$musicFilesContent);
-            awxUI.onMusicFilesShow();
-
-            return false;
-          }
-      });*/
       
       this.musicFilesPage = musicPage.addPage({
         title: mkf.lang.get('Files', 'Page and menu'),
@@ -888,15 +856,6 @@ var awxUI = {};
       //playlists video smart etc.
       this.$VideoPlaylistsContent = $('<div class="pageContentWrapper"></div>');
       var VideoPlaylistsContextMenu = $.extend(true, [], standardVideosContextMenu);
-      /*VideoPlaylistsContextMenu.push({
-        'id':'findvplaylistButton', 'icon':'find', 'title':mkf.lang.get('Find', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
-          function(){
-            var pos = $('#findvplaylistButton').offset();
-            awxUI.$moviesContent
-              .defaultFindBox({id:'vplaylistFindBox', searchItems: xbmc.getSearchTerm('vplaylist'), top: pos.top +50, left: pos.left});
-            return false;
-          }
-      });*/
       VideoPlaylistsContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
@@ -1408,29 +1367,6 @@ var awxUI = {};
         className: 'pvrtv'
       });
       
-      /*//Video genres
-      this.$videoGenresContent = $('<div class="pageContentWrapper"></div>');
-      var videoGenresContextMenu = $.extend(true, [], standardVideosContextMenu);
-      videoGenresContextMenu.push({
-        'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
-          function(){
-            awxUI.$videoGenresContent.empty();
-            awxUI.onVideoGenresShow();
-
-            return false;
-          }
-      });
-
-      this.videoGenresPage = videosPage.addPage({
-        title: mkf.lang.get('Genres'),
-        menuButtonText: '&raquo; ' + mkf.lang.get('Genres'),
-        content: this.$videoGenresContent,
-        contextMenu: videoGenresContextMenu,
-        onShow: $.proxy(this, "onVideoGenresShow"),
-        className: 'videoGenres'
-      });
-      //end Video genres*/
-      
       //Video Files
       this.$videoFilesContent = $('<div class="pageContentWrapper"></div>');
       this.videoFilesPage = videosPage.addPage({
@@ -1698,7 +1634,6 @@ var awxUI = {};
       awxUI.$artistsTitleContent.empty();
         if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
         if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
-        //if (typeof totalArtistCount === 'undefined') { totalArtistCount = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
           lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
@@ -2059,7 +1994,6 @@ var awxUI = {};
       awxUI.$songsArtistsContent.empty();
         if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
         if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
-        //if (typeof totalArtistCount === 'undefined') { totalArtistCount = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
           lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
@@ -2348,11 +2282,6 @@ var awxUI = {};
         onSuccess: function(result) {
           $contentBox.defaultPlaylistViewer(result, 'Audio');
           $contentBox.removeClass('loading');
-          //if (($contentBox.find('ul').children().length) == 1) {
-            //$contentBox.scrollTop($('.playlistItemCur').position().top)
-            //console.log('on playlist');
-            //console.log($contentBox.find('ul').children());
-          //}
         }
       });
     },

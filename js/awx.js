@@ -1,6 +1,6 @@
 /*
  *  AWX - Ajax based Webinterface for XBMC
- *  Copyright (C) 2010  MKay
+ *  Copyright (C) 2012  MKay, mizaki
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,11 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-
-
 var awx = {};
-
-
 
 (function($) {
 

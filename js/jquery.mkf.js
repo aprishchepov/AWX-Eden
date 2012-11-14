@@ -1,6 +1,6 @@
 /*
- *  MKF 0.0.2
- *  Copyright (C) 2010  MKay
+ *  AWX - Ajax based Webinterface for XBMC
+ *  Copyright (C) 2012  MKay, mizaki
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -897,7 +897,7 @@ var mkf = {};
       },
 
       get: function(key, context) {
-        if (!this.curLang || !this.languages[this.curLang]) {
+        if (!this.curLang) {
           return 'ERROR:LANGUAGE_UNDEFINED';
         } else if (context) {
           return this.langMsg.pgettext(context, key);
@@ -925,7 +925,6 @@ var mkf = {};
       setLanguage: function(lang, callback) {
         this.curLang = lang;
         var ld = 'lang/' + lang + '.json';
-        //var langData = {};
         $.getJSON(ld, function(data) {
           mkf.lang.langMsg = new Jed({
             locale_data: { "messages": data }, 
@@ -936,16 +935,16 @@ var mkf = {};
           callback(true)
         })
         .error(function() { callback(false) });
-        //console.log(this.langData);
-        //this.langMsg = new Jed({ locale_data: { "messages": this.langData } });
       },
 
       getLanguages: function(callback) {
-        //return this.languages;
-        //var getLangs = function(callback) {
+        xbmc.sendCommand(
+        '{ "method": "Addons.GetAddonDetails", "id": 0, "jsonrpc": "2.0", "params": { "addonid": "webinterface.awxi", "properties": ["path"] } }',
+        function(awxi) {
+          var langPath = awxi.result.addon.path + '/lang';
           xbmc.getDirectory({
             media: 'files',
-            directory: 'special://home/addons/webinterface.awxi/lang',
+            directory: langPath,
             onError: function() {
               mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
               callback(false)
@@ -976,9 +975,12 @@ var mkf = {};
               };
             }
           });
-        //}
-        
-        //getLangs(function(d) { console.log(d) } );
+        },
+        function() {
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+        }
+      );
+
       }
     }
   });

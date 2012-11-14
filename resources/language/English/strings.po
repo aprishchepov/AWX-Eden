@@ -231,6 +231,10 @@ msgid "Failed to get retrieve content!"
 msgstr ""
 
 msgctxt "Popup message"
+msgid "Failed to send input!"
+msgstr ""
+
+msgctxt "Popup message"
 msgid "Failed to play!"
 msgstr ""
 
@@ -668,7 +672,7 @@ msgid "Music Playlists"
 msgstr ""
 
 msgctxt "Settings label"
-msgid "Recently Added TV"
+msgid "Recently Added TV Episodes"
 msgstr ""
 
 msgctxt "Settings label"
@@ -676,7 +680,7 @@ msgid "Recently Added Albums"
 msgstr ""
 
 msgctxt "Settings option"
-msgid "Recently Added TV"
+msgid "Recently Added TV Episodes"
 msgstr ""
 
 msgctxt "Settings tab"
