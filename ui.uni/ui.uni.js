@@ -673,17 +673,17 @@ var awxUI = {};
       musicPlaylistContextMenu.push({
         'icon':'clear', 'title':mkf.lang.get('Clear Playlist', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
-            var messageHandle = mkf.messageLog.show(mkf.lang.get('Clear Playlist', 'Popup message'));
+            var messageHandle = mkf.messageLog.show(mkf.lang.get('Clear Playlist... ', 'Popup message with addition'));
 
             xbmc.clearAudioPlaylist({
               onSuccess: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('OK'), 5000, mkf.messageLog.status.success);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('OK', 'Popup message addition'), 5000, mkf.messageLog.status.success);
                 // reload playlist
                 awxUI.onMusicPlaylistShow();
               },
 
               onError: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('Failed!'), 5000, mkf.messageLog.status.error);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('Failed!', 'Popup message addition'), 5000, mkf.messageLog.status.error);
               }
             });
 
@@ -1384,17 +1384,17 @@ var awxUI = {};
       videoPlaylistContextMenu.push({
         'icon':'clear', 'title':mkf.lang.get('Clear Playlist', 'Tool tip'), 'shortcut':'Ctrl+2', 'onClick':
           function(){
-            var messageHandle = mkf.messageLog.show(mkf.lang.get('Clear Playlist', 'Popup message'));
+            var messageHandle = mkf.messageLog.show(mkf.lang.get('Clear Playlist... ', 'Popup message with addition'));
 
             xbmc.clearVideoPlaylist({
               onSuccess: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('OK'), 5000, mkf.messageLog.status.success);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('OK', 'Popup message addition'), 5000, mkf.messageLog.status.success);
                 // reload playlist
                 awxUI.onVideoPlaylistShow();
               },
 
               onError: function () {
-                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('Failed!'), 5000, mkf.messageLog.status.error);
+                mkf.messageLog.appendTextAndHide(messageHandle, mkf.lang.get('Failed!', 'Popup message addition'), 5000, mkf.messageLog.status.error);
               }
             });
 
@@ -1478,6 +1478,8 @@ var awxUI = {};
                 '<img src="ui.uni/images/flagging/vCodecs.png" alt="Preload 16/17" />' +
                 '<img src="ui.uni/images/flagging/channels.png" alt="Preload 17/17" />' +
               '</div>' +
+              '<div id="secondBG"></div>' +
+              '<div id="firstBG"></div>' +
               '<div id="background">' +
               '<div id="header">' +
               '<div id="navigation"></div>'+
@@ -1579,7 +1581,7 @@ var awxUI = {};
         $(this).hide();
         $(this).children().children().css('width',Widest);
       });
-      }, 100);
+      }, 500);
       
       // Hover for menus
       $('#navigation ul.mkfMenu > li, ul.systemMenu > li').hover(function() {
@@ -1659,7 +1661,7 @@ var awxUI = {};
           start: lastArtistCountStart,
           end: lastArtistCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1684,7 +1686,7 @@ var awxUI = {};
 
         xbmc.getMusicPlaylists({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1708,7 +1710,7 @@ var awxUI = {};
 
         xbmc.getAudioGenres({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1769,7 +1771,7 @@ var awxUI = {};
           start: lastAlbumCountStart,
           end: lastAlbumCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1793,7 +1795,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedAlbums({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1816,7 +1818,7 @@ var awxUI = {};
 
         xbmc.getRecentlyPlayedAlbums({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1842,7 +1844,7 @@ var awxUI = {};
           media: 'files',
           directory: 'musicdb://9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1865,7 +1867,7 @@ var awxUI = {};
 
         xbmc.getAudioGenres({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1926,7 +1928,7 @@ var awxUI = {};
         start: lastSongsCountStart,
         end: lastSongsCount,
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
           $contentBox.removeClass('loading');
         },
 
@@ -1949,7 +1951,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedSongs({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -1973,7 +1975,7 @@ var awxUI = {};
 
         xbmc.getRecentlyPlayedSongs({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2019,7 +2021,7 @@ var awxUI = {};
           start: lastArtistCountStart,
           end: lastArtistCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2046,7 +2048,7 @@ var awxUI = {};
           media: 'files',
           directory: 'musicdb://9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2069,7 +2071,7 @@ var awxUI = {};
 
         xbmc.getAudioGenres({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2101,7 +2103,7 @@ var awxUI = {};
 
         xbmc.getMusicVideos({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2124,7 +2126,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedMusicVideos({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2149,7 +2151,7 @@ var awxUI = {};
         xbmc.getVideoGenres({
           type: 'musicvideo',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2176,7 +2178,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://3/3/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2203,7 +2205,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://3/9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2227,7 +2229,7 @@ var awxUI = {};
         xbmc.pvrGetChannelGroups({
           group: 'radio',
           onError: function() {
-            //mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            //mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2275,7 +2277,7 @@ var awxUI = {};
 
       xbmc.getAudioPlaylist({
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
           $contentBox.removeClass('loading');
         },
 
@@ -2328,7 +2330,7 @@ var awxUI = {};
           start: lastMovieCountStart,
           end: lastMovieCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2353,7 +2355,7 @@ var awxUI = {};
 
         xbmc.getMovieSets({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2378,7 +2380,7 @@ var awxUI = {};
         xbmc.getVideoGenres({
           type: 'movie',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2405,7 +2407,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://1/3/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2432,7 +2434,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://1/9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2455,7 +2457,7 @@ var awxUI = {};
 
         xbmc.getVideoPlaylists({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2477,7 +2479,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedMovies({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2534,7 +2536,7 @@ var awxUI = {};
           start: lastTVCountStart,
           end: lastTVCount,
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2559,7 +2561,7 @@ var awxUI = {};
 
         xbmc.getRecentlyAddedEpisodes({
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2584,7 +2586,7 @@ var awxUI = {};
         xbmc.getVideoGenres({
           type: 'tvshow',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2611,7 +2613,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://2/3/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2638,7 +2640,7 @@ var awxUI = {};
           media: 'files',
           directory: 'videodb://2/9/',
           onError: function() {
-            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2661,7 +2663,7 @@ var awxUI = {};
 
         xbmc.pvrGetChannelGroups({
           onError: function() {
-            //mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+            //mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
             $contentBox.removeClass('loading');
           },
 
@@ -2692,7 +2694,7 @@ var awxUI = {};
 
       xbmc.getVideoPlaylist({
         onError: function() {
-          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
           $contentBox.removeClass('loading');
         },
 

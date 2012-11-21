@@ -28,6 +28,10 @@ var awx = {};
     init: function() {
       var dialogHandle = mkf.dialog.show({content:'<h1 class="loading" id="loadingAWXHint">Loading AWXi ...</h1>', closeButton: false});
       $('body').append('<div id="initAWX"></div>');
+      //Find if we are IE and which version, you know why...
+      BrowserVersion = 999;
+      if (navigator.appVersion.indexOf("MSIE") != -1) { BrowserVersion = parseFloat(navigator.appVersion.split("MSIE")[1]) }; 
+      
       $('#initAWX').hide();
 
       // init-Object contains each init-step as a function

@@ -545,6 +545,7 @@
       var TVViewRec = mkf.cookieSettings.get('TVViewRec', 'infolist');
       var EpView = mkf.cookieSettings.get('EpView', 'listover');
       var usefanart = mkf.cookieSettings.get('usefanart', 'no');
+      var usextrafanart = mkf.cookieSettings.get('usextrafanart', 'no');
       var filmSort = mkf.cookieSettings.get('filmSort', 'label');
       var TVSort = mkf.cookieSettings.get('TVSort', 'label');
       var EpSort = mkf.cookieSettings.get('EpSort', 'episode');
@@ -598,6 +599,7 @@
         '<legend>' + mkf.lang.get('Expert', 'Settings label') + '</legend>' +
         '<a href="" class="formButton expertHelp" title="' + mkf.lang.get('Help', 'Settings label') + '">' + mkf.lang.get('Help', 'Settings label') + '</a>' + 
         '<input type="checkbox" id="usefanart" name="usefanart" ' + (usefanart=='yes'? 'checked="checked"' : '') + '><label for="usefanart">' + mkf.lang.get('Use fan art as background', 'Settings option') + '</label>' +
+        '<input type="checkbox" id="usextrafanart" name="usextrafanart" ' + (usextrafanart=='yes'? 'checked="checked"' : '') + '><label for="usextrafanart">' + mkf.lang.get('Use extra fan art', 'Settings option') + '</label>' +
         '<input type="checkbox" id="hoverOrClick" name="hoverOrClick" ' + (hoverOrClick=='yes'? 'checked="checked"' : '') + '><label for="hoverOrClick">' + mkf.lang.get('Click to show item menus', 'Settings option') + '</label>' +
         '<br /><input type="checkbox" id="lazyload" name="lazyload" ' + (lazyload=='yes'? 'checked="checked"' : '') + '><label for="lazyload">' + mkf.lang.get('Use LazyLoad for Thumbnails', 'Settings option') + '</label>' +
         '<input type="checkbox" id="showTags" name="showTags" ' + (showTags=='yes'? 'checked="checked"' : '') + '><label for="showTags">' + mkf.lang.get('Show codec tags', 'Settings option') + '</label>' +
@@ -965,6 +967,11 @@
         mkf.cookieSettings.add(
           'usefanart',
           document.settingsForm.usefanart.checked? 'yes' : 'no'
+        );
+        
+        mkf.cookieSettings.add(
+          'usextrafanart',
+          document.settingsForm.usextrafanart.checked? 'yes' : 'no'
         );
         
         mkf.cookieSettings.add(

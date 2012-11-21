@@ -285,7 +285,135 @@ var xbmc = {};
 
           },
         });
-      //return true;
+    },
+    
+    getExtraArt: function(options, callbackMain) {
+      var settings = {
+        path: '',
+        type: '', //extrafanart, extrathumbs and ...?
+        tvid: -1,
+        library: 'song',
+        onSuccess: null,
+        onError: null
+      };
+      $.extend(settings, options);
+      
+      var xart = [];
+      var xartFull = [];
+      var getxArt = function(xpath, callback) {
+        xbmc.getDirectory({
+          directory: xpath,
+          media: 'files',
+          async: true,
+          onSuccess: function(result) {
+            for (n=0; n<result.files.length; n++) {
+              var file = result.files[n];
+              if (file.file.split('.').pop().toLowerCase() == 'jpg') { xart.push(file.file) };
+              
+              if (n == result.files.length-1) {
+                var count = 0;
+                for(i=0; i<xart.length; i++) {
+                  var filename = xart[i];
+                  xbmc.getPrepDownload({
+                    path: filename,
+                    async: true,
+                    onSuccess: function(full) {
+                      count++;
+                      xartFull.push((location.protocol + '//' + location.host + '/' + full.details.path));
+                      if (count == xart.length) { callback(xartFull) };
+                    },
+                    onError: function(errorText) {
+                      count++;
+                      if (count == xart.length && xart.length >0) { console.log('getPrep failed'); console.log(errorText); callback() };
+                    },
+                  });
+                };
+              };
+            };
+          },
+          onError: function(errorText) {
+            callback('');
+          }
+        });
+      };
+      if (settings.path.startsWith('stack://')) {
+        settings.path = settings.path.replace(/\\/g, "/").substring(8, settings.path.indexOf(","));
+      }
+      var path = settings.path.replace(/\\/g, "/").substring(0, settings.path.lastIndexOf("/"));
+
+      if (settings.library == 'song') {
+        path = path.substring(0, path.lastIndexOf("/")) + '/' + settings.type;
+        getxArt(path, callbackMain);
+      } else if (settings.library == 'episode') {
+        xbmc.getTvShowInfo({
+          tvshowid: settings.tvid,
+          onSuccess: function(result) {
+            path = result.file + settings.type;
+            getxArt(path, callbackMain);
+          },
+          onError: function(result) {
+            console.log(result);
+          }
+        });
+        
+      } else if (settings.library == 'musicvideo') {
+        callbackMain([]);
+      } else {
+        path += '/' + settings.type;
+        getxArt(path, callbackMain);
+      };
+      
+      
+    },
+    
+    switchFanart: function() {
+      var genRnd = function() {
+        return Math.floor(Math.random() * xbmc.xart.length);
+      }
+      var rnd = genRnd();
+      
+      //More than 2 extra images so random pick.
+      if (xbmc.xart.length > 2) {
+        if ($('#firstBG').hasClass('transparent')) {
+          //Check we aren't swapping to the same image.
+          if ('url(' + xbmc.xart[rnd] + ')' != $('#secondBG').css('background-image')) {
+            xbmc.$backgroundFanart == xbmc.xart[rnd];
+            $('#firstBG').css('background-image', 'url("' + xbmc.xart[rnd] + '")');
+            //Better performance with CSS3 but not available in IE9
+            if (BrowserVersion >10) {
+              $('#firstBG').toggleClass( 'transparent');
+            } else {
+              $('#firstBG').toggleClass( 'transparent', 3000, 'easeInCubic');
+            };
+          } else {
+            xbmc.switchFanart();
+          };
+        } else {
+          if ('url(' + xbmc.xart[rnd] + ')' != $('#firstBG').css('background-image')) {
+            xbmc.$backgroundFanart2nd == xbmc.xart[rnd];
+            $('#secondBG').css('background-image', 'url("' + xbmc.xart[rnd] + '")');
+            if (BrowserVersion >10) {
+              $('#firstBG').toggleClass( 'transparent');
+            } else {
+              $('#firstBG').toggleClass( 'transparent', 3000, 'easeInCubic');
+            };
+          } else {
+            xbmc.switchFanart();
+          };
+        };
+      } else if (xbmc.xart.length == 2) {
+        $('#firstBG').css('background-image', 'url("' + xbmc.xart[1] + '")');
+        $('#secondBG').css('background-image', 'url("' + xbmc.xart[0] + '")');
+        xbmc.$backgroundFanart == xbmc.xart[1];
+        xbmc.$backgroundFanart2nd == xbmc.xart[0];
+        if (BrowserVersion >10) {
+          $('#firstBG').toggleClass( 'transparent');
+        } else {
+          $('#firstBG').toggleClass( 'transparent', 3000, 'easeInCubic');
+        };
+      } else {
+        return false;
+      };
     },
     
     detectThumbTypes: function(initContainer, callback) {
@@ -2455,7 +2583,6 @@ var xbmc = {};
               if (response.result.version >= 5 && navigator.appVersion.indexOf("MSIE") == -1) {
                 if ("WebSocket" in window) {
                   xbmc.wsListener();
-                  console.log('Trying websocket');
                 }
               } else {
                 setTimeout($.proxy(xbmc.periodicUpdater, "periodicStep"), 20);
@@ -2527,6 +2654,7 @@ var xbmc = {};
         }
         
         var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+        xbmc.useXtraFanart = mkf.cookieSettings.get('usextrafanart', 'no')=='yes'? true : false;
         var showInfoTags = mkf.cookieSettings.get('showTags', 'no')=='yes'? true : false;
         var ui = mkf.cookieSettings.get('ui');
         
@@ -2612,14 +2740,11 @@ var xbmc = {};
             xbmc.periodicUpdater.playerStatus = 'stopped';
             if ( xbmc.$backgroundFanart != '' && useFanart ) {
               xbmc.$backgroundFanart = '';
-              //if ( ui == 'default') {
-                //$('#main').css('background-image', 'url("")');
-              //} else if ( ui == 'uni' ) {
-                $('#background').css('background-image', 'url("")');
-              //} else {
-                //$('#content').css('background-image', 'url("")');
-              //}
+              xbmc.$backgroundFanart2nd = '';
+              $('#firstBG').css('background-image', 'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==)');
+              $('#secondBG').css('background-image', 'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==)');
             };
+
             $('#streamdets .vFormat').removeClass().addClass('vFormat');
             $('#streamdets .aspect').removeClass().addClass('aspect');
             $('#streamdets .channels').removeClass().addClass('channels');
@@ -2761,16 +2886,18 @@ var xbmc = {};
                 //PVR reports no file attrib. Copy title to file
                 if (currentItem.type == 'channel') { currentItem.file = currentItem.title };
                 
-                if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
+                if ( currentItem.fanart != '' && xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart && !xbmc.useXtraFanart) {
                   xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-                  //if ( ui == 'default') {
-                    //$('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                  //} else if ( ui == 'uni' ) {
-                    $('#background').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                  //} else {
-                    //$('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                  //}
+                  $('#firstBG').css('background-image', 'url(' + xbmc.$backgroundFanart + ')');
+                                      //TODO add check if same album don't re-query extra.
+                } else if (currentItem.fanart != '' && xbmc.useXtraFanart) {
+                  if (xbmc.$backgroundFanart == '') {
+                    xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
+                    $('#firstBG').css('background-image', 'url(' + xbmc.$backgroundFanart + ')');
+                  };
+                  xbmc.getExtraArt({path: currentItem.file, type: 'extrafanart', tvid: currentItem.tvshowid, library: currentItem.type}, function(xart) { xbmc.xart = xart; xbmc.switchFanart() } );
                 };
+
                 if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
                   xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
                   $.extend(currentItem, {
@@ -2822,11 +2949,11 @@ var xbmc = {};
                       vwidth: 0
                     };
                     
-                    if (typeof(currentItem.streamdetails) != 'undefined') {
+                    if (currentItem.streamdetails.video.length != 0) {
                       if (currentItem.streamdetails != null) {
 
                         if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
-                        if (currentItem.streamdetails.audio) {
+                        if (currentItem.streamdetails.audio.length != 0) {
                           streamdetails.channels = currentItem.streamdetails.audio[0].channels;
                           streamdetails.aStreams = currentItem.streamdetails.audio.length;
                         };
@@ -2856,7 +2983,7 @@ var xbmc = {};
 
         }
 
-        setTimeout($.proxy(this, "periodicStep"), 5000);
+        setTimeout($.proxy(this, "periodicStep"), 10000);
       }
     } // END xbmc.periodicUpdater
   }); // END xbmc
@@ -2866,21 +2993,21 @@ var xbmc = {};
 
       ++xbmc.periodicUpdater.loopCount;
       
-      //if ((xbmc.periodicUpdater.loopCount % 30) == 0 || xbmc.periodicUpdater.loopCount == 1) {
+      if ((xbmc.periodicUpdater.progress % 15) == 0 && xbmc.useXtraFanart && xbmc.xart.length > 0) {
+        xbmc.switchFanart();
+      }
       //Initial time grab and checking for time slip every 10%.
       if (xbmc.periodicUpdater.progressEnd != 0) {
         var proEnd10per = Math.floor((xbmc.periodicUpdater.progressEnd / 100) * 10);
       } else {
         //Lost or haven't retrieved progressEnd
-        //console.log('no proEnd');
         var proEnd10per = 30;
       }
+      
       if ((xbmc.periodicUpdater.progress % proEnd10per) == 0 || xbmc.periodicUpdater.loopCount == 1) {
         var curtime = 0;
         var curruntime = 0;
         xbmc.sendCommand(
-          //request,
-          //'{"jsonrpc":"2.0","id":2,"method":"Player.GetProperties","params":{ "playerid":' + xbmc.activePlayerid + ',"properties":["speed", "shuffled", "repeat", "subtitleenabled", "time", "totaltime", "position", "currentaudiostream"] } }',
           '{"jsonrpc":"2.0","id":"PollGetProp","method":"Player.GetProperties","params":{ "playerid":' + xbmc.activePlayerid + ',"properties":["time", "totaltime"] } }',
           function (response) {
             var currentPlayer = response.result;
@@ -2893,13 +3020,8 @@ var xbmc = {};
             xbmc.periodicUpdater.progressEnd = curruntime;
             xbmc.periodicUpdater.fireProgressChanged({"time": curtime, total: curruntime});
 
-            //subs enabled
-            /*subs = currentPlayer.subtitleenabled;
-            if (xbmc.periodicUpdater.subsenabled != subs) {
-              xbmc.periodicUpdater.subsenabled = subs;
-            }*/
+
           }
-          //null, null, true // IS async // not async
         );
       } else {
       //Internal counting
@@ -2972,6 +3094,9 @@ var xbmc = {};
         if (typeof xbmc.$backgroundFanart === 'undefined') {
           xbmc.$backgroundFanart = '';
         }
+        if (typeof xbmc.$backgroundFanart2nd === 'undefined') {
+          xbmc.$backgroundFanart = '';
+        }
         if (typeof xbmc.periodicUpdater.subsenabled === 'undefined') {
           xbmc.periodicUpdater.subsenabled = false;
         }
@@ -2989,18 +3114,18 @@ var xbmc = {};
             loopCount: 0
           });
         }
+        if (typeof xbmc.xart === 'undefined') {
+          xbmc.xart = [];
+        }
         
-        
+        xbmc.useXtraFanart = mkf.cookieSettings.get('usextrafanart', 'no')=='yes'? true : false;
         var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
         var showInfoTags = mkf.cookieSettings.get('showTags', 'no')=='yes'? true : false;
         var ui = mkf.cookieSettings.get('ui');
         
         var wsConn = 'ws://' + location.hostname + ':9090/jsonrpc?awxi';
-        //console.log(wsConn);
         ws = new WebSocket(wsConn);
-        //console.log(ws);
         ws.onopen = function (e) {
-          console.log('socket open');
           
           if (typeof xbmc.activePlayer === 'undefined') { xbmc.activePlayer = 'none'; }
           if (typeof xbmc.activePlayerid === 'undefined') { xbmc.activePlayerid = -1; }
@@ -3035,24 +3160,20 @@ var xbmc = {};
                           var curPlayItemNum = currentPlayer.position;
                           xbmc.playerPartyMode = currentPlayer.partymode;
                           
-                          //Get the number of the currently playing item in the playlist
-                          //if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum) {
-                            //Change highlights rather than reload playlist <-- is the required as on it's done on playlist draw in ui.views?
-                            if (xbmc.activePlayer == 'audio') {
-                              xbmc.musicPlaylist.find('a.playlistItemCur').removeClass('playlistItemCur');
-                              xbmc.musicPlaylist.find('a.apli' + curPlayItemNum).addClass('playlistItemCur');
-                              xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-                              //awxUI.onMusicPlaylistShow();
-                            } else if (xbmc.activePlayer == 'video') {
-                              /*$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
-                              $("#vpli"+curPlayItemNum).attr("class","playlistItemCur");*/
-                              xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
-                              xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum).addClass('playlistItemCur');
-                              xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
-                              //awxUI.onVideoPlaylistShow();
-                            }
-                              
-                          //}
+                          //Change highlights rather than reload playlist <-- is the required as on it's done on playlist draw in ui.views?
+                          if (xbmc.activePlayer == 'audio') {
+                            xbmc.musicPlaylist.find('a.playlistItemCur').removeClass('playlistItemCur');
+                            xbmc.musicPlaylist.find('a.apli' + curPlayItemNum).addClass('playlistItemCur');
+                            xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+                            //awxUI.onMusicPlaylistShow();
+                          } else if (xbmc.activePlayer == 'video') {
+                            /*$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
+                            $("#vpli"+curPlayItemNum).attr("class","playlistItemCur");*/
+                            xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
+                            xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum).addClass('playlistItemCur');
+                            xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
+                            //awxUI.onVideoPlaylistShow();
+                          }
                           
                           curtime = xbmc.timeToSec(currentPlayer.time);
                           curruntime = xbmc.timeToSec(currentPlayer.totaltime);
@@ -3125,7 +3246,7 @@ var xbmc = {};
                         request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "OPGetItem"}';
 
                       } else if (xbmc.activePlayer == 'video') {
-                        request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OPGetItem"}';
+                        request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OPGetItem"}';
                       }
                     
                       // Current file changed?
@@ -3137,24 +3258,21 @@ var xbmc = {};
                           
                           //PVR reports no file attrib. Copy title to file
                           if (currentItem.type == 'channel') { currentItem.file = currentItem.title };
-                          if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
+                          
+                          xbmc.getExtraArt({path: currentItem.file, type: 'extrafanart', library: currentItem.type, tvid: currentItem.tvshowid}, function(xart) { xbmc.xart = xart } );
+                          
+                          if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart && currentItem.fanart != '' ) {
                             xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-                            //if ( ui == 'default') {
-                              //$('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                            //} else if ( ui == 'uni' ) {
-                              $('#background').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                            //} else {
-                              //$('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                            //}
+                            $('#firstBG').css('background-image', 'url(' + xbmc.$backgroundFanart + ')');
                           };
+                          
                           if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
                             xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
                             $.extend(currentItem, {
                               xbmcMediaType: xbmc.activePlayer
                             });
                             xbmc.periodicUpdater.fireCurrentlyPlayingChanged(currentItem);
-                          //};
-                          //if (xbmc.periodicUpdater.nextPlayingFile == currentItem.file) {
+
                             xbmc.getNextPlaylistItem({
                               'playlistid': xbmc.activePlayerid,
                               onSuccess: function(nextItem) {
@@ -3191,10 +3309,10 @@ var xbmc = {};
                               };
                               
                               if (typeof(currentItem.streamdetails) != 'undefined') {
-                                if (currentItem.streamdetails != null) {
+                                if (currentItem.streamdetails.video.length != 0) {
 
                                   if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
-                                  if (currentItem.streamdetails.audio) {
+                                  if (currentItem.streamdetails.audio.length != 0) {
                                     streamdetails.channels = currentItem.streamdetails.audio[0].channels;
                                     streamdetails.aStreams = currentItem.streamdetails.audio.length;
                                     //$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
@@ -3265,9 +3383,8 @@ var xbmc = {};
           console.log(err);
         };
         ws.onmessage = function (e) {
-          //console.log(e.data);
           var JSONRPCnotification = jQuery.parseJSON(e.data);
-          console.log(JSONRPCnotification);
+          //console.log(JSONRPCnotification);
           switch (JSONRPCnotification.method) {
           case 'Player.OnPlay':
             xbmc.activePlayerid = JSONRPCnotification.params.data.player.playerid;
@@ -3298,10 +3415,10 @@ var xbmc = {};
               //var curruntime = 0;
 
               if (xbmc.activePlayer == 'audio') {
-                request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "OnPlayGetItem"}';
+                request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["art", "title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "OnPlayGetItem"}';
 
               } else if (xbmc.activePlayer == 'video') {
-                request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OnPlayGetItem"}';
+                request = '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["art", "title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "OnPlayGetItem"}';
               }
             
               // Current file changed?
@@ -3313,16 +3430,21 @@ var xbmc = {};
                   
                   //PVR reports no file attrib. Copy title to file
                   if (currentItem.type == 'channel') { currentItem.file = currentItem.title };
-                  if ( xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart ) {
+                  
+                  if (xbmc.xart < 1) { xbmc.getExtraArt({path: currentItem.file, type: 'extrafanart', library: currentItem.type, tvid: currentItem.tvshowid}, function(xart) { xbmc.xart = xart; } ) };
+                  
+                  if ( currentItem.fanart != '' && xbmc.$backgroundFanart != xbmc.getThumbUrl(currentItem.fanart) && useFanart && !xbmc.useXtraFanart) {
                     xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
-                    //if ( ui == 'default') {
-                      //$('#main').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                    //} else if ( ui == 'uni' ) {
-                      $('#background').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                    //} else {
-                      //$('#content').css('background-image', 'url("' + xbmc.$backgroundFanart + '")');
-                    //}
+                    $('#firstBG').css('background-image', 'url(' + xbmc.$backgroundFanart + ')');
+                                        //TODO add check if same album don't re-query extra.
+                  } else if (currentItem.fanart != '' && xbmc.useXtraFanart) {
+                    if (xbmc.$backgroundFanart == '') {
+                      xbmc.$backgroundFanart = xbmc.getThumbUrl(currentItem.fanart);
+                      $('#firstBG').css('background-image', 'url(' + xbmc.$backgroundFanart + ')');
+                    };
+                    xbmc.getExtraArt({path: currentItem.file, type: 'extrafanart', tvid: currentItem.tvshowid, library: currentItem.type}, function(xart) { xbmc.xart = xart; } );
                   };
+                  
                   if (xbmc.periodicUpdater.currentlyPlayingFile != currentItem.file) {
                     xbmc.periodicUpdater.currentlyPlayingFile = currentItem.file;
                     $.extend(currentItem, {
@@ -3364,11 +3486,11 @@ var xbmc = {};
                         vwidth: 0
                       };
                       
-                      if (typeof(currentItem.streamdetails) != 'undefined') {
+                      if (currentItem.streamdetails.video.length != 0) {
                         if (currentItem.streamdetails != null) {
 
                           if (currentItem.streamdetails.subtitle) { streamdetails.hasSubs = true };
-                          if (currentItem.streamdetails.audio) {
+                          if (currentItem.streamdetails.audio.length != 0) {
                             streamdetails.channels = currentItem.streamdetails.audio[0].channels;
                             streamdetails.aStreams = currentItem.streamdetails.audio.length;
                             //$.each(currentItem.streamdetails.audio, function(i, audio) { streamdetails.aLang += audio.language + ' ' } );
@@ -3459,13 +3581,12 @@ var xbmc = {};
             
             if ( xbmc.$backgroundFanart != '' && useFanart ) {
               xbmc.$backgroundFanart = '';
-              //if ( ui == 'default') {
-                //$('#main').css('background-image', 'url("")');
-              //} else if ( ui == 'uni' ) {
-                $('#background').css('background-image', 'url("")');
-              //} else {
-                //$('#content').css('background-image', 'url("")');
-              //}
+              xbmc.$backgroundFanart2nd = '';
+
+              $('#firstBG').css('background-image', 'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==)');
+              $('#secondBG').css('background-image', 'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==)');
+              $('#firstBG').removeClass('transparent');
+
             };
             $('#streamdets .vFormat').removeClass().addClass('vFormat');
             $('#streamdets .aspect').removeClass().addClass('aspect');

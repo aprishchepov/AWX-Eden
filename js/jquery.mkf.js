@@ -946,7 +946,7 @@ var mkf = {};
             media: 'files',
             directory: langPath,
             onError: function() {
-              mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+              mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
               callback(false)
             },
             onSuccess: function(langs) {
@@ -961,8 +961,8 @@ var mkf = {};
                 };
                 //Finsihed building list, parse.
                 if (i == langs.files.length-1) {
+                  var count = 0;
                   for (n=0; n < langFiles.length; n++) {
-                    var count = 0;
                     $.getJSON('lang/' + langFiles[n], function(data) {
                       //Add short lang code for cookie etc.
                       count++;
@@ -977,7 +977,7 @@ var mkf = {};
           });
         },
         function() {
-          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!'), mkf.messageLog.status.error, 5000);
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
         }
       );
 

@@ -125,7 +125,7 @@ msgctxt "Tool tip"
 msgid "Refresh"
 msgstr ""
 
-msgctxt "Popup message"
+msgctxt "Popup message with addition"
 msgid "Clear Playlist... "
 msgstr ""
 
@@ -833,6 +833,10 @@ msgstr ""
 
 msgctxt "Settings option"
 msgid "Use fan art as background"
+msgstr ""
+
+msgctxt "Settings option"
+msgid "Use extra fan art"
 msgstr ""
 
 msgctxt "Settings option"
