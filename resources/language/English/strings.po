@@ -722,15 +722,6 @@ msgctxt "Footer label"
 msgid "Total:"
 msgstr ""
 
-msgid "Track:"
-msgstr ""
-
-msgid "Album:"
-msgstr ""
-
-msgid "Duration:"
-msgstr ""
-
 msgctxt "Settings label"
 msgid "Order By:"
 msgstr ""
@@ -889,6 +880,14 @@ msgstr ""
 
 msgctxt "Label"
 msgid "Artist:"
+msgstr ""
+
+msgctxt "Label"
+msgid "Album:"
+msgstr ""
+
+msgctxt "Label"
+msgid "Track:"
 msgstr ""
 
 msgctxt "Label"
@@ -1184,6 +1183,7 @@ msgctxt "Popup message"
 msgid "Please close all statements"
 msgstr ""
 
+msgctxt "Popup message"
 msgid "No matches found!"
 msgstr ""
 

@@ -118,7 +118,6 @@ var uiviews = {};
       xbmc.getSongDetails({
         songid: e.data.idSong,
         onSuccess: function(songdetails) {
-          console.log(songdetails);
           if ( useFanart ) {
             $('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(songdetails.fanart) + '")');
           };
@@ -573,7 +572,10 @@ var uiviews = {};
             (mv.lastplayed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Last Played:', 'Label') + '</span><span class="value">' + mv.lastplayed + '</span></div>' : '') +
             (mv.playcount? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Played:', 'Label') + '</span><span class="value">' + mv.playcount + '</span></div>' : '') +
             '<div class="movieinfo filelink"><span class="label">' + mkf.lang.get('File:', 'Label') + '</span><span class="value">' + '<a href="' + fileDownload + '">' + mv.file + '</a>' + '</span></div></div>' +
-            '<br /><div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /></div>');
+            '<br /><div class="movietags">' +
+            (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+            (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '') +
+            '</div>');
 
           if (typeof(mv.streamdetails.video[0]) != 'undefined') {
             dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
@@ -666,7 +668,9 @@ var uiviews = {};
               (movieinfo.studio? '<div class="movieinfo"><span class="label">' + mkf.lang.langMsg.translate('Studio:').withContext('Label').ifPlural( movieinfo.studio.length, 'Studios:' ).fetch( movieinfo.studio.length ) + '</span><span class="value">' + movieinfo.studio + '</span></div>' : '') +
               (movieinfo.tagline? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Tag Line:', 'Label') + '</span><span class="value">' + movieinfo.tagline + '</span></div>' : '') +
               (movieinfo.trailer? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Trailer:', 'Label') + '</span><span class="value"><a href="' + movieinfo.trailer + '">' + mkf.lang.get('Link', 'Label') + '</a>' +
-              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="trailerplay">' + mkf.lang.get('Play in XBMC', 'Label') + '</a></span></div></div>' : '') +
+              '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+              (awxUI.settings.player? '<a href="#" class="trailerplay">' + mkf.lang.get('Play in XBMC', 'Label') + '</a>' : '') +
+              '</span></div></div>' : '') +
               
               (movieinfo.set[0]? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Set:', 'Label') + '</span><span class="value">' + movieinfo.set + '</span></div>' : '') +
               (movieinfo.lastplayed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Last Played:', 'Label') + '</span><span class="value">' + movieinfo.lastplayed + '</span></div>' : '') +
@@ -829,7 +833,9 @@ var uiviews = {};
             (movie.studio? '<div class="movieinfo"><span class="label">' + mkf.lang.langMsg.translate('Studio:').withContext('Label').ifPlural( movie.studio.length, 'Studios:' ).fetch( movie.studio.length ) + '</span><span class="value">' + movie.studio + '</span></div>' : '') +
             (movie.tagline? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Tag Line:', 'Label') + '</span><span class="value">' + movie.tagline + '</span></div>' : '') +
             (movie.trailer? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Trailer:', 'Label') + '</span><span class="value"><a href="' + movie.trailer + '">' + mkf.lang.get('Link', 'Label') + '</a>' +
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="trailerplay">' + mkf.lang.get('Play in XBMC', 'Label') + '</a></span></div></div>' : '') +
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+            (awxUI.settings.player? '<a href="#" class="trailerplay">' + mkf.lang.get('Play in XBMC', 'Label') + '</a>' : '') +
+            '</span></div></div>' : '') +
             
             (movie.set[0]? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Set:', 'Label') + '</span><span class="value">' + movie.set + '</span></div>' : '') +
             (movie.lastplayed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Last Played:', 'Label') + '</span><span class="value">' + movie.lastplayed + '</span></div>' : '') +
@@ -839,7 +845,10 @@ var uiviews = {};
             '<div class="movieinfo filelink"><span class="label">' + mkf.lang.get('File:', 'Label') + '</span><span class="value">' + '<a href="' + fileDownload + '">' + movie.file + '</a>' + '</span></div></div>' +
             //(cinex? '<div class="cinex"><a href="#" class="cinexplay">' + mkf.lang.get('label_cinex_play') + '</a>' : '') + '</div>' +
             '<p class="plot">' + movie.plot + '</p>' +
-            '<div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /></div>');
+            '<div class="movietags">' +
+            (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+            (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
+            '</div>');
 
           if (typeof(movie.streamdetails.video[0]) != 'undefined') {
             dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
@@ -932,7 +941,9 @@ var uiviews = {};
             (movie.studio? '<div class="movieinfo"><span class="label">' + mkf.lang.langMsg.translate('Studio:').withContext('Label').ifPlural( movie.studio.length, 'Studios:' ).fetch( movie.studio.length ) + '</span><span class="value">' + movie.studio + '</span></div>' : '') +
             (movie.tagline? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Tag Line:', 'Label') + '</span><span class="value">' + movie.tagline + '</span></div>' : '') +
             (movie.trailer? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Trailer:', 'Label') + '</span><span class="value"><a href="' + movie.trailer + '">' + mkf.lang.get('Link', 'Label') + '</a>' +
-            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="trailerplay">' + mkf.lang.get('Play in XBMC', 'Label') + '</a></span></div></div>' : '') +
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+            (awxUI.settings.player? '<a href="#" class="trailerplay">' + mkf.lang.get('Play in XBMC', 'Label') + '</a>' : '') +
+            '</span></div></div>' : '') +
             
             (movie.set[0]? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Set:', 'Label') + '</span><span class="value">' + movie.set + '</span></div>' : '') +
             (movie.lastplayed? '<div class="movieinfo"><span class="label">' + mkf.lang.get('Last Played:', 'Label') + '</span><span class="value">' + movie.lastplayed + '</span></div>' : '') +
@@ -942,7 +953,10 @@ var uiviews = {};
             '<div class="movieinfo filelink"><span class="label">' + mkf.lang.get('File:', 'Label') + '</span><span class="value">' + '<a href="' + fileDownload + '">' + movie.file + '</a>' + '</span></div></div>' +
             //(cinex? '<div class="cinex"><a href="#" class="cinexplay">' + mkf.lang.get('label_cinex_play') + '</a>' : '') + '</div>' +
             '<p class="plot">' + movie.plot + '</p>' +
-            '<div class="movietags" style="display: inline-block; width: auto"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /></div>');
+            '<div class="movietags" style="display: inline-block; width: auto">' +
+            (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+            (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
+            '</div>');
 
           if (typeof(movie.streamdetails.video[0]) != 'undefined') {
             dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
@@ -1293,7 +1307,10 @@ var uiviews = {};
             '<div class="movieinfo"><span class="label">' + mkf.lang.langMsg.translate('Audio Stream:').withContext('Label').ifPlural( streamdetails.aStreams, 'Audio Streams:' ).fetch( streamdetails.aStreams ) + '</span><span class="value">' + (streamdetails.aStreams? streamdetails.aStreams + ' - ' + streamdetails.aLang : mkf.lang.get('N/A', 'Label')) + '</span></div>' +
             '<div class="movieinfo"><span class="label">' + mkf.lang.get('File:', 'Label') + '</span><span class="value">' + '<a href="' + fileDownload + '">' + ep.file + '</a>' + '</span></div></div>' +
             '<p class="plot">' + ep.plot + '</p>' +
-            '<div class="movietags"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /></div>');
+            '<div class="movietags">' +
+            (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+            (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
+            '</div>');
 
           if (typeof(ep.streamdetails.video[0]) != 'undefined') {
             dialogContent.filter('.movietags').prepend('<div class="vFormat' + streamdetails.vFormat + '" />' +
@@ -1820,8 +1837,8 @@ var uiviews = {};
 
         $.each(artists.artists, function(i, artist)  {
           $artistList.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper"><a href="" class="button info' + artist.artistid + '" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
-                    '<a href="" class="button playlist' + artist.artistid + '" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' +
-                    '<a href="" class="button play' + artist.artistid + '" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' + 
+                    (awxUI.settings.enqueue? '<a href="" class="button playlist' + artist.artistid + '" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+                    (awxUI.settings.player? '<a href="" class="button play' + artist.artistid + '" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' : '') + 
                     (allSongs? '<a href="" class="songs' + artist.artistid + '">' + artist.label + '</a>' : '<a href="" class="artist' + artist.artistid + '">' + artist.label + '<div class="findKeywords">' + artist.label.toLowerCase() + '</div>') +
                     '</a></li>');
           $artistList.find('.artist' + artist.artistid)
@@ -1851,7 +1868,7 @@ var uiviews = {};
             '<div class="linkArtistWrapper">' + 
                 (allSongs? '<a href="" class="songs' + artist.artistid + '">' + mkf.lang.get('All Songs', 'Label') + '</a>' : '<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('All Albums', 'Label') + '</a>') +
                 '<a href="" class="info' + artist.artistid + '">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
-                '<a href="" class="enqueue' + artist.artistid + '">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' +
+                (awxUI.settings.enqueue? '<a href="" class="enqueue' + artist.artistid + '">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
             '</div>' +
             (useLazyLoad?
               '<img src="images/loading_thumb.gif" alt="' + artist.label + '" class="thumb albums" data-original="' + thumb + '" />':
@@ -1865,7 +1882,6 @@ var uiviews = {};
         $artistList.find('.albums' + artist.artistid).bind('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistAlbums);
         $artistList.find('.songs' + artist.artistid).on('click', { idArtist: artist.artistid, strArtist: artist.label, objParentPage: parentPage }, uiviews.ArtistSongs);
         $artistList.find('.enqueue' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.AddArtistToPlaylist);
-        //$artistList.find('.play' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistPlay);
         $artistList.find('.info' + artist.artistid).on('click', {idArtist: artist.artistid}, uiviews.ArtistInfoOverlay);
         });
         
@@ -1893,7 +1909,7 @@ var uiviews = {};
             '<div class="linkTVLogoWrapper">' + 
                 (allSongs? '<a href="" class="songs' + artist.artistid + '">' + mkf.lang.get('All Songs', 'Label') + '</a>' : '<a href="" class="albums' + artist.artistid + '">' + mkf.lang.get('All Albums', 'Label') + '</a>') +
                 '<a href="" class="info' + artist.artistid + '">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
-                '<a href="" class="enqueue' + artist.artistid + '">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' +
+                (awxUI.settings.enqueue? '<a href="" class="enqueue' + artist.artistid + '">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
             '</div>' +
             (useLazyLoad?
             '<img src="images/loading_thumb.gif" alt="' + artist.label + '" class="thumb thumbLogo" data-original="' + (logo? logo : 'images/missing_logo.png') + '" />':
@@ -1934,7 +1950,10 @@ var uiviews = {};
             '<div class="artist'+artist.artistid+' logoWrapper thumbFullLogoWrapper" style="float: none; display: table-cell">' +
             '<img src="' + thumb + '" alt="' + artist.label + '" class="thumbFullLogo artist" />' +
             '<div class="albumArtist">' + artist.artist + '</div>' +
-            '<div class="movietags" style="display: inline-block; width: auto; margin-top: 5px"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /><span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" /></div>' +
+            '<div class="movietags" style="display: inline-block; width: auto; margin-top: 5px">' +
+            (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+            (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
+            '<span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" /></div>' +
             '</div>' +
             //'<div class="findKeywords">' + artist.label.toLowerCase() + '</div>' +
             '<div class="next" style="float: left; margin-bottom: 50px; margin-left: 10px; display: table-cell"><a href="#" /></div>' +
@@ -2010,11 +2029,11 @@ var uiviews = {};
         if (aplaylists > 0) {
           $.each(aplaylists, function(i, playlist)  {
             $audioPlaylists.append('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
-                      '<a href="" class="button playlistinfo' + i +'" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' +
-                      '<a href="" class="button play' + i + '" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' +
+                      (awxUI.settings.enqueue? '<a href="" class="button playlistinfo' + i +'" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+                      (awxUI.settings.player? '<a href="" class="button play' + i + '" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' : '') +
                       '<a href="" class="playlist' + i + '">' + playlist.label +
                       (playlist.artist? ' - Artist: ' + playlist.artist : '') +
-                      (playlist.album && playlist.label != playlist.album? ' - Album: ' + playlist.album : '') +
+                      (playlist.album && playlist.label != playlist.album? ' - ' + mkf.lang.get('Album:', 'Label') + ' ' + playlist.album : '') +
                       ' - Type: ' + 
                       (playlist.type == 'unknown' ? 'Playlist' : playlist.type) + '<div class="findKeywords">' + playlist.label.toLowerCase() + '</div>' +
                       '</a></div></li>');
@@ -2034,8 +2053,8 @@ var uiviews = {};
         $.each(albums.albums, function(i, album)  {
           $album = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
             '<a href="" class="button info' + album.albumid + '" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
-            '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' +
-            '<a href="" class="button play" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' +
+            (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+            (awxUI.settings.player? '<a href="" class="button play" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' : '') +
             '<a href="" class="album' + album.albumid + '">' + album.label + ' - ' + album.artist[0] + '<div class="findKeywords">' + album.label.toLowerCase() + ' ' + album.artist[0].toLowerCase() + '</div>' +
             '</a></div></li>').appendTo($albumsList);
 
@@ -2059,7 +2078,10 @@ var uiviews = {};
         var thumb = (album.thumbnail? xbmc.getThumbUrl(album.thumbnail) : 'images/thumb.png');
         $album = $('<div class="album'+album.albumid+' thumbWrapper">' +
             '<div class="linkWrapper">' + 
-              '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a><a href="" class="songs">' + mkf.lang.get('Songs', 'Label') + '</a><a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a><a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
+              (awxUI.settings.player? '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a>' : '') +
+              '<a href="" class="songs">' + mkf.lang.get('Songs', 'Label') + '</a>' +
+              (awxUI.settings.enqueue? '<a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
+              '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
             '</div>' +
             (useLazyLoad?
               '<img src="images/loading_thumb.gif" alt="' + album.label + '" class="thumb" data-original="' + thumb + '" />':
@@ -2129,7 +2151,10 @@ var uiviews = {};
                   //var thumb = (songs.songs[0].thumbnail? xbmc.getThumbUrl(songs.songs[0].thumbnail) : 'images/thumb.png');
                   infodiv.removeClass('loading');
                   var albumContent = $('<div style="float: left; margin: 5px;"><img src="' + thumb + '" style="width: 154px; height: 154px;" />' +
-                  '<div style="width: 154px; display: block; padding-left: 0px; padding-bottom: 50px"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /><span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" /></div>' +
+                  '<div style="width: 154px; display: block; padding-left: 0px; padding-bottom: 50px">' +
+                  (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+                  (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '') +
+                  '<span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" /></div>' +
                   '<div style="width: 154px;"><div><span class="label">' + mkf.lang.langMsg.translate('Genre:').withContext('Label').ifPlural( albuminfo.genre.length, 'Genres:' ).fetch( albuminfo.genre.length ) + '</span>' +
                   '<span class="value">' + albuminfo.genre + '</span></div><div><span class="label">' + mkf.lang.get('Rating:', 'Label') + '</span><span class="value">' + (albuminfo.rating? albuminfo.rating : mkf.lang.get('N/A', 'Label')) + '</span></div>' +
                   '<div><span class="label">' + mkf.lang.get('Years active:', 'Label') + '</span><span class="value">' + (albuminfo.year? albuminfo.year : mkf.lang.get('N/A', 'Label')) + '</span></div>' +
@@ -2143,9 +2168,11 @@ var uiviews = {};
                   var $songList = $('<ul class="fileList" style="margin: 5px 0 5px 0"></ul>');
 
                     $.each(songs.songs, function(i, song)  {
-                      var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"> <a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') +
-                      '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') +
-                      '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.track + '. ' + song.label + '</a></div></li>').appendTo($songList);
+                      var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '">' +
+                      (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+                      (awxUI.settings.playnext? '<a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') + '"><span class="miniIcon playnext" /></a>' : '')+
+                      (awxUI.settings.player? '<a href="" class="song play">' + song.track + '. ' + song.label + '</a>' : '<span class="label">' + song.track + '. ' + song.label + '</span>') +
+                      '</div></li>').appendTo($songList);
                       
                       $song.find('.playlist').bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
                       $song.find('.play').bind('click', {idSong: song.songid}, uiviews.SongPlay);
@@ -2182,9 +2209,9 @@ var uiviews = {};
 
       $.each(songs.songs, function(i, song)  {
         var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"><a href="" class="button info' + song.songid + '" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
-        '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') +
-        '"><span class="miniIcon enqueue" /></a> <a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') +
-        '"><span class="miniIcon playnext" /></a> <a href="" class="song play">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a>' +
+        (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+        (awxUI.settings.playnext? '<a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') + '">' + '<span class="miniIcon playnext" /></a>' : '') +
+        (awxUI.settings.player? '<a href="" class="song play">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a>' : '<span class="label">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</span>') +
         '<div class="findKeywords">' + song.label.toLowerCase() + '</div>' +
         '</div></li>').appendTo($songList);
         
@@ -2206,7 +2233,9 @@ var uiviews = {};
         var thumb = (mv.thumbnail? xbmc.getThumbUrl(mv.thumbnail) : 'images/thumb.png');
         $mv = $('<div class="mv'+mv.musicvideoid+' thumbWrapper">' +
             '<div class="linkWrapper">' + 
-              '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a><a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a><a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
+              (awxUI.settings.player? '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a>' : '') +
+              (awxUI.settings.enqueue? '<a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
+              '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
             '</div>' +
             (useLazyLoad?
               '<img src="images/loading_thumb.gif" alt="' + mv.label + '" class="thumb" data-original="' + thumb + '" />':
@@ -2344,8 +2373,8 @@ var uiviews = {};
             
           classEven += 1
           $movie = $('<li' + (classEven%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' + 
-            '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' +
-            '<a href="" class="button play" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' +
+            (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+            (awxUI.settings.player? '<a href="" class="button play" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' : '') +
             '<a href="" class="movieName' + movie.movieid + '">' + movie.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '<div class="findKeywords">' + movie.label.toLowerCase() + '</div>' +
             '</a></div></li>').appendTo($movieList);
 
@@ -2372,7 +2401,9 @@ var uiviews = {};
           var $movie = $(
             '<div class="movie'+movie.movieid+' logoWrapper thumbLogoWrapper">' +
               '<div class="linkTVLogoWrapper">' + 
-                '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a><a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a><a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
+                (awxUI.settings.player? '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a>' : '') +
+                (awxUI.settings.enqueue? '<a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
+                '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
               '</div>' +
               (options.useLazyLoad?
                 '<img src="images/loading_thumb.gif" alt="' + movie.label + '" class="thumb thumbLogo" data-original="' + (logo? logo : thumb) + '" />':
@@ -2410,7 +2441,9 @@ var uiviews = {};
         var $movie = $(
           '<div class="movie'+movie.movieid+' thumbWrapper thumb' + xbmc.getMovieThumbType() + 'Wrapper">' +
             '<div class="linkWrapper">' + 
-              '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a><a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a><a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
+              (awxUI.settings.player? '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a>' : '') +
+              (awxUI.settings.enqueue? '<a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
+              '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
               '<div class="movieRating' + Math.round(movie.rating) + '"></div>' +
             '</div>' +
             (options.useLazyLoad?
@@ -2454,7 +2487,11 @@ var uiviews = {};
         '<div class="movieName albumInfo" style="margin-top: 0; height: 20px; width: 100%"><span style="vertical-align: middle; margin: 0 3px;">' + movies.movies[currentItem].label + '</span>' + (movies.movies[currentItem].playcount > 0? '<img style="vertical-align: middle" src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
         //'</div>' +
         '<div class="rating smallRating' + Math.round(movies.movies[currentItem].rating) + '" style="margin-bottom: 3px;"></div><br />' +
-        '<div class="movietags" style="display: inline-block; width: auto"><span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" /><span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" /><span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" /></div>' +
+        '<div class="movietags" style="display: inline-block; width: auto">' +
+        (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+        (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
+        '<span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" />' +
+        '</div>' +
         '</div></div>' +
         '<div class="next" style="float: right; margin-bottom: ' + contentHeight/2.5 + 'px; margin-right: 10px; display: table-cell;"><a href="#" /></div>' +
         '').appendTo($moviesList);
@@ -2771,11 +2808,11 @@ var uiviews = {};
         if (episode.playcount > 0 && !filterShowWatched) { watched = true; }
         if (filterWatched && watched) { return; }
         
-        var $episode = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper episode' + episode.episodeid +
-        '"> <a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') +
-        '"><span class="miniIcon enqueue" /></a><a href="" class="button info" title="' + mkf.lang.get('Information',  'Tool tip') +
-        '"><span class="miniIcon information" /></a><a href="" class="episode play">' + //episode.episode + '. ' + 
-        episode.label + '' + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</a></div></li>').appendTo($episodeList);
+        var $episode = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper episode' + episode.episodeid + '">' +
+        (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+        '<a href="" class="button info" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
+        (awxUI.settings.player? '<a href="" class="episode play">' + episode.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</a>' : '<span class="label">' + episode.label + '' + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</a></span>') +
+        '</div></li>').appendTo($episodeList);
 
         $episode.find('.play').bind('click', {idEpisode: episode.episodeid}, uiviews.EpisodePlay);
         $episode.find('.playlist').bind('click', {idEpisode: episode.episodeid}, uiviews.AddEpisodeToPlaylist);
@@ -2809,7 +2846,9 @@ var uiviews = {};
           var $episode = $('<li><div class="showEpisode thumbEpWrapper">' + 
           '<div class="episodeThumb">' +
           '<div class="linkEpWrapper">' + 
-              '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a><a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a><a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
+              (awxUI.settings.player? '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a>' : '') +
+              (awxUI.settings.enqueue? '<a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
+              '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
             '</div>' +
           (useLazyLoad?
           '<img src="images/loading_thumb.gif" alt="' + episode.label + '" class="thumb thumbFanart" data-original="' + thumb + '" />' :
@@ -2855,7 +2894,9 @@ var uiviews = {};
           var $episode = $('<li><div class="recentTVshow thumbEpWrapper">' + 
           '<div class="episodeThumb">' +
           '<div class="linkEpWrapper">' + 
-              '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a><a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a><a href="" class="unwatchedEps">' + mkf.lang.get('Unwatched',  'Tool tip') + '</a>' +
+              (awxUI.settings.player? '<a href="" class="play">' + mkf.lang.get('Play', 'Tool tip') + '</a>' : '') +
+              (awxUI.settings.enqueue? '<a href="" class="playlist">' + mkf.lang.get('Enqueue', 'Tool tip') + '</a>' : '') +
+              '<a href="" class="unwatchedEps">' + mkf.lang.get('Unwatched',  'Tool tip') + '</a>' +
             '</div>' +
           (useLazyLoad?
           '<img src="images/loading_thumb.gif" alt="' + episode.label + '" class="thumb thumbFanart episode" data-original="' + thumb + '" />':
@@ -2917,12 +2958,17 @@ var uiviews = {};
             }
             
             $item = $('<li class="' + playlistItemClass + '" id="apli' + i + '"><div class="folderLinkWrapper playlistItem' + i + '">' + 
-              '<a class="button remove" href="" title="' + mkf.lang.get('Remove', 'Tool tip') +  '"><span class="miniIcon remove" /></a><a class="button playlistmove" href="" title="' + mkf.lang.get('Swap', 'Tool tip') +  '"><span class="miniIcon playlistmove" /></a>' +
-              '<a class="' + playlistItemCur + ' apli' + i + ' play" href="">' + (i+1) + '. ' +
-              (artist? artist + ' - ' : '') + (album? album + ' - ' : '') + (title? title : label) + '&nbsp;&nbsp;&nbsp;&nbsp;' + (duration? xbmc.formatTime(duration) : '') +
+              (awxUI.settings.playlist? '<a class="button remove" href="" title="' + mkf.lang.get('Remove', 'Tool tip') +  '"><span class="miniIcon remove" /></a>' +
+              '<a class="button playlistmove" href="" title="' + mkf.lang.get('Swap', 'Tool tip') +  '"><span class="miniIcon playlistmove" /></a>' : '') +
+              (awxUI.settings.player? '<a class="' + playlistItemCur + ' apli' + i + ' play" href="">' + (i+1) + '. ' +
+              (artist? artist + ' - ' : '') + (album? album + ' - ' : '') + (title? title : label) + '&nbsp;&nbsp;&nbsp;&nbsp;' + (duration? xbmc.formatTime(duration) : '') + '</a>' :
+              '<span class="label ' + playlistItemCur + ' apli' + i + '">' + (i+1) + '. ' +
+              (artist? artist + ' - ' : '') + (album? album + ' - ' : '') + (title? title : label) + '&nbsp;&nbsp;&nbsp;&nbsp;' + (duration? xbmc.formatTime(duration) : '') + '</span>' ) +
               (artist? '<div class="findKeywords">' + artist[0].toLowerCase() + ' ' + album.toLowerCase() + ' ' + label.toLowerCase() + '</div>' : '' ) +
-              '</a></div></li>').appendTo($itemList);
+              '</div></li>').appendTo($itemList);
 
+            //remove clear if playlist is false
+            if (!awxUI.settings.playlist) { $('ul.mkfPageContextMenu > li a.clear').parent().remove() };
             $item.find('a.play').bind('click', {itemNum: i}, uiviews.PlaylistAudioItemPlay);
             $item.find('a.remove').bind('click', {itemNum: i}, uiviews.PlaylistAudioItemRemove);
           });
@@ -2982,17 +3028,22 @@ var uiviews = {};
               playlistItemCur = 'playlistItem';
             };
             $item = $('<li class="' + playlistItemClass + '" id="vpli' + i + '"><div class="folderLinkWrapper playlistItem' + i + '">' + 
-              '<a class="button remove" href="" title="' + mkf.lang.get('Remove', 'Tool tip') +  '"><span class="miniIcon remove" /></a><a class="button playlistmove" href="" title="' + mkf.lang.get('Swap', 'Tool tip') +  '"><span class="miniIcon playlistmove" /></a>' +
-              '<a class="' + playlistItemCur  + ' vpli' + i + ' play" href="">' + (i+1) + '. ' +
-              (item.type=='episode'? showtitle + ' - Season ' + season + ' - ' + title : title) + (item.type=='musicvideo'? (item.artist != ''? ' - ' + item.artist[0] : '') : '') + '&nbsp;&nbsp;&nbsp;&nbsp;' + xbmc.formatTime(duration) +
-              '</a></div></li>').appendTo($itemList);
+              (awxUI.settings.playlist? '<a class="button remove" href="" title="' + mkf.lang.get('Remove', 'Tool tip') +  '"><span class="miniIcon remove" /></a>'+
+              '<a class="button playlistmove" href="" title="' + mkf.lang.get('Swap', 'Tool tip') +  '"><span class="miniIcon playlistmove" /></a>' : '') +
+              (awxUI.settings.player? '<a class="' + playlistItemCur  + ' vpli' + i + ' play" href="">' + (i+1) + '. ' +
+              (item.type=='episode'? showtitle + ' - Season ' + season + ' - ' + title : title) + (item.type=='musicvideo'? (item.artist != ''? ' - ' + item.artist[0] : '') : '') + '&nbsp;&nbsp;&nbsp;&nbsp;' + xbmc.formatTime(duration) + '</a>' :
+              '<span class="label ' + playlistItemCur  + ' vpli' + i + '">' + (i+1) + '. ' +
+              (item.type=='episode'? showtitle + ' - Season ' + season + ' - ' + title : title) + (item.type=='musicvideo'? (item.artist != ''? ' - ' + item.artist[0] : '') : '') + '&nbsp;&nbsp;&nbsp;&nbsp;' + xbmc.formatTime(duration) + '</span>') +
+              '</div></li>').appendTo($itemList);
 
+            //remove clear if playlist is false
+            if (!awxUI.settings.playlist) { $('ul.mkfPageContextMenu > li a.clear').parent().remove() };
             $item.find('a.play').bind('click', {itemNum: i}, uiviews.PlaylistVideoItemPlay);
             $item.find('a.remove').bind('click', {itemNum: i}, uiviews.PlaylistVideoItemRemove);
           });
 
         if (runtime > 0) {
-          $('<p>' + mkf.lang.get('Run Time:', 'Label') + xbmc.formatTime(runtime) + '</p>').appendTo($itemList);
+          $('<div class="playtime"><p>' + mkf.lang.get('Run Time:', 'Label') + xbmc.formatTime(runtime) + '</p></div>').appendTo($itemList);
         }
         
         page.find('#sortable').sortable({
@@ -3044,11 +3095,11 @@ var uiviews = {};
         if (genre.genreid == 0) { return };
         $genresList.append('<li' + (i%2==0? ' class="even"': '') + 
                   //'><div class="folderLinkWrapper"><a href="" class="button allgenre' + genre.genreid + '" title="' + mkf.lang.get('All Albums', 'Label') +
-                  '><div class="folderLinkWrapper"><a href="" class="button playlist' + genre.genreid + '" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' +
-                  '<a href="" class="button play' + genre.genreid + '" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a><a href="" class="genre' + 
-                  genre.genreid + '">' +
-                  genre.label + '<div class="findKeywords">' + genre.label.toLowerCase() + '</div>' +
-                  '</a></div></li>');
+                  '><div class="folderLinkWrapper">' +
+                  (awxUI.settings.enqueue? '<a href="" class="button playlist' + genre.genreid + '" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+                  (awxUI.settings.player? '<a href="" class="button play' + genre.genreid + '" title="' + mkf.lang.get('Play', 'Tool tip') + '"><span class="miniIcon play" /></a>' : '') +
+                  '<a href="" class="genre' + genre.genreid + '">' + genre.label + '<div class="findKeywords">' + genre.label.toLowerCase() + '</div>' + '</a>' +
+                  '</div></li>');
         //$genresList.find('.allgenre' + genre.genreid).on('click', {idGenre: genre.genreid, strGenre: genre.label, objParentPage: parentPage}, uiviews.AllGenreAlbums);
         $genresList.find('.genre' + genre.genreid).on('click',{idGenre: genre.genreid, strGenre: genre.label, objParentPage: parentPage, lib: lib}, uiviews.GenreItems);
         $genresList.find('.playlist' + genre.genreid).on('click', {idGenre: genre.genreid}, uiviews.AddGenreToPlaylist);

@@ -3162,15 +3162,15 @@ var xbmc = {};
                           
                           //Change highlights rather than reload playlist <-- is the required as on it's done on playlist draw in ui.views?
                           if (xbmc.activePlayer == 'audio') {
-                            xbmc.musicPlaylist.find('a.playlistItemCur').removeClass('playlistItemCur');
-                            xbmc.musicPlaylist.find('a.apli' + curPlayItemNum).addClass('playlistItemCur');
+                            xbmc.musicPlaylist.find('.playlistItemCur').removeClass('playlistItemCur');
+                            xbmc.musicPlaylist.find('.apli' + curPlayItemNum).addClass('playlistItemCur');
                             xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
                             //awxUI.onMusicPlaylistShow();
                           } else if (xbmc.activePlayer == 'video') {
                             /*$("#vpli"+xbmc.periodicUpdater.curPlaylistNum).attr("class","playlistItem");
                             $("#vpli"+curPlayItemNum).attr("class","playlistItemCur");*/
-                            xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
-                            xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum).addClass('playlistItemCur');
+                            xbmc.videoPlaylist.find('.playlistItemCur').removeClass("playlistItemCur");
+                            xbmc.videoPlaylist.find('.vpli' + curPlayItemNum).addClass('playlistItemCur');
                             xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
                             //awxUI.onVideoPlaylistShow();
                           }
@@ -3289,7 +3289,7 @@ var xbmc = {};
                                 }
                               },
                               onError: function() {
-                                xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get();
+                                xbmc.periodicUpdater.nextPlayingFile = mkf.lang.get('N/A', 'Label');
                               }
                             });
 
@@ -3535,12 +3535,12 @@ var xbmc = {};
                     if (xbmc.periodicUpdater.curPlaylistNum != curPlayItemNum || curPlayItemNum == 0) {
                       //Change highlights rather than reload playlist
                       if (xbmc.activePlayer == 'audio') {
-                        xbmc.musicPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
-                        xbmc.musicPlaylist.find('a.apli' + curPlayItemNum).addClass('playlistItemCur');
+                        xbmc.musicPlaylist.find('.playlistItemCur').removeClass("playlistItemCur");
+                        xbmc.musicPlaylist.find('.apli' + curPlayItemNum).addClass('playlistItemCur');
                         xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
                       } else if (xbmc.activePlayer == 'video') {
-                        xbmc.videoPlaylist.find('a.playlistItemCur').removeClass("playlistItemCur");
-                        xbmc.videoPlaylist.find('a.vpli' + curPlayItemNum).addClass('playlistItemCur');
+                        xbmc.videoPlaylist.find('.playlistItemCur').removeClass("playlistItemCur");
+                        xbmc.videoPlaylist.find('.vpli' + curPlayItemNum).addClass('playlistItemCur');
                         xbmc.periodicUpdater.curPlaylistNum = curPlayItemNum;
                       }
                     
@@ -3614,7 +3614,6 @@ var xbmc = {};
             }
           break;
           case 'Player.OnPause':
-            console.log('paused');
             xbmc.periodicUpdater.playerStatus = 'paused';
             xbmc.periodicUpdater.firePlayerStatusChanged('paused');
             clearInterval(pollTimeRunning);

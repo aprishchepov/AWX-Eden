@@ -51,11 +51,18 @@ var awx = {};
 
         // --- STEP 2: Load UI-Script
         step2 : function() {
+          //Disable cache on json requests
+          $.ajaxSetup({ cache:false });
+          
           $('#loadingAWXHint').text(mkf.lang.get('Setting up UI...', 'Initial window screen'));
 
           //var ui = mkf.cookieSettings.get('ui');
           var uiScript = '';
 
+          awxUI = {};
+          //Get user control settings.
+          $.getJSON('js/settings.json', function(data) { awxUI.settings = data } );
+          
           /*if (ui == 'light') {
             uiScript = 'ui.light/ui.light.js';
           } else if (ui == 'default') {

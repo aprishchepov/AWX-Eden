@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-var awxUI = {};
+//var awxUI = {};
 
 (function($) {
 
@@ -1459,6 +1459,7 @@ var awxUI = {};
      * Build the user interface. *
      *****************************/
     buildUI: function() {
+
       $('body').append('<div id="preload" style="display: none">' +
                 '<img src="images/loading_thumb.gif" alt="Preload 1/17" />' +
                 '<img src="images/loading_thumbBanner.gif" alt="Preload 2/17" />' +
@@ -1488,7 +1489,7 @@ var awxUI = {};
               '<div id="content">' +
               '<div id="displayoverlay">' +
               '<div id="displayoverlaytop"><div class="playingSliderWrapper"><div class="playingSlider"></div></div></div>' +
-              '<div style="position: fixed; bottom: 100px; left: 5px; z-index: 50; height: 100%;"><div id="volumeSlider"></div><img style="z-index: 5; position: absolute; bottom: 5px" src="ui.uni/images/volume.png"></div>' +
+              '<div style="position: fixed; bottom: 100px; left: 5px; z-index: 50; height: 100%;"><div id="volumeSlider"></div></div>' +
               '<div id="displayoverlaybot">' +
               '<div id="artwork"><img class="discThumb" src="images/blank_cdart.png" style="display: none; width: 194px; height: 194px; position: absolute; z-index: -1;"><img class="artThumb" src="images/thumbPoster.png"></div>' +
               '<div id="controls"></div><div class="menucon" style="height: 50px; width: 330px"></div></div>' +//<div class="playingSliderWrapper"><div class="playingSlider"></div></div></div>' +
@@ -1602,6 +1603,7 @@ var awxUI = {};
             $(this).parent().removeClass('mouseover');
           });
       });
+      
       
       
       $('.' + mkf.cookieSettings.get('startPage', 'recentTV') + ' a').click();

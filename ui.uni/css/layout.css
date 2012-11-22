@@ -347,6 +347,7 @@ span.artist {
 span.label {
   color: #A0E312;
   font-size: 1em;
+  margin-right: 3px;
 }
 span.time {
   color: #EEE;
@@ -912,9 +913,9 @@ div.findKeywords {
 }
 div.playtime {
   background-color: rgba(0,0,0,0.8);
-  width: 13%;
+  width: 17%;
   color: #fff;
-  font-size: 12px;
+  font-size: 1.3em;
   font-weight: bold;
   text-align: center;
   border-radius: 3px 3px 3px 3px;
@@ -1682,8 +1683,8 @@ p.loading {
   background: url('../../images/dialog_loading.gif') no-repeat left center; 
 }
 ul.fileList li {
-  /*height: 48px;*/
-  font-size: 15px;
+  min-height: 51px;
+  font-size: 1.3em;
   background-color: rgba(0,0,0,0.7);
   border-bottom: 1px solid #ABABAB;
   display: block;
@@ -1694,10 +1695,18 @@ ul.fileList li.even {
 ul.fileList li.current {
   background-color: #FF0000;
 }
+ul.fileList span.label {
+  color: #ddd;
+  float: left;
+  margin-left: 3px;
+  padding: 1.2% 5px;
+  text-decoration: none;
+  vertical-align: middle;
+}
 ul.fileList a {
   color: #ddd;
   display: block;
-  padding: 17px 5px;
+  padding: 1.3% 5px;
   text-decoration: none;
 }
 ul.fileList li a:hover {
@@ -1705,26 +1714,29 @@ ul.fileList li a:hover {
 }
 div.folderLinkWrapper a.button {
   float: left;
-  padding: 2px;
+  display: inline-block;
+  padding: 0px;
+  height: 48px;
+  vertical-align: middle;
 }
 div.folderLinkWrapper a.button:hover {
   background-color: transparent;
 }
-div.folderLinkWrapper a.song, div.folderLinkWrapper a.playlistItem, div.folderLinkWrapper a.episode {
+/*div.folderLinkWrapper a.song, div.folderLinkWrapper a.playlistItem, div.folderLinkWrapper a.episode {
   padding-left: 60px;
 }
 div.folderLinkWrapper a.folder, div.folderLinkWrapper a.file {
   padding-left: 60px;
-}
-div.folderLinkWrapper a.playlistItemCur {
+}*/
+div.folderLinkWrapper a.playlistItemCur, div.folderLinkWrapper span.playlistItemCur {
   color: #fff;
   font-weight: bold;
   /*padding: 10px 35px;*/
 }
 span.miniIcon {
   background: url("../images/mini_buttons.png") no-repeat scroll 0 0 transparent;
-  float: left;
-  display: block;
+  /*float: left;*/
+  display: inline-block;
   height: 48px;
   width: 48px;
 }
@@ -2709,7 +2721,7 @@ div.ui-slider-vertical a.ui-slider-handle {
   float: left;*/
   position: absolute;
   height: 53%;
-  bottom: 40px;
+  bottom: 8px;
   z-index: 251;
 }
 #currentlyPlaying {
