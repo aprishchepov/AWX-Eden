@@ -1935,6 +1935,7 @@
         },
 
         onSuccess: function(result) {
+          result.showDetails = true;
           $contentBox.defaultSonglistViewer(result, songsTitlePage);
           $contentBox.removeClass('loading');
         }
@@ -1959,6 +1960,7 @@
 
           onSuccess: function(result) {
             result.isFilter = true;
+            result.showDetails = true;
             $contentBox.defaultSonglistViewer(result, songsRecentPage);
             $contentBox.removeClass('loading');
           }
@@ -1983,6 +1985,7 @@
 
           onSuccess: function(result) {
             result.isFilter = true;
+            result.showDetails = true;
             $contentBox.defaultSonglistViewer(result, songsRecentPlayedPage);
             $contentBox.removeClass('loading');
           }

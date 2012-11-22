@@ -1360,7 +1360,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "artist", "duration", "track" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libSongs"}',
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libSongs"}',
 
         function(response) {
           settings.onSuccess(response.result);
@@ -1396,7 +1396,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetRecentlyAddedSongs", "params": { "limits": { "start": 0, "end": 50 }, "properties": [ "artist", "duration", "track" ] }, "id": "libRecentSongs"}',
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetRecentlyAddedSongs", "params": { "limits": { "start": 0, "end": 50 }, "properties": [ "artist", "album", "duration", "track" ] }, "id": "libRecentSongs"}',
 
         function(response) {
           settings.onSuccess(response.result);
@@ -1414,7 +1414,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetRecentlyPlayedSongs", "params": { "limits": { "start": 0, "end": 50 }, "sort": { "method": "lastplayed", "order": "descending" }, "properties": [ "artist", "duration", "track", "lastplayed" ] }, "id": "libRecentSongs"}',
+        '{"jsonrpc": "2.0", "method": "AudioLibrary.GetRecentlyPlayedSongs", "params": { "limits": { "start": 0, "end": 50 }, "sort": { "method": "lastplayed", "order": "descending" }, "properties": [ "artist", "album", "duration", "track", "lastplayed" ] }, "id": "libRecentSongs"}',
 
         function(response) {
           settings.onSuccess(response.result);
@@ -2375,7 +2375,7 @@ var xbmc = {};
           settings.order = mkf.cookieSettings.get('adesc', 'ascending');
         break;
         case 'songs':
-          properties = '"properties": ["artist", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating"],';
+          properties = '"properties": ["artist", "album", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating", "duration"],';
           settings.sortby = 'track';
           settings.order = 'ascending';
         break;

@@ -225,6 +225,7 @@ var uiviews = {};
 
         onSuccess: function(result) {
           result.isFilter = true;
+          result.showDetails = true;
           $ArtistSongsContent.defaultSonglistViewer(result, ArtistSongsPage);
           $ArtistSongsContent.removeClass('loading');
         }
@@ -2204,23 +2205,39 @@ var uiviews = {};
     
     /*----Song list view-----*/
     SongViewList: function(songs, parentPage) {
-      
       var $songList = $('<ul class="fileList"></ul>');
 
-      $.each(songs.songs, function(i, song)  {
-        var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"><a href="" class="button info' + song.songid + '" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
-        (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
-        (awxUI.settings.playnext? '<a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') + '">' + '<span class="miniIcon playnext" /></a>' : '') +
-        (awxUI.settings.player? '<a href="" class="song play">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a>' : '<span class="label">' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</span>') +
-        '<div class="findKeywords">' + song.label.toLowerCase() + '</div>' +
-        '</div></li>').appendTo($songList);
-        
-        $song.find('.info' + song.songid).on('click', {idSong: song.songid}, uiviews.SongInfoOverlay);
-        $song.find('.playlist' + song.songid).bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
-        $song.find('.play' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlay);
-        $song.find('.playnext' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
-      });
-
+      if (songs.showDetails) {
+        //Include album name.
+        $.each(songs.songs, function(i, song)  {
+          var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"><a href="" class="button info' + song.songid + '" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
+          (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+          (awxUI.settings.playnext? '<a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') + '">' + '<span class="miniIcon playnext" /></a>' : '') +
+          (awxUI.settings.player? '<a href="" class="song play">' + song.track + '. ' + song.label + ' - ' + song.album + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a>' : '<span class="label">' + song.track + '. ' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</span>') +
+          '<div class="findKeywords">' + song.label.toLowerCase() + '</div>' +
+          '</div></li>').appendTo($songList);
+          
+          $song.find('.info' + song.songid).on('click', {idSong: song.songid}, uiviews.SongInfoOverlay);
+          $song.find('.playlist' + song.songid).bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
+          $song.find('.play' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlay);
+          $song.find('.playnext' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
+        });
+      } else {
+        $.each(songs.songs, function(i, song)  {
+          var $song = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper song' + song.songid + '"><a href="" class="button info' + song.songid + '" title="' + mkf.lang.get('Information',  'Tool tip') + '"><span class="miniIcon information" /></a>' +
+          (awxUI.settings.enqueue? '<a href="" class="button playlist" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '"><span class="miniIcon enqueue" /></a>' : '') +
+          (awxUI.settings.playnext? '<a href="" class="button playnext" title="' + mkf.lang.get('Play Next', 'Tool tip') + '">' + '<span class="miniIcon playnext" /></a>' : '') +
+          (awxUI.settings.player? '<a href="" class="song play">' + song.track + '. ' + song.label + ' - ' + song.artist[0] + ' ' + xbmc.formatTime(song.duration) + '</a>' : '<span class="label">' + song.track + '. ' + ' - ' + song.artist[0] + song.label + ' - ' + xbmc.formatTime(song.duration) + '</span>') +
+          '<div class="findKeywords">' + song.label.toLowerCase() + '</div>' +
+          '</div></li>').appendTo($songList);
+          
+          $song.find('.info' + song.songid).on('click', {idSong: song.songid}, uiviews.SongInfoOverlay);
+          $song.find('.playlist' + song.songid).bind('click', {idSong: song.songid}, uiviews.AddSongToPlaylist);
+          $song.find('.play' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlay);
+          $song.find('.playnext' + song.songid).bind('click', {idSong: song.songid}, uiviews.SongPlayNext);
+        });
+      }
+      
       return $songList;
     },
   
@@ -3580,6 +3597,7 @@ var uiviews = {};
                       break;
                       case 'songs':
                         result.isFilter = true;
+                        result.showDetails = true;
                         $aadFilterRContent.defaultSonglistViewer(result, aadFilterRPage);
                         $aadFilterRContent.removeClass('loading');
                       break;

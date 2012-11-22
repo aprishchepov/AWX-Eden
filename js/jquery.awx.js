@@ -1600,6 +1600,9 @@
   \* ########################### */
   $.fn.defaultSonglistViewer = function(songResult, parentPage) {
 
+    //Show album name if coming from Years or Genres.
+    if (parentPage.parentPage.className == 'songsYears' || parentPage.parentPage.className == 'songGenres') { songResult.showDetails = true };
+    
     if (!songResult.limits.total > 0) { return };
     totalSongsCount = songResult.limits.total;
     //No limit for albums for artist page
