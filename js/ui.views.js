@@ -2779,9 +2779,11 @@ var uiviews = {};
       var $pvrchan = $('<ul class="fileList"></ul>');
 
         $.each(pvrchan.channels, function(i, chan)  {          
-          var $chan = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper"><a href="" class="button rec recoff" title="' + mkf.lang.get('Record', 'Tool tip') +
-          '"><span class="miniIcon recoff" /></a> <a href="" class="pvrchan' + i +
-          '">' + chan.label + '</a></div></li>').appendTo($pvrchan);
+          var $chan = $('<li' + (i%2==0? ' class="even"': '') + '><div class="folderLinkWrapper">' +
+          (awxUI.settings.livetv? '<a href="" class="button rec recoff" title="' + mkf.lang.get('Record', 'Tool tip') + '"><span class="miniIcon recoff" /></a>' +
+          '<a href="" class="pvrchan' + i + '">' + chan.label + '</a>' :
+          '<span class="label">' + chan.label + '</span>') + 
+          '</div></li>').appendTo($pvrchan);
           $chan.find('a.rec').on('click',{idChannel: chan.channelid}, uiviews.pvrRecordChannel);
           $chan.find('a.pvrchan' + i).on('click',{idChannel: chan.channelid, strChannel: chan.label, objParentPage: parentPage}, uiviews.pvrSwitchChannel);
         });

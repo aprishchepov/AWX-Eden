@@ -1,1 +1,1 @@
-﻿{ "player": true, "enqueue": true, "playnext": true, "input": true, "volume": true, "playlist": true, "system": true }
+﻿{ "player": true, "enqueue": true, "playnext": true, "input": true, "volume": true, "playlist": true, "system": true, "livetv": true }
