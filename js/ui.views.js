@@ -658,7 +658,6 @@ var uiviews = {};
             
             uiviews.MovieInfo({IdMovie: movieID, Inline: false}, function(mPage) {
               if (mPage != '') {
-                console.log(mPage.last())
                 mPage.last().append('<div class="movieinfo"><span class="resume">' + '<a class="resume" href="">' + mkf.lang.get('Resume from:', 'Label') + Math.floor(resumeMins) + ' ' + mkf.lang.get('minutes', 'Label') + '</a></span></div></div>' +
                   '<div class="movieinfo"><span class="resume">' + '<a class="beginning" href="">' + mkf.lang.get('Play from beginning', 'Label') + '</a>' + '</span></div></div></p>');
                 $(mPage).find('a.beginning').on('click', playStart);
@@ -718,7 +717,6 @@ var uiviews = {};
     
     /*-------------*/
     MovieInfo: function(film, callback) {
-      console.log(film);
       movieID = film.IdMovie;
       var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
       
@@ -1070,9 +1068,9 @@ var uiviews = {};
             $('.mkfOverlay').css('background-image', 'url("' + xbmc.getThumbUrl(tvshow.fanart) + '")');
           };
           
-          var thumb = (tvshow.thumbnail? xbmc.getThumbUrl(tvshow.thumbnail) : 'images/thumb' + xbmc.getTvShowThumbType() + '.png');
-          var valueClass = 'value' + xbmc.getTvShowThumbType();
-          var dialogContent = $('<img src="' + thumb + '" class="thumb thumb' + xbmc.getTvShowThumbType() + ' dialogThumb' + xbmc.getTvShowThumbType() + '" />' +
+          var thumb = (tvshow.art.banner? xbmc.getThumbUrl(tvshow.art.banner) : 'images/thumbBanner.png');
+          var valueClass = 'valueBanner';
+          var dialogContent = $('<img src="' + thumb + '" class="thumb thumbBanner dialogThumbBanner" />' +
             '<h1 class="underline">' + tvshow.title + '</h1>' +
             //'<div class="test"><img src="' + tvshow.file + 'logo.png' + '" /></div>' +
             '<div class="test"><span class="label">' + mkf.lang.langMsg.translate('Genre:').withContext('Label').ifPlural( tvshow.genre.length, 'Genres:' ).fetch( tvshow.genre.length ) + '</span><span class="'+valueClass+'">' + (tvshow.genre? tvshow.genre : mkf.lang.get('N/A', 'Label')) + '</span></div>' +
@@ -1545,8 +1543,8 @@ var uiviews = {};
 
       if (e.data.lib == 'Albums') {
         defaultViewer = 'defaultAlbumTitleViewer';
-        settings.sortby = mkf.cookieSettings.get('albumSort', 'label');
-        settings.order = mkf.cookieSettings.get('adesc', 'ascending');
+        settings.sortby = awxUI.settings.albumSort;
+        settings.order = awxUI.settings.adesc;
       } else if (e.data.lib == 'Songs') {
         defaultViewer = 'defaultSonglistViewer';
         settings.sortby = 'label';
@@ -2346,105 +2344,108 @@ var uiviews = {};
       
       return $moviesList;
     },
-        
+    
     /*----Movie single view----*/
     MovieViewSingle: function(movies, parentPage, options) {
+
+    var filter = '';
+    var currentNum = 0;
+    var totalMovies = movies.limits.total;
+    var contentHeight = ($('#content').height());
     
-    var currentItem = 0;
-    var contentWidth = $('#content').width();
-    var contentHeight = ($('#main').length? $('#main').height() -65: $('#content').height());
-    
-    var imgHeight = contentHeight -100;
-    //var imgWidthName = $('img.singleThumb').width();
-    contentWidth += -100;
-    contentHeight += -5;
-    
-    var $moviesList = $('<div class="singleView"></div>');
-    
-    var thumb = (movies.movies[currentItem].thumbnail? xbmc.getThumbUrl(movies.movies[currentItem].thumbnail) : 'images/thumb' + xbmc.getMovieThumbType() + '.png');
-      var $movie = $('<div class="prev" style="float: left; margin-bottom: ' + contentHeight/2.5 + 'px; margin-left: 10px; display: table-cell"><a href="#" /></div>' +
-        '<div class="single" style="display: table-cell;"><div style="width: auto; float: none; padding: 0; text-align: center; margin-top: 5px" class="movie'+movies.movies[currentItem].movieid+' movie">' +
-        //'<div>' +
-        '<img src="' + thumb + '" alt="' + movies.movies[currentItem].label + '" class="singleThumb" style="height: ' + imgHeight + 'px; min-height: 170px; min-width: 114px" />' +
-        '<div class="movieName albumInfo" style="margin-top: 0; height: 20px; width: 100%"><span style="vertical-align: middle; margin: 0 3px;">' + movies.movies[currentItem].label + '</span>' + (movies.movies[currentItem].playcount > 0? '<img style="vertical-align: middle" src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
-        //'</div>' +
-        '<div class="rating smallRating' + Math.round(movies.movies[currentItem].rating) + '" style="margin-bottom: 3px;"></div><br />' +
-        '<div class="movietags" style="display: inline-block; width: auto">' +
-        (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
-        (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
-        '<span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" />' +
-        '</div>' +
-        '</div></div>' +
-        '<div class="next" style="float: right; margin-bottom: ' + contentHeight/2.5 + 'px; margin-right: 10px; display: table-cell;"><a href="#" /></div>' +
-        '').appendTo($moviesList);
-        
-      $movie.find('.infoplay').bind('click', {idMovie: movies.movies[currentItem].movieid, strMovie: movies.movies[currentItem].label}, uiviews.MoviePlay);
-      $movie.find('.infoqueue').bind('click', {idMovie: movies.movies[currentItem].movieid}, uiviews.AddMovieToPlaylist);
-      $movie.find('.infoinfo').bind('click', {idMovie: movies.movies[currentItem].movieid}, uiviews.MovieInfoOverlay);
-      
-      $moviesList.find('.prev').on('click', function () {
-        $('div.movie' + movies.movies[currentItem].movieid).removeClass('movie' + movies.movies[currentItem].movieid);
-        $('div.rating').removeClass('smallRating' + Math.round(movies.movies[currentItem].rating));
-        $('div.movieName img').remove();
-        if (currentItem > movies.limits.start) { currentItem-- } else { currentItem = movies.limits.end -1 };
-        //Check if next movie has been watched.
-        if (options.filterWatched) {
-          while (movies.movies[currentItem].playcount > 0) {
-            if (currentItem > movies.limits.start) { currentItem-- } else { currentItem = movies.limits.end -1 };
-          }
+    var getSingleMovie = function(callback) {
+      xbmc.getMovies({
+        filter: filter,
+        start: currentNum,
+        end: currentNum +1,
+        onError: function() {
+          mkf.messageLog.show(mkf.lang.get('Failed to retrieve list!', 'Popup message'), mkf.messageLog.status.error, 5000);
+        },
+        onSuccess: function(result) {
+          callback(result.movies[0]);
         }
-        $('div.movie').addClass('movie' + movies.movies[currentItem].movieid);
-        $('img.singleThumb').attr('src', xbmc.getThumbUrl(movies.movies[currentItem].thumbnail));
-        $('img.singleThumb').attr('alt', movies.movies[currentItem].label);
-        $('div.movieName span').text(movies.movies[currentItem].label);
-        if (movies.movies[currentItem].playcount > 0) $('div.movieName').append('<img style="vertical-align: middle" src="images/OverlayWatched_Small.png" />');
-        $('div.rating').addClass('smallRating' + Math.round(movies.movies[currentItem].rating));
-        
-        $movie.find('.infoplay').unbind();
-        $movie.find('.infoqueue').unbind();
-        $movie.find('.infoinfo').unbind();
-        
-        $movie.find('.infoplay').bind('click', {idMovie: movies.movies[currentItem].movieid, strMovie: movies.movies[currentItem].label}, uiviews.MoviePlay);
-        $movie.find('.infoqueue').bind('click', {idMovie: movies.movies[currentItem].movieid}, uiviews.AddMovieToPlaylist);
-        $movie.find('.infoinfo').bind('click', {idMovie: movies.movies[currentItem].movieid}, uiviews.MovieInfoOverlay);
+      });
+    };
+    
+    //Hide watched, filter out watched titles.
+    if (awxUI.settings.watched) { var filter = '"filter": {"field": "playcount", "operator": "is", "value": "0"}' };
+    
+    var $moviesList = $('<div class="singleMoviePosterView"></div>');
+    
+    getSingleMovie(function(movie) {
+      var thumb = (movie.art.poster? xbmc.getThumbUrl(movie.art.poster) : 'images/thumbPoster.png');
+      
+      var $movie = $('<div class="singleMovie">' +
+        '<div style="display: table; margin: 3px auto;"><div class="prev" /><img src="' + thumb + '" alt="' + movie.label + '" class="imgPoster"><div class="next" /></div>' +
+        '<div class="infobox">' +
+          '<div style="margin: 0 auto; display: table; text-align: center">' +
+            '<div class="movieTitle"><span class="label">' + movie.label + '</span>' + (movie.playcount > 0 && !awxUI.settings.hideWatchedMark? '<img class="watched" style="vertical-align: middle" src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
+            '<div class="rating smallRating' + Math.round(movie.rating) + '"></div><br />' +
+            '<div class="movietags" style="display: inline-block; width: auto; margin-top: 3px;">' +
+              (awxUI.settings.enqueue? '<span class="infoqueue" title="' + mkf.lang.get('Enqueue', 'Tool tip') + '" />' : '') +
+              (awxUI.settings.player? '<span class="infoplay" title="' + mkf.lang.get('Play', 'Tool tip') + '" />' : '')  +
+              '<span class="infoinfo" title="' + mkf.lang.get('Information',  'Tool tip') + '" />' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '').appendTo($moviesList);
+
+      $movie.find('.infoplay').bind('click', {idMovie: movie.movieid, strMovie: movie.label}, uiviews.MoviePlay);
+      $movie.find('.infoqueue').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
+      $movie.find('.infoinfo').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
+      
+
+    
+      $moviesList.find('.prev').on('click', function () {
+        if (currentNum-1 < 0) { currentNum = totalMovies-1 } else { currentNum-- };
+        getSingleMovie(function(movie) {
+          $movie.find('div.rating').removeClass('smallRating*');
+          $movie.find('img.watched').remove();
+          if (movie.art.poster) { $movie.find('img.imgPoster').attr('src', xbmc.getThumbUrl(movie.art.poster)) } else { $movie.find('img.imgPoster').attr('src', 'images/thumbPoster.png') };
+          $movie.find('img.imgPoster').attr('alt', movie.label);
+          $movie.find('span.label').text(movie.label);
+          if (movie.playcount > 0 && !awxUI.settings.hideWatchedMark) $movie.find('span.label').append('<img class="watched" style="vertical-align: middle" src="images/OverlayWatched_Small.png" />');
+          $movie.find('div.rating').addClass('smallRating' + Math.round(movie.rating));
+          
+          $movie.find('.infoplay').unbind();
+          $movie.find('.infoqueue').unbind();
+          $movie.find('.infoinfo').unbind();
+          
+          $movie.find('.infoplay').bind('click', {idMovie: movie.movieid, strMovie: movie.label}, uiviews.MoviePlay);
+          $movie.find('.infoqueue').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
+          $movie.find('.infoinfo').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
+        });
       });
       
       $moviesList.find('.next').on('click', function () {
-        
-        $('div.movie' + movies.movies[currentItem].movieid).removeClass('movie' + movies.movies[currentItem].movieid);
-        $('div.rating').removeClass('smallRating' + Math.round(movies.movies[currentItem].rating));
-        $('div.movieName img').remove();
-        if (currentItem < movies.limits.end -1) { currentItem++ } else { currentItem = movies.limits.start };
-        //Check if next movie has been watched.
-        if (options.filterWatched) {
-          while (movies.movies[currentItem].playcount > 0) {
-            if (currentItem < movies.limits.end -1) { currentItem++ } else { currentItem = movies.limits.start };
-          }
-        }
-        $('div.movie').addClass('movie' + movies.movies[currentItem].movieid);
-        $('img.singleThumb').attr('src', xbmc.getThumbUrl(movies.movies[currentItem].thumbnail));
-        $('img.singleThumb').attr('alt', movies.movies[currentItem].label);
-        $('div.movieName span').text(movies.movies[currentItem].label);
-        if (movies.movies[currentItem].playcount > 0) $('div.movieName').append('<img style="vertical-align: middle" src="images/OverlayWatched_Small.png" />');
-        $('div.rating').addClass('smallRating' + Math.round(movies.movies[currentItem].rating));
-        
-        $movie.find('.infoplay').unbind();
-        $movie.find('.infoqueue').unbind();
-        $movie.find('.infoinfo').unbind();
-        
-        $movie.find('.infoplay').bind('click', {idMovie: movies.movies[currentItem].movieid, strMovie: movies.movies[currentItem].label}, uiviews.MoviePlay);
-        $movie.find('.infoqueue').bind('click', {idMovie: movies.movies[currentItem].movieid}, uiviews.AddMovieToPlaylist);
-        $movie.find('.infoinfo').bind('click', {idMovie: movies.movies[currentItem].movieid}, uiviews.MovieInfoOverlay);
-        
+        if (currentNum+1 > totalMovies-1) { currentNum = 0 } else { currentNum++ };
+        getSingleMovie(function(movie) {
+          $movie.find('div.rating').removeClass('smallRating*');
+          $movie.find('img.watched').remove();
+          if (movie.art.poster) { $movie.find('img.imgPoster').attr('src', xbmc.getThumbUrl(movie.art.poster)) } else { $movie.find('img.imgPoster').attr('src', 'images/thumbPoster.png') };
+          $movie.find('img.imgPoster').attr('alt', movie.label);
+          $movie.find('span.label').text(movie.label);
+          if (movie.playcount > 0 && !awxUI.settings.hideWatchedMark) $movie.find('span.label').append('<img style="vertical-align: middle" src="images/OverlayWatched_Small.png" />');
+          $movie.find('div.rating').addClass('smallRating' + Math.round(movie.rating));
+          
+          $movie.find('.infoplay').unbind();
+          $movie.find('.infoqueue').unbind();
+          $movie.find('.infoinfo').unbind();
+          
+          $movie.find('.infoplay').bind('click', {idMovie: movie.movieid, strMovie: movie.label}, uiviews.MoviePlay);
+          $movie.find('.infoqueue').bind('click', {idMovie: movie.movieid}, uiviews.AddMovieToPlaylist);
+          $movie.find('.infoinfo').bind('click', {idMovie: movie.movieid}, uiviews.MovieInfoOverlay);
+        });
       });
 
+      //I gave up with CSS :'(
+      $moviesList.find('img.imgPoster').css('height', contentHeight - ($moviesList.find('div.infobox').height() +10));      
+    });
+    
       $( window ).resize( xbmc.debouncer( function ( e ) {
-        contentHeight = ($('#main').length? $('#main').height() -65: $('#content').height() -5); //$('#content').height() -5;
-        
-        $('div.next, div.prev').css('margin-bottom', contentHeight/2.5);
-        $('img.singleThumb').css('height', contentHeight -95);
-        //$('div.movieName').css('width', $('img.singleThumb').width());
-        
+        contentHeight = ($('#content').height());
+        $moviesList.find('img.imgPoster').css('height', contentHeight - ($moviesList.find('div.infobox').height() +10));
       } ) );
       
       return $moviesList;
@@ -2542,8 +2543,8 @@ var uiviews = {};
       return $tvShowList;
     },
     
-    /*----TV banner view----*/
-    TVViewBanner: function(shows, parentPage, options) {
+    /*----TV poster view----*/
+    TVViewPoster: function(shows, parentPage, options) {
       
       var $tvShowList = $('<div></div>');
       
@@ -2552,16 +2553,54 @@ var uiviews = {};
           var watched = false;
           if (tvshow.playcount > 0 && !options.filterShowWatched) { watched = true; }
           if (options.filterWatched && watched) { return; }
-          var thumb = (tvshow.thumbnail? xbmc.getThumbUrl(tvshow.thumbnail) : 'images/thumb' + xbmc.getTvShowThumbType() + '.png');
-          var $tvshow = $('<div class="tvshow'+tvshow.tvshowid+' thumbWrapper thumb' + xbmc.getTvShowThumbType() + 'Wrapper">' +
+          var thumb = (tvshow.art.poster? xbmc.getThumbUrl(tvshow.art.poster) : 'images/thumbPoster.png');
+          var $tvshow = $('<div class="tvshow'+tvshow.tvshowid+' thumbWrapper thumbPosterWrapper">' +
+              '<div class="linkWrapper">' + 
+                '<a href="" class="season">' + mkf.lang.get('Seasons', 'Label') + '</a>' +
+                '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
+                '<a href="" class="unwatched">' + mkf.lang.get('Unwatched',  'Tool tip') + '</a>' +
+              '</div>' +
+              (options.useLazyLoad?
+                '<img src="images/loading_thumbPoster.gif" alt="' + tvshow.label + '" class="thumb thumbPoster" data-original="' + thumb + '" />':
+                '<img src="' + thumb + '" alt="' + tvshow.label + '" class="thumb thumbPoster" />'
+              ) +
+              '<div class="tvshowName">' + tvshow.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
+              '<div class="findKeywords">' + tvshow.label.toLowerCase() + '</div>' +
+            '</div>')
+            .appendTo($tvShowList);
+          $tvshow.find('.season').bind('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.SeasonsList);
+          $tvshow.find('.info').bind('click', {'tvshow': tvshow}, uiviews.TVShowInfoOverlay);
+          $tvshow.find('.unwatched').bind('click', {idTvShow: tvshow.tvshowid, strTvShow: tvshow.label, objParentPage: parentPage}, uiviews.Unwatched);
+          
+          
+        });
+      }
+      $tvShowList.find('.thumbWrapper').on(options.hoverOrClick, function() { $(this).children('.linkWrapper').show() });          
+      $tvShowList.find('.thumbWrapper').on('mouseleave', function() { $(this).children('.linkWrapper').hide() });
+
+      return $tvShowList;
+    },
+    
+    /*----TV banner view----*/
+    TVViewBanner: function(shows, parentPage, options) {
+      
+      var $tvShowList = $('<div></div>');
+
+      if (shows.limits.total > 0) {
+        $.each(shows.tvshows, function(i, tvshow) {
+          var watched = false;
+          if (tvshow.playcount > 0 && !options.filterShowWatched) { watched = true; }
+          if (options.filterWatched && watched) { return; }
+          var thumb = (tvshow.art.banner? xbmc.getThumbUrl(tvshow.art.banner) : 'images/thumbBanner.png');
+          var $tvshow = $('<div class="tvshow'+tvshow.tvshowid+' thumbWrapper thumbBannerWrapper">' +
               '<div class="linkTVWrapper">' + 
                 '<a href="" class="season">' + mkf.lang.get('Seasons', 'Label') + '</a>' +
                 '<a href="" class="info">' + mkf.lang.get('Information',  'Tool tip') + '</a>' +
                 '<a href="" class="unwatched">' + mkf.lang.get('Unwatched',  'Tool tip') + '</a>' +
               '</div>' +
               (options.useLazyLoad?
-                '<img src="images/loading_thumb' + xbmc.getTvShowThumbType() + '.gif" alt="' + tvshow.label + '" class="thumb thumb' + xbmc.getTvShowThumbType() + '" data-original="' + thumb + '" />':
-                '<img src="' + thumb + '" alt="' + tvshow.label + '" class="thumb thumb' + xbmc.getTvShowThumbType() + '" />'
+                '<img src="images/loading_thumbBanner.gif" alt="' + tvshow.label + '" class="thumb thumbBanner" data-original="' + thumb + '" />':
+                '<img src="' + thumb + '" alt="' + tvshow.label + '" class="thumb thumbBanner" />'
               ) +
               '<div class="tvshowName">' + tvshow.label + (watched? '<img src="images/OverlayWatched_Small.png" />' : '') + '</div>' +
               '<div class="findKeywords">' + tvshow.label.toLowerCase() + '</div>' +

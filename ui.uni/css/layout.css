@@ -1554,21 +1554,36 @@ ul.fileList {
   margin: 0;
   padding: 0;
 }
-div.singleView {
-  vertical-align: middle;
+div.singleMovie {
   display: table;
   margin-left:auto;
   margin-right:auto;
 }
-div.singleView div.prev {
+div.singleMovie div.movieTitle {
+  background-color: rgba(0,0,0,0.8);
+  padding: 3px;
+  border-radius: 3px 3px 3px 3px;
+}
+div.singleMovie div.movieTitle span.label {
+  color: #fff;
+  font-size: 1.2em;
+}
+div.singleMovie div.prev {
+  display: inline-block;
+  vertical-align: middle;
   width: 48px;
   height: 48px;
   background-image: url("../images/scroll-left.png");
 }
-div.singleView div.next {
+div.singleMovie div.next {
+  display: inline-block;
+  vertical-align: middle;
   width: 48px;
   height: 48px;
   background-image: url("../images/scroll-right.png");
+}
+div.singleMovie .imgPoster {
+  vertical-align: middle;
 }
 #multiOpenAccordion {
   background-attachment: fixed;

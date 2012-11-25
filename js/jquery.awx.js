@@ -531,19 +531,19 @@
 
     var $settingsButton = $('<a href="" class="settings"></a>');
     $settingsButton.click(function() {
-      var order = mkf.cookieSettings.get('albumOrder', 'artist');
       var lazyload = mkf.cookieSettings.get('lazyload', 'no');
       var timeout = mkf.cookieSettings.get('timeout', 20);
       var limitVideo = mkf.cookieSettings.get('limitVideo', 25);
       var limitTV = mkf.cookieSettings.get('limitTV', 25);
       var limitArtists = mkf.cookieSettings.get('limitArtists', 25);
       var limitAlbums = mkf.cookieSettings.get('limitAlbums', 25);
+      var limitSongs = mkf.cookieSettings.get('limitSongs', 25);
       var ui = mkf.cookieSettings.get('ui', 'uni');
       var oldui = mkf.cookieSettings.get('ui');
       var lang = mkf.cookieSettings.get('lang', 'en');
       var watched = mkf.cookieSettings.get('watched', 'no');
       var hidewatchedmark = mkf.cookieSettings.get('hidewatchedmark', 'no');
-      var cinex = mkf.cookieSettings.get('cinex', 'no');
+      //var cinex = mkf.cookieSettings.get('cinex', 'no');
       var hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no');
       //var listview = mkf.cookieSettings.get('listview', 'no');
       var artistsView = mkf.cookieSettings.get('artistsView', 'list');
@@ -655,9 +655,11 @@
         
         '<fieldset>' +
         '<legend>' + mkf.lang.get('TV Shows', 'Settings label') + '</legend>' +
-        '<select name="TVView"><option value="banner" ' + (TVView=='banner'? 'selected' : '') + '>' + mkf.lang.get('Banners', 'Settings option') +
-        '</option><option value="listover" ' + (TVView=='listover'? 'selected' : '') + '>' + mkf.lang.get('List (Details overlay)', 'Settings option') +
-        '</option><option value="logo" ' + (TVView=='logo'? 'selected' : '') + '>' + mkf.lang.get('Logos', 'Settings option') + '</option>' +
+        '<select name="TVView">' +
+        '<option value="banner" ' + (TVView=='banner'? 'selected' : '') + '>' + mkf.lang.get('Banners', 'Settings option') + '</option>' +
+        '<option value="poster" ' + (TVView=='poster'? 'selected' : '') + '>' + mkf.lang.get('Posters', 'Settings option') + '</option>' +
+        '<option value="listover" ' + (TVView=='listover'? 'selected' : '') + '>' + mkf.lang.get('List (Details overlay)', 'Settings option') + '</option>' +
+        '<option value="logo" ' + (TVView=='logo'? 'selected' : '') + '>' + mkf.lang.get('Logos', 'Settings option') + '</option>' +
         '</select>' +
         '</fieldset>' +
         
@@ -721,6 +723,7 @@
         '<legend>' + mkf.lang.get('View Options', 'Settings label') + '</legend>' +
         '<label for="limitArtists">' + mkf.lang.get('Number of items to list:', 'Settings label') + ' </label><input type="text" id="limitArtists" name="limitMusic" value="' + limitArtists + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('for artist based views.', 'Settings label') +
         '<br /><label for="limitAlbums">' + mkf.lang.get('Number of items to list:', 'Settings label') + ' </label><input type="text" id="limitAlbums" name="limitAlbums" value="' + limitAlbums + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('for album based views.', 'Settings label') +
+        '<br /><label for="limitSongs">' + mkf.lang.get('Number of items to list:', 'Settings label') + ' </label><input type="text" id="limitSongs" name="limitSong" value="' + limitSongs + '" maxlength="3" style="width: 30px; margin-top: 10px;"> ' + mkf.lang.get('for song based views.', 'Settings label') +
         '</fieldset>' +
         //'<div class="formHint">' + mkf.lang.get('label_settings_warning') + '</div>' +
         '</form>' +
@@ -734,7 +737,7 @@
         '' + mkf.lang.get('Order By:', 'Settings label') +'<select name="albumSort"><option value="album" ' + (albumSort=='album'? 'selected' : '') + '>' + mkf.lang.get('Titles', 'Settings option') +
         '</option><option value="artist" ' + (albumSort=='artist'? 'selected' : '') + '>' + mkf.lang.get('Artists', 'Settings option') +
         '</option><option value="year" ' + (albumSort=='year'? 'selected' : '') + '>' + mkf.lang.get('Years', 'Settings option') +'</option><option value="genre"' + (albumSort=='genre'? 'selected' : '') + '>' + mkf.lang.get('Genres', 'Settings option') +'</option>' +
-        '<option value="none" ' + (albumSort=='none'? 'selected' : '') + '>' + mkf.lang.get('None', 'Settings option') +
+        '<option value="dateadded" ' + (albumSort=='dateadded'? 'selected' : '') + '>' + mkf.lang.get('Date Added', 'Settings option') +
         '</select>' +
         '<input type="checkbox" id="adesc" name="adesc" ' + (adesc=='descending'? 'checked="checked"' : '') + '><label for="adesc">' + mkf.lang.get('Descending', 'Settings option') + '</label>' +
         '</fieldset>' +
@@ -743,7 +746,7 @@
         '' + mkf.lang.get('Order By:', 'Settings label') +'<select name="filmSort"><option value="label" ' + (filmSort=='label'? 'selected' : '') + '>' + mkf.lang.get('Titles', 'Settings option') +
         '</option><option value="sorttitle" ' + (filmSort=='sorttitle'? 'selected' : '') + '>' + mkf.lang.get('Sort Titles', 'Settings option') +
         '</option><option value="year" ' + (filmSort=='year'? 'selected' : '') + '>' + mkf.lang.get('Years', 'Settings option') +'</option><option value="genre"' + (filmSort=='genre'? 'selected' : '') + '>' + mkf.lang.get('Genres', 'Settings option') +'</option>' +
-        '<option value="none" ' + (filmSort=='none'? 'selected' : '') + '>' + mkf.lang.get('None', 'Settings option') +'</option><option value="videorating" ' + (filmSort=='videorating'? 'selected' : '') + '>' + mkf.lang.get('Ratings', 'Settings option') +
+        '<option value="dateadded" ' + (filmSort=='dateadded'? 'selected' : '') + '>' + mkf.lang.get('Date Added', 'Settings option') +'</option><option value="videorating" ' + (filmSort=='videorating'? 'selected' : '') + '>' + mkf.lang.get('Ratings', 'Settings option') +
         '</option><option value="studio" ' + (filmSort=='studio'? 'selected' : '') + '>' + mkf.lang.get('Studios', 'Settings option') +'</option></select>' +
         '<input type="checkbox" id="mdesc" name="mdesc" ' + (mdesc=='descending'? 'checked="checked"' : '') + '><label for="mdesc">' + mkf.lang.get('Descending', 'Settings option') + '</label>' +
         '</fieldset>' +
@@ -762,7 +765,7 @@
         '<legend>' + mkf.lang.get('Episodes', 'Settings label') + '</legend>' +
         '' + mkf.lang.get('Order By:', 'Settings label') +'<select name="EpSort"><option value="label" ' + (EpSort=='label'? 'selected' : '') + '>' + mkf.lang.get('Titles', 'Settings option') +
         '</option>' +
-        '<option value="none" ' + (EpSort=='none'? 'selected' : '') + '>' + mkf.lang.get('None', 'Settings option') + '</option>'  +
+        '<option value="dateadded" ' + (EpSort=='dateadded'? 'selected' : '') + '>' + mkf.lang.get('Date Added', 'Settings option') + '</option>'  +
         '<option value="videorating" ' + (EpSort=='videorating'? 'selected' : '') + '>' + mkf.lang.get('Ratings', 'Settings option') +
         '</option><option value="episode" ' + (EpSort=='episode'? 'selected' : '') + '>' + mkf.lang.get('Episodes', 'Settings option') +'</option></select>' +
         '<input type="checkbox" id="epdesc" name="epdesc" ' + (epdesc=='descending'? 'checked="checked"' : '') + '><label for="mdesc">' + mkf.lang.get('Descending', 'Settings option') + '</label>' +
@@ -826,25 +829,26 @@
         var limitVideo = parseInt(document.settingsViewsVideo.limitVideo.value);
         if (isNaN(limitVideo) || limitVideo < 1 ) {
           limitVideo = 25;
-          //return false;
         }
-        
+
         var limitTV = parseInt(document.settingsViewsVideo.limitTV.value);
         if (isNaN(limitTV) || limitTV < 1 ) {
           limitTV = 25;
-          //return false;
         }
         
         var limitArtists = parseInt(document.settingsViewsMusic.limitArtists.value);
         if (isNaN(limitArtists) || limitArtists < 1 ) {
           limitArtists = 25;
-          //return false;
         }
         
         var limitAlbums = parseInt(document.settingsViewsMusic.limitAlbums.value);
         if (isNaN(limitAlbums) || limitAlbums < 1 ) {
           limitAlbums = 25;
-          //return false;
+        }
+        
+        var limitSongs = parseInt(document.settingsViewsMusic.limitSongs.value);
+        if (isNaN(limitSongs) || limitSongs < 1 ) {
+          limitSongs = 25;
         }
         
         if (document.settingsForm.lang.selectedIndex < 0) {
@@ -874,127 +878,152 @@
         mkf.cookieSettings.add(
           'albumSort',
           document.settingsSorting.albumSort.value
-        );  
+        );
+        awxUI.settings.albumSort = document.settingsSorting.albumSort.value;
         
         mkf.cookieSettings.add(
           'adesc',
           document.settingsSorting.adesc.checked? 'descending' : 'ascending'
         );
+        awxUI.settings.adesc = document.settingsSorting.adesc.checked? 'descending' : 'ascending';
         
         mkf.cookieSettings.add(
           'artistsView',
           document.settingsViewsMusic.artistsView.value
         );
+        awxUI.settings.artistsView = document.settingsViewsMusic.artistsView.value;
         
         mkf.cookieSettings.add(
           'artistsPath',
           document.settingsViewsMusic.artists_path.value
         );
+        awxUI.settings.artistsPath = document.settingsViewsMusic.artists_path.value;
         
         mkf.cookieSettings.add(
           'albumsView',
           document.settingsViewsMusic.albumsView.value
         );
+        awxUI.settings.albumsView = document.settingsViewsMusic.albumsView.value;
         
         mkf.cookieSettings.add(
           'albumsViewRec',
           document.settingsViewsMusic.albumsViewRec.value
         );
+        awxUI.settings.albumsViewRec = document.settingsViewsMusic.albumsViewRec.value;
         
         mkf.cookieSettings.add(
           'tvdesc',
           document.settingsSorting.tvdesc.checked? 'descending' : 'ascending'
         );
+        awxUI.settings.tvdesc = document.settingsSorting.tvdesc.checked? 'descending' : 'ascending';
         
         mkf.cookieSettings.add(
           'TVSort',
           document.settingsSorting.TVSort.value
         );
+        awxUI.settings.tvSort = document.settingsSorting.TVSort.value;
         
         mkf.cookieSettings.add(
           'EpSort',
           document.settingsSorting.EpSort.value
         );
+        awxUI.settings.epSort = document.settingsSorting.EpSort.value;
         
         mkf.cookieSettings.add(
           'epdesc',
           document.settingsSorting.epdesc.checked? 'descending' : 'ascending'
         );
+        awxUI.settings.epdesc = document.settingsSorting.epdesc.checked? 'descending' : 'ascending';
         
         mkf.cookieSettings.add(
           'filmSort',
           document.settingsSorting.filmSort.value
         );
+        awxUI.settings.filmSort = document.settingsSorting.filmSort.value
         
         mkf.cookieSettings.add(
           'mdesc',
           document.settingsSorting.mdesc.checked? 'descending' : 'ascending'
         );
+        awxUI.settings.mdesc = document.settingsSorting.mdesc.checked? 'descending' : 'ascending';
         
         mkf.cookieSettings.add(
           'filmView',
           document.settingsViewsVideo.filmView.value
         );
+        awxUI.settings.filmView = document.settingsViewsVideo.filmView.value;
         
         mkf.cookieSettings.add(
           'filmViewRec',
           document.settingsViewsVideo.filmViewRec.value
         );
+        awxUI.settings.filmViewRec = document.settingsViewsVideo.filmViewRec.value;
         
         mkf.cookieSettings.add(
           'filmViewSets',
           document.settingsViewsVideo.filmViewSets.value
         );
+        awxUI.settings.filmViewSets = document.settingsViewsVideo.filmViewSets.value;
         
         mkf.cookieSettings.add(
           'TVView',
           document.settingsViewsVideo.TVView.value
         );
+        awxUI.settings.TVView = document.settingsViewsVideo.TVView.value;
         
         mkf.cookieSettings.add(
           'TVViewRec',
           document.settingsViewsVideo.TVViewRec.value
         );
+        awxUI.settings.TVViewRec = document.settingsViewsVideo.TVViewRec.value;
         
         mkf.cookieSettings.add(
           'EpView',
           document.settingsViewsVideo.EpView.value
         );
+        awxUI.settings.EpView = document.settingsViewsVideo.EpView.value;
         
         mkf.cookieSettings.add(
           'lazyload',
           document.settingsForm.lazyload.checked? 'yes' : 'no'
         );
+        awxUI.settings.lazyload = document.settingsForm.lazyload.checked? true : false;
         
         mkf.cookieSettings.add(
           'showTags',
           document.settingsForm.showTags.checked? 'yes' : 'no'
         );
+        awxUI.settings.showTags = document.settingsForm.showTags.checked? true : false;
         
         mkf.cookieSettings.add(
           'rotateCDart',
           document.settingsForm.rotateCDart.checked? 'yes' : 'no'
         );
+        awxUI.settings.rotateCDart = document.settingsForm.rotateCDart.checked? true : false;
         
         mkf.cookieSettings.add(
           'usefanart',
           document.settingsForm.usefanart.checked? 'yes' : 'no'
         );
+        awxUI.settings.useFanart = document.settingsForm.usefanart.checked? true : false;
         
         mkf.cookieSettings.add(
           'usextrafanart',
           document.settingsForm.usextrafanart.checked? 'yes' : 'no'
         );
+        awxUI.settings.useXtraFanart = document.settingsForm.usextrafanart.checked? true : false;
         
         mkf.cookieSettings.add(
           'watched',
           document.settingsViewsVideo.watched.checked? 'yes' : 'no'
         );
+        awxUI.settings.watched = document.settingsViewsVideo.watched.checked? true : false;
         
         mkf.cookieSettings.add(
           'hidewatchedmark',
           document.settingsViewsVideo.hidewatchedmark.checked? 'yes' : 'no'
         );
+        awxUI.settings.hideWatchedMark = document.settingsViewsVideo.hidewatchedmark.checked? true : false;
         
         /*mkf.cookieSettings.add(
           'cinex',
@@ -1005,6 +1034,7 @@
           'hoverOrClick',
           document.settingsForm.hoverOrClick.checked? 'yes' : 'no'
         );
+        awxUI.settings.hoverOrClick = document.settingsForm.hoverOrClick.checked? 'click' : 'mouseenter';
         
         mkf.cookieSettings.add(
           'lang',
@@ -1014,8 +1044,15 @@
         mkf.cookieSettings.add('timeout', timeout);
         mkf.cookieSettings.add('limitArtists', limitArtists);
         mkf.cookieSettings.add('limitAlbums', limitAlbums);
+        mkf.cookieSettings.add('limitSongs', limitSongs);
         mkf.cookieSettings.add('limitVideo', limitVideo);
         mkf.cookieSettings.add('limitTV', limitTV);
+        awxUI.settings.timeout = timeout;
+        awxUI.settings.limitMovies = limitVideo;
+        awxUI.settings.limitTV = limitTV;
+        awxUI.settings.limitArtists = limitArtists;
+        awxUI.settings.limitAlbums = limitAlbums;
+        awxUI.settings.limitSongs = limitSongs;
 
         /*if (oldui != ui) alert(mkf.lang.get('settings_need_to_reload_awx'));*/
         mkf.dialog.close(dialogHandle);
@@ -1104,15 +1141,15 @@
     if (!artistResult.isFilter) {
       totalArtistCount = artistResult.limits.total;
       if (lastArtistCountStart > artistResult.limits.total -1) {
-        lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+        lastArtistCount = awxUI.settings.limitArtists;
         lastArtistCountStart = 0;
         awxUI[onPageShow]();
         return
       };
     };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'no')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('artistsView', 'list');
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.artistsView;
     var $artistsViewerElement = $(this);
 
     switch (view) {
@@ -1276,7 +1313,6 @@
           onAddPlaylistToPlaylistClick(e)
           //Wait because of AE bug? Change to callback?
           setTimeout(function() {
-            console.log('Play');
             xbmc.playerOpen({
               item: 'playlistid',
               itemId: 0,
@@ -1522,14 +1558,14 @@
     if (!albumResult.isFilter) {
       //Out of bound checking.
       if (lastAlbumCountStart > albumResult.limits.total -1) {
-        lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
+        lastAlbumCount = awxUI.settings.limitAlbums;
         lastAlbumCountStart = 0;
         awxUI.onAlbumsTitleShow();
         return
       };
     };
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('albumsView', 'cover');
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.albumsView;
     
     var $albumViewerElement = $(this);
     
@@ -1609,7 +1645,7 @@
     if (!songResult.isFilter) {
       //Out of bound checking.
       if (lastSongsCountStart > songResult.limits.total -1) {
-        lastSongsCount = mkf.cookieSettings.get('limitSongs', 25);
+        lastSongsCount = awxUI.settings.limitSongs;
         lastSongsCountStart = 0;
         awxUI.onSongsTitleShow();
         return
@@ -1659,8 +1695,8 @@
 
     if (!albumResult.limits.total > 0) { return };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('albumsViewRec', 'cover');
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.albumsViewRec;
     
     var $albumViewerElement = $(this);
     
@@ -1701,8 +1737,8 @@
 
     if (!mvResult.limits.total > 0) { return };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('musicVideosView', 'cover');
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.musicVideoView;
     
     var $mvViewerElement = $(this);
     
@@ -1742,9 +1778,9 @@
   
     if (!mvRecentResult.limits.total > 0) { return };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    var useLazyLoad = awxUI.settings.lazyload;
     
-    var view = mkf.cookieSettings.get('musicVideosView', 'cover');
+    var view = awxUI.settings.musicVideoView;
     
     var mvRecentViewerElement = $(this);
     
@@ -1858,7 +1894,6 @@
     //Allow refresh/non-filter (next/prev) subpages
     var onPageShow = '';
     if (parentPage.className == 'moviesTitle') { onPageShow = 'onMoviesTitleShow' }
-    //else if (parentPage.className == 'songsArtists') { onPageShow = 'onSongsArtistsShow' }
     else { onPageShow = 'onMoviesTitleShow' };
     
     totalMovieCount = movieResult.limits.total;
@@ -1866,18 +1901,18 @@
     if (!movieResult.isFilter) {
       //Out of bound checking. Reset to start, really should cycle backwards.
       if (typeof(lastMovieCountStart) === 'undefined' || lastMovieCountStart > movieResult.limits.total -1) {
-        lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
-        lastMovieCountStart = 0;    
+        lastMovieCount = awxUI.settings.limitMovies;
+        lastMovieCountStart = 0;
         awxUI[onPageShow]();
         return
       };
     };
     
-    settings.useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    settings.filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
-    settings.filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
-    settings.hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-    var view = mkf.cookieSettings.get('filmView', 'poster');
+    settings.useLazyLoad = awxUI.settings.lazyload;
+    settings.filterWatched = awxUI.settings.watched;
+    settings.filterShowWatched = awxUI.settings.hideWatchedMark;
+    settings.hoverOrClick = awxUI.settings.hoverOrClick;
+    var view = awxUI.settings.filmView;
     
     //Overwrite settings for filtered views etc. Make a setting option?
     $.extend(settings, options);
@@ -1940,11 +1975,11 @@
 
     if (!movieResult.limits.total > 0) { return };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    //var filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
+    var useLazyLoad = awxUI.settings.lazyload;
+    //var filterWatched = awxUI.settings.watched;
     //var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
-    //var filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('filmViewSets', 'poster');
+    //var filterShowWatched = awxUI.settings.hideWatchedMark;
+    var view = awxUI.settings.filmViewSets;
     var options;
     var $movieContainer = $(this);
 
@@ -1982,13 +2017,13 @@
 
     if (!movieResult.limits.total > 0) { return };
     var settings = {};
-    settings.useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
+    settings.useLazyLoad = awxUI.settings.lazyload;
     settings.filterWatched = false;
-    settings.filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
-    settings.hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-    var view = mkf.cookieSettings.get('filmViewRec', 'poster');
+    settings.filterShowWatched = awxUI.settings.hideWatchedMark;
+    settings.hoverOrClick = awxUI.settings.hoverOrClick;
+    var view = awxUI.settings.filmViewRec;
     //var listview = mkf.cookieSettings.get('listview', 'no')=='yes'? true : false;
-    //var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+    //var useFanart = awxUI.settings.useFanart;
     
     $.extend(settings, options);
     
@@ -2066,18 +2101,18 @@
     if (!tvShowResult.isFilter) {
     //Out of bound checking. Reset to start, really should cycle backwards.
       if (lastTVCountStart > tvShowResult.limits.total -1) {
-        lastTVCount = mkf.cookieSettings.get('limitTV', 25);
-        lastTVCountStart = 0;    
+        lastTVCount = awxUI.settings.limitTV;
+        lastTVCountStart = 0;
         awxUI.onTvShowsTitleShow();
         return
       };
     };
     
-    settings.useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    settings.filterWatched = mkf.cookieSettings.get('watched', 'no')=='yes'? true : false;
-    settings.filterShowWatched = mkf.cookieSettings.get('hidewatchedmark', 'no')=='yes'? true : false;
-    settings.hoverOrClick = mkf.cookieSettings.get('hoverOrClick', 'no')=='yes'? 'click' : 'mouseenter';
-    var view = mkf.cookieSettings.get('TVView', 'banner');  
+    settings.useLazyLoad = awxUI.settings.lazyload;
+    settings.filterWatched = awxUI.settings.watched;
+    settings.filterShowWatched = awxUI.settings.hideWatchedMark;
+    settings.hoverOrClick = awxUI.settings.hoverOrClick;
+    var view = awxUI.settings.TVView;
     
     //Overwrite settings for filtered views etc. Make a setting option?
     $.extend(settings, options);
@@ -2087,6 +2122,9 @@
     switch (view) {
       case 'banner':
         uiviews.TVViewBanner(tvShowResult, parentPage, settings).appendTo($tvshowContainer);
+        break;
+      case 'poster':
+        uiviews.TVViewPoster(tvShowResult, parentPage, settings).appendTo($tvshowContainer);
         break;
       case 'listover':
         uiviews.TVViewList(tvShowResult, parentPage, settings).appendTo($tvshowContainer);
@@ -2268,8 +2306,8 @@
     
     if (!episodesResult.limits.total > 0) { return };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('EpView', 'listover');
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.EpView;
     var epsContainer = $(this);
     
     switch (view) {
@@ -2286,7 +2324,7 @@
         epsContainer.find('img.thumb').lazyload(
           {
             queuedLoad: true,
-            container: ($('#main').length? $('#main'): $('#content')),  // TODO remove fixed #main
+            container: ($('#content')),
             errorImage: 'images/thumb' + xbmc.getTvShowThumbType() + '.png'
           }
         );
@@ -2306,8 +2344,8 @@
     if (!episodesResult > 0) { return };
     
     //uiviews.TVUnwatchedEpsViewList(episodesResult).appendTo($(this));
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('EpView', 'listover');
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.EpView;
     var unwatched = true;
     var epsContainer = $(this);
     
@@ -2325,7 +2363,7 @@
         epsContainer.find('img.thumb').lazyload(
           {
             queuedLoad: true,
-            container: ($('#main').length? $('#main'): $('#content')),  // TODO remove fixed #main
+            container: ($('#content')),
             errorImage: 'images/thumb' + xbmc.getTvShowThumbType() + '.png'
           }
         );
@@ -2345,8 +2383,8 @@
   
     if (!episodesResult.limits.total > 0) { return };
     
-    var useLazyLoad = mkf.cookieSettings.get('lazyload', 'yes')=='yes'? true : false;
-    var view = mkf.cookieSettings.get('TVViewRec', 'infolist');  
+    var useLazyLoad = awxUI.settings.lazyload;
+    var view = awxUI.settings.TVViewRec;  
     
     var epsContainer = $(this);
     var options = {
@@ -2365,7 +2403,7 @@
         epsContainer.find('img.thumb').lazyload(
           {
             queuedLoad: true,
-            container: ($('#main').length? $('#main'): $('#content')),  // TODO remove fixed #main
+            container: ($('#content')),
             errorImage: 'images/thumb' + xbmc.getTvShowThumbType() + '.png'
           }
         );
@@ -2385,7 +2423,7 @@
     var onVideoPlaylistsClick = function(e) {
       if (e.data.strType =='episode') {
         var dialogHandle = mkf.dialog.show();
-        var useFanart = mkf.cookieSettings.get('usefanart', 'no')=='yes'? true : false;
+        var useFanart = awxUI.settings.useFanart;
 
         xbmc.getEpisodeDetails({
           episodeid: e.data.id,
@@ -2598,7 +2636,6 @@
 
               } else if (file.type == 'musicvideo') {
                 sendBatch[i] = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "item": { "musicvideoid": ' + file.id + ' }, "playlistid": 1 }, "id": "batchPL"}';
-                console.log(sendBatch);
               } else if (file.filetype == 'directory') {
                 //assume TV show and descend to add episodes
                 xbmc.getDirectory({
@@ -3179,7 +3216,7 @@
       var $footerNowBox = $(this);
       var $footerStatusBox = $('#footer #statPlayerContainer');
       
-      var rotateCDart = mkf.cookieSettings.get('rotateCDart', 'no')=='yes'? true : false;
+      var rotateCDart = awxUI.settings.rotateCDart;
 
       var content = '<div id="now_next"><div id="now">' + mkf.lang.get('Now:', 'Footer label') + ' <span class="label" /><span class="nowArtist artist" /><span class="nowTitle" /></div><div id="next">' + mkf.lang.get('Next:', 'Footer label') + ' <span class="nextTitle" /></div></div>';
       //content += '<div id="statPlayerContainer"><div id="statusPlayer"><div id="statusPlayerRow"><div id="paused"></div><div id="shuffled"></div></div><div id="statusPlayerRow"><div id="repeating"></div><div id="muted"></div></div></div><div id="remainPlayer"><div id="remaining">' + mkf.lang.get('label_remaining') + '<span class="timeRemain">00:00</span></div><div id="plTotal">' + mkf.lang.get('label_total') + '<span class="timeRemainTotal">00:00</span></div></div>';

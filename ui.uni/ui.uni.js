@@ -153,6 +153,8 @@
       artistsTitleContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
+            lastArtistCount = awxUI.settings.limitArtists
+            lastArtistCountStart = 0;
             awxUI.$artistsTitleContent.empty();
             awxUI.onArtistsTitleShow();
 
@@ -267,6 +269,8 @@
       musicAlbumsTitleContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
+            lastAlbumCount = awxUI.settings.limitAlbums;
+            lastAlbumCountStart = 0;
             awxUI.$albumsTitleContent.empty();
             awxUI.onAlbumsTitleShow();
 
@@ -448,6 +452,8 @@
       songsTitleContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
+            lastSongsCountStart = 0;
+            lastSongsCount = awxUI.settings.limitSongs;
             awxUI.$songsTitleContent.empty();
             awxUI.onSongsTitleShow();
 
@@ -797,6 +803,8 @@
       videoMoviesTitleContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
+            lastMovieCountStart = 0;
+            lastMovieCount = awxUI.settings.limitMovies;
             awxUI.$moviesTitleContent.empty();
             awxUI.onMoviesTitleShow();
 
@@ -1033,6 +1041,8 @@
       videoTvShowsTitleContextMenu.push({
         'icon':'refresh', 'title':mkf.lang.get('Refresh', 'Tool tip'), 'onClick':
           function(){
+            lastTVCountStart = 0;
+            lastTVCount = awxUI.settings.limitTV;
             awxUI.$tvShowsTitleContent.empty();
             awxUI.onTvShowsTitleShow();
 
@@ -1306,7 +1316,7 @@
       });
       //end music videos Years
       
-      //tvShows Tags
+      //musicVideos Tags
       this.$musicVideosTagsContent = $('<div class="pageContentWrapper"></div>');
       var musicVideosTagsContextMenu = $.extend(true, [], standardVideosContextMenu);
       musicVideosTagsContextMenu.push({
@@ -1636,21 +1646,21 @@
     onArtistsTitleShow: function(e) {
       var artistsTitlePage = awxUI.artistsTitlePage;
       awxUI.$artistsTitleContent.empty();
-        if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
+        if (typeof lastArtistCount === 'undefined') { lastArtistCount = awxUI.settings.limitArtists };
         if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
-          lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
-          lastArtistCountStart += parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          lastArtistCount = parseInt(lastArtistCount) + parseInt(awxUI.settings.limitArtists);
+          lastArtistCountStart += parseInt(awxUI.settings.limitArtists);
           };
           if (e.data.Page == 'prev') {
-          lastArtistCount = parseInt(lastArtistCount) - parseInt(mkf.cookieSettings.get('limitArtists', 25));
-          lastArtistCountStart -= parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          lastArtistCount = parseInt(lastArtistCount) - parseInt(awxUI.settings.limitArtists);
+          lastArtistCountStart -= parseInt(awxUI.settings.limitArtists);
           if (lastArtistCount == 0) {
             lastArtistCount = totalArtistCount;
-            lastArtistCountStart = totalArtistCount - mkf.cookieSettings.get('limitArtists', 25);
+            lastArtistCountStart = totalArtistCount - awxUI.settings.limitArtists;
           } else if (lastArtistCount < 1 || lastArtistCountStart < 0){
-            lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+            lastArtistCount = awxUI.settings.limitArtists;
             lastArtistCountStart = 0;
           };
           };
@@ -1747,21 +1757,21 @@
     onAlbumsTitleShow: function(e) {
       var albumsTitlePage = awxUI.albumsTitlePage;
       awxUI.$albumsTitleContent.empty();
-        if (typeof lastAlbumCount === 'undefined') { lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25); };
+        if (typeof lastAlbumCount === 'undefined') { lastAlbumCount = awxUI.settings.limitAlbums };
         if (typeof lastAlbumCountStart === 'undefined') { lastAlbumCountStart = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
-          lastAlbumCount = parseInt(lastAlbumCount) + parseInt(mkf.cookieSettings.get('limitAlbums', 25));
-          lastAlbumCountStart += parseInt(mkf.cookieSettings.get('limitAlbums', 25));
+          lastAlbumCount = parseInt(lastAlbumCount) + parseInt(awxUI.settings.limitAlbums);
+          lastAlbumCountStart += parseInt(awxUI.settings.limitAlbums);
           };
           if (e.data.Page == 'prev') {
-          lastAlbumCount = parseInt(lastAlbumCount) - parseInt(mkf.cookieSettings.get('limitAlbums', 25));
-          lastAlbumCountStart -= parseInt(mkf.cookieSettings.get('limitAlbums', 25));
+          lastAlbumCount = parseInt(lastAlbumCount) - parseInt(awxUI.settings.limitAlbums);
+          lastAlbumCountStart -= parseInt(awxUI.settings.limitAlbums);
           if (lastAlbumCount == 0) {
             lastAlbumCount = totalAlbumCount;
-            lastAlbumCountStart = totalAlbumCount - mkf.cookieSettings.get('limitAlbums', 25);
+            lastAlbumCountStart = totalAlbumCount - awxUI.settings.limitAlbums;
           } else if (lastAlbumCount < 1 || lastAlbumCountStart < 0){
-            lastAlbumCount = mkf.cookieSettings.get('limitAlbums', 25);
+            lastAlbumCount = awxUI.settings.limitAlbums;
             lastAlbumCountStart = 0;
           };
           };
@@ -1904,21 +1914,21 @@
     onSongsTitleShow: function(e) {
       var songsTitlePage = awxUI.songsTitlePage;
       awxUI.$songsTitleContent.empty();
-        if (typeof lastSongsCount === 'undefined') { lastSongsCount = mkf.cookieSettings.get('limitSongs', 25); };
+        if (typeof lastSongsCount === 'undefined') { lastSongsCount = awxUI.settings.limitSongs };
         if (typeof lastSongsCountStart === 'undefined') { lastSongsCountStart = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
-          lastSongsCount = parseInt(lastSongsCount) + parseInt(mkf.cookieSettings.get('limitSongs', 25));
-          lastSongsCountStart += parseInt(mkf.cookieSettings.get('limitSongs', 25));
+          lastSongsCount = parseInt(lastSongsCount) + parseInt(awxUI.settings.limitSongs);
+          lastSongsCountStart += parseInt(awxUI.settings.limitSongs);
           };
           if (e.data.Page == 'prev') {
-          lastSongsCount = parseInt(lastSongsCount) - parseInt(mkf.cookieSettings.get('limitSongs', 25));
-          lastSongsCountStart -= parseInt(mkf.cookieSettings.get('limitSongs', 25));
+          lastSongsCount = parseInt(lastSongsCount) - parseInt(awxUI.settings.limitSongs);
+          lastSongsCountStart -= parseInt(awxUI.settings.limitSongs);
           if (lastSongsCount == 0) {
             lastSongsCount = totalSongsCount;
-            lastSongsCountStart = totalSongsCount - mkf.cookieSettings.get('limitSongs', 25);
+            lastSongsCountStart = totalSongsCount - awxUI.settings.limitSongs;
           } else if (lastSongsCount < 1 || lastSongsCountStart < 0){
-            lastSongsCount = mkf.cookieSettings.get('limitSongs', 25);
+            lastSongsCount = awxUI.settings.limitSongs;
             lastSongsCountStart = 0;
           };
           };
@@ -1999,21 +2009,21 @@
     onSongsArtistsShow: function(e) {
       var songsArtistsPage = awxUI.songsArtistsPage;
       awxUI.$songsArtistsContent.empty();
-        if (typeof lastArtistCount === 'undefined') { lastArtistCount = mkf.cookieSettings.get('limitArtists', 25); };
+        if (typeof lastArtistCount === 'undefined') { lastArtistCount = awxUI.settings.limitArtists };
         if (typeof lastArtistCountStart === 'undefined') { lastArtistCountStart = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
-          lastArtistCount = parseInt(lastArtistCount) + parseInt(mkf.cookieSettings.get('limitArtists', 25));
-          lastArtistCountStart += parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          lastArtistCount = parseInt(lastArtistCount) + parseInt(awxUI.settings.limitArtists);
+          lastArtistCountStart += parseInt(awxUI.settings.limitArtists);
           };
           if (e.data.Page == 'prev') {
-          lastArtistCount = parseInt(lastArtistCount) - parseInt(mkf.cookieSettings.get('limitArtists', 25));
-          lastArtistCountStart -= parseInt(mkf.cookieSettings.get('limitArtists', 25));
+          lastArtistCount = parseInt(lastArtistCount) - parseInt(awxUI.settings.limitArtists);
+          lastArtistCountStart -= parseInt(awxUI.settings.limitArtists);
           if (lastArtistCount == 0) {
             lastArtistCount = totalArtistCount;
-            lastArtistCountStart = totalArtistCount - mkf.cookieSettings.get('limitArtists', 25);
+            lastArtistCountStart = totalArtistCount - awxUI.settings.limitArtists;
           } else if (lastArtistCount < 1 || lastArtistCountStart < 0){
-            lastArtistCount = mkf.cookieSettings.get('limitArtists', 25);
+            lastArtistCount = awxUI.settings.limitArtists;
             lastArtistCountStart = 0;
           };
           };
@@ -2308,21 +2318,21 @@
     onMoviesTitleShow: function(e) {
       //Always refresh, mainly for limited item views
         awxUI.$moviesTitleContent.empty();
-        if (typeof lastMovieCount === 'undefined') { lastMovieCount = mkf.cookieSettings.get('limitVideo', 25) };
+        if (typeof lastMovieCount === 'undefined') { lastMovieCount = awxUI.settings.limitMovies };
         if (typeof lastMovieCountStart === 'undefined') { lastMovieCountStart = 0 };
         if (typeof e != 'undefined') {
           if (e.data.Page == 'next') {
-            lastMovieCount = parseInt(lastMovieCount) + parseInt(mkf.cookieSettings.get('limitVideo', 25));
-            lastMovieCountStart += parseInt(mkf.cookieSettings.get('limitVideo', 25));
+            lastMovieCount = parseInt(lastMovieCount) + parseInt(awxUI.settings.limitMovies);
+            lastMovieCountStart += parseInt(awxUI.settings.limitMovies);
             };
             if (e.data.Page == 'prev') {
-            lastMovieCount = parseInt(lastMovieCount) - parseInt(mkf.cookieSettings.get('limitVideo', 25));
-            lastMovieCountStart -= parseInt(mkf.cookieSettings.get('limitVideo', 25));
+            lastMovieCount = parseInt(lastMovieCount) - parseInt(awxUI.settings.limitMovies);
+            lastMovieCountStart -= parseInt(awxUI.settings.limitMovies);
             if (lastMovieCount == 0) {
               lastMovieCount = totalMovieCount;
-              lastMovieCountStart = totalMovieCount - mkf.cookieSettings.get('limitVideo', 25);
+              lastMovieCountStart = totalMovieCount - parseInt(awxUI.settings.limitMovies);
             } else if (lastMovieCount < 1 || lastMovieCountStart < 0) {
-              lastMovieCount = mkf.cookieSettings.get('limitVideo', 25);
+              lastMovieCount = parseInt(awxUI.settings.limitMovies);
               lastMovieCountStart = 0;
             };
           };
@@ -2331,7 +2341,11 @@
         var moviesTitlePage = awxUI.moviesTitlePage;
         $contentBox.addClass('loading');
 
+        //Use advanced filter if we are hiding watched.
+        var filter = (awxUI.settings.watched? '"filter": {"field": "playcount", "operator": "is", "value": "0"}' : '');
+        
         xbmc.getMovies({
+          filter: filter,
           start: lastMovieCountStart,
           end: lastMovieCount,
           onError: function() {
@@ -2512,7 +2526,7 @@
       var tvShowsTitlePage = awxUI.tvShowsTitlePage;
       //Always refresh, mainly for limited item views
         awxUI.$tvShowsTitleContent.empty();
-        var limitTV = mkf.cookieSettings.get('limitTV', 25);
+        var limitTV = awxUI.settings.limitTV;
         if (typeof lastTVCount === 'undefined') { lastTVCount = limitTV };
         if (typeof lastTVCountStart === 'undefined') { lastTVCountStart = 0 };
         if (typeof e != 'undefined') {
@@ -2536,8 +2550,11 @@
         var $contentBox = awxUI.$tvShowsTitleContent;
         
         $contentBox.addClass('loading');
-
+        //Use advanced filter if we are hiding watched.
+        var filter = (awxUI.settings.watched? '"filter": {"field": "playcount", "operator": "is", "value": "0"}' : '');
+        
         xbmc.getTvShows({
+          filter: filter,
           start: lastTVCountStart,
           end: lastTVCount,
           onError: function() {

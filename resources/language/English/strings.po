@@ -739,6 +739,10 @@ msgid "None"
 msgstr ""
 
 msgctxt "Settings option"
+msgid "Date Added"
+msgstr ""
+
+msgctxt "Settings option"
 msgid "Ratings"
 msgstr ""
 
@@ -856,6 +860,10 @@ msgstr ""
 
 msgctxt "Settings label"
 msgid "for album based views."
+msgstr ""
+
+msgctxt "Settings label"
+msgid "for song based views."
 msgstr ""
 
 msgctxt "Settings label"

@@ -1,5 +1,11 @@
 0.6.1
   - Extra fan art support for random playing background.
+  - Ability to disable functions via js/settings.json.
+  - Read cookies once and set variable. Read variable for views, limits and sorting: no need for browser page refresh on changes.
+  - Movie poster single view uses proper limiting.
+  - Changed sorting 'none' to 'date added' which retains the old/expected behaviour.
+  - Fix limited views with hide watched (Oppsie).
+  - Fix playing and enqueuing songs.
   
 0.6.0
  - Initial build for Frodo.

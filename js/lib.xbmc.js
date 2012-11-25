@@ -1268,22 +1268,21 @@ var xbmc = {};
       };
       $.extend(settings, options);
 
-      //var order = mkf.cookieSettings.get('albumOrder')=='album'? 'label' : 'artist';
-      settings.sortby = mkf.cookieSettings.get('albumSort', 'label');
-      settings.order = mkf.cookieSettings.get('adesc', 'ascending');
+      settings.sortby = awxUI.settings.albumSort;
+      settings.order = awxUI.settings.adesc;
 
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libAlbums"}',
 
         function(response) {
-          if (settings.order == 'descending' && settings.sortby == 'none') {
+          /*if (settings.order == 'descending' && settings.sortby == 'none') {
           var aresult = $.makeArray(response.result.albums).reverse();
           delete response.result.albums;
           response.result.albums = aresult;
           settings.onSuccess(response.result);
-          } else {
+          } else {*/
           settings.onSuccess(response.result);
-          }
+          //}
         },
 
         settings.onError
@@ -1438,21 +1437,14 @@ var xbmc = {};
       };
       $.extend(settings, options);
 
-      settings.sortby = mkf.cookieSettings.get('musicVideoSort', 'label');
-      settings.order = mkf.cookieSettings.get('mvdesc', 'ascending');
+      settings.sortby = awxUI.settings.musicVideosSort;
+      settings.order = awxUI.settings.musicVideosdesc;
 
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libMusicVideos"}',
 
         function(response) {
-          if (settings.order == 'descending' && settings.sortby == 'none') {
-          var aresult = $.makeArray(response.result.albums).reverse();
-          delete response.result.musicvideos;
-          response.result.musicvideos = aresult;
           settings.onSuccess(response.result);
-          } else {
-          settings.onSuccess(response.result);
-          }
         },
 
         settings.onError
@@ -1996,20 +1988,13 @@ var xbmc = {};
       };
       $.extend(settings, options);
 
-      settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
-      settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
+      settings.sortby = awxUI.settings.filmSort;
+      settings.order = awxUI.settings.mdesc;
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libMovies"}',
+        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "' + settings.order +'", "method": "' + settings.sortby + '", "ignorearticle": true } }, "id": "libMovies"}',
         function(response) {
-          if (settings.order == 'descending' && settings.sortby == 'none') {
-            var mresult = $.makeArray(response.result.movies).reverse();
-            delete response.result.movies;
-            response.result.movies = mresult;
-            settings.onSuccess(response.result);
-          } else {
-            settings.onSuccess(response.result);
-          };
+          settings.onSuccess(response.result);
         },
         settings.onError
       );
@@ -2042,8 +2027,8 @@ var xbmc = {};
       };
       $.extend(settings, options);
 
-      //settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
-      //settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
+      //settings.sortby = awxUI.settings.filmSort;
+      //settings.order = awxUI.settings.mdesc;
 
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovieSets", "params": {"properties": [ "fanart", "playcount", "thumbnail"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } },"id": 1 }',
@@ -2063,9 +2048,6 @@ var xbmc = {};
         onError: null
       };
       $.extend(settings, options);
-
-      //settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
-      //settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
 
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovieSetDetails", "params": {"setid": ' + settings.setid + ', "properties": [ "fanart", "playcount", "thumbnail" ], "movies": { "properties": [ "rating", "thumbnail", "playcount", "file" ], "sort": { "order": "ascending", "method": "sorttitle" }} },"id": 1 } },"id": 1 }',
@@ -2090,11 +2072,11 @@ var xbmc = {};
       };
       $.extend(settings, options);
       
-      settings.sortby = mkf.cookieSettings.get('TVSort', 'label');
-      settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
+      settings.sortby = awxUI.settings.tvSort;
+      settings.order = awxUI.settings.tvdesc;
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": "libTvShows"}',
+        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { ' + (settings.item == ''? (settings.filter != ''? settings.filter + ', ' : '') : '"filter": { "' + settings.item + '": ' + (settings.itemId !== -1? settings.itemId : '"' + settings.itemStr + '"') + '}, ') + '"limits": { "start" : ' + settings.start + ', "end": ' + settings.end + ' }, "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": "libTvShows"}',
         function(response) {
           settings.onSuccess(response.result);
         },
@@ -2111,7 +2093,7 @@ var xbmc = {};
       $.extend(settings, options);
 
       xbmc.sendCommand(
-        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShowDetails", "params": { "tvshowid": ' + settings.tvshowid + ', "properties": [ "votes", "premiered", "cast", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart", "episode"] }, "id": 1}',
+        '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShowDetails", "params": { "tvshowid": ' + settings.tvshowid + ', "properties": [ "art", "votes", "premiered", "cast", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart", "episode"] }, "id": 1}',
         function(response) {
           settings.onSuccess(response.result.tvshowdetails);
         },
@@ -2136,8 +2118,6 @@ var xbmc = {};
       );
     },
 
-
-
     getEpisodes: function(options) {
       var settings = {
         tvshowid: 0,
@@ -2149,20 +2129,13 @@ var xbmc = {};
       };
       $.extend(settings, options);
 
-      settings.sortby = mkf.cookieSettings.get('EpSort', 'label');
-      settings.order = mkf.cookieSettings.get('epdesc', 'ascending');
+      settings.sortby = awxUI.settings.epSort;
+      settings.order = awxUI.settings.epdesc;
       
       xbmc.sendCommand(
         '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "tvshowid": ' + settings.tvshowid + ', "season" : ' + settings.season + ', "properties": ["episode", "playcount", "fanart", "plot", "season", "showtitle", "thumbnail", "rating"], "sort": { "order": "' + settings.order + '", "method": "' + settings.sortby + '" } }, "id": 1}',
         function(response) {
-          if (settings.order == 'descending' && settings.sortby == 'none') {
-            var epresult = $.makeArray(response.result.episodes).reverse();
-            delete response.result.episodes;
-            response.result.episodes = epresult;
-            settings.onSuccess(response.result);
-          } else {
-            settings.onSuccess(response.result);
-          };
+          settings.onSuccess(response.result);
         },
         settings.onError
       );
@@ -2185,7 +2158,6 @@ var xbmc = {};
         settings.onError
       );
     },
-    
     
     getVideoPlaylist: function(options) {
       var settings = {
@@ -2260,7 +2232,6 @@ var xbmc = {};
       );
     },
 
-    
     getRecentlyAddedEpisodes: function(options) {
       var settings = {
         onSuccess: null,
@@ -2344,19 +2315,19 @@ var xbmc = {};
 
       switch (settings.searchType) {
         case 'movies':
-          properties = '"properties" : ["rating", "thumbnail", "playcount", "file"],';
-          settings.sortby = mkf.cookieSettings.get('filmSort', 'label');
-          settings.order = mkf.cookieSettings.get('mdesc', 'ascending');
+          properties = '"properties" : ["art", "rating", "thumbnail", "playcount", "file"],';
+          settings.sortby = awxUI.settings.filmSort;
+          settings.order = awxUI.settings.mdesc;
         break;
         case 'tvshows':
-          properties = '"properties": ["genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"],';
-          settings.sortby = mkf.cookieSettings.get('TVSort', 'label');
-          settings.order = mkf.cookieSettings.get('tvdesc', 'ascending');
+          properties = '"properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"],';
+          settings.sortby = awxUI.settings.tvSort;
+          settings.order = awxUI.settings.tvdesc;
         break;
         case 'episodes':
           properties = '"properties": ["episode", "playcount", "fanart", "plot", "season", "showtitle", "thumbnail", "rating"],';
-          settings.sortby = mkf.cookieSettings.get('EpSort', 'episode');
-          settings.order = mkf.cookieSettings.get('epdesc', 'ascending');
+          settings.sortby = awxUI.settings.epSort;
+          settings.order = awxUI.settings.epdesc;
         break;
         case 'musicvideos':
           properties = '"properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ],';
@@ -2371,8 +2342,8 @@ var xbmc = {};
         break;
         case 'albums':
           properties = '"properties": ["artist", "genre", "rating", "thumbnail", "year", "mood", "style"],';
-          settings.sortby = mkf.cookieSettings.get('albumSort', 'label');
-          settings.order = mkf.cookieSettings.get('adesc', 'ascending');
+          settings.sortby = awxUI.settings.albumSort;
+          settings.order = awxUI.settings.adesc;
         break;
         case 'songs':
           properties = '"properties": ["artist", "album", "track", "thumbnail", "genre", "year", "lyrics", "albumid", "playcount", "rating", "duration"],';
@@ -3689,7 +3660,6 @@ var xbmc = {};
             uiviews.InputSendText(JSONRPCnotification.params.data, (JSONRPCnotification.params.data.type == 'password'? true : false));
           break;
           case 'Input.OnInputFinished':
-            console.log('Input closed');
             $('div.inputSendText .close').click();
           break;
           case 'System.OnQuit':
