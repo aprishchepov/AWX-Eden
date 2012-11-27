@@ -44,7 +44,6 @@ var awxUI = {};
 		tvShowsRecentlyAddedPage: null,
 		videoFilesPage: null,
 		videoPlaylistPage: null,
-		videoScanPage: null,
 
 		// --- Page Content ---
 		$musicContent: null,
@@ -66,8 +65,6 @@ var awxUI = {};
 		$tvShowsRecentlyAddedContent: null,
 		$videoFilesContent: null,
 		$videoPlaylistContent: null,
-		$videoScanContent: null,
-
 
 
 		/*******************************
@@ -632,20 +629,8 @@ var awxUI = {};
 				contextMenu: videoPlaylistContextMenu,
 				onShow: $.proxy(this, "onVideoPlaylistShow"),
 				className: 'videoPlaylist'
-			});
+			});			
 			
-			//Video Scan
-			this.$videoScanContent = $('<div class="pageContentWrapper"></div>');
-			var videoScanContextMenu = $.extend(true, [], standardVideosContextMenu);
-			
-			this.videoScanPage = videosPage.addPage({
-				title: mkf.lang.get('page_title_video_scan'),
-				content: this.$videoScanContent,
-				menuButtonText: '&raquo; ' + mkf.lang.get('page_buttontext_video_scan'),
-				contextMenu: videoScanContextMenu,
-				onShow: $.proxy(this, "onVideoScanShow"),
-				className: 'videoscan'
-			});
 			
 			/*
 			 * Page Content
@@ -1078,17 +1063,8 @@ var awxUI = {};
 					$contentBox.removeClass('loading');
 				}
 			});
-		},
-		
-		/*********************************************
-		 * Called when Video-Scan-Page is shown. *
-		 *********************************************/
-		onVideoScanShow: function() {
-			var $contentBox = this.$videoScanContent;
-			$contentBox.empty();
-			$contentBox.defaultVideoScanViewer('Video');
-		},
-		
+		},		
+	
 		/*********************************************
 		 * Called when Music-Scan-Page is shown. *
 		 *********************************************/
